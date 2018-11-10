@@ -1,0 +1,19 @@
+{
+  "name": "texas-math-central",
+  "version": "1.0.0",
+  "description": "A one-stop shop for Texas math teachers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mouten57/texas-math-central.git"
+  },
+  "author": "Matt Outen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mouten57/texas-math-central/issues"
+  },
+  "homepage": "https://github.com/mouten57/texas-math-central#readme"
+}
