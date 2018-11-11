@@ -1,14 +1,14 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+
+import { Image } from 'semantic-ui-react';
+import logo from '../images/logo.jpg';
 
 const Landing = () => {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>Texas Math Central</h1>
-      <Button variant="contained" color="primary">
-        <a href="http://localhost:5000/">VIEW RESOURCES</a>
-      </Button>
+    <div>
+      <div style={{ textAlign: 'center', height: '90vh' }}>
+        <Image src={logo} size="large" circular centered />
+      </div>
     </div>
   );
 };

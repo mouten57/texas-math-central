@@ -1,6 +1,6 @@
 //if you don't put relative path, webpack assumes you are referring
 //to the node_modules directory
-//import 'materialize-css/dist/css/materialize.min.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';

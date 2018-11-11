@@ -5,8 +5,11 @@ import * as actions from '../actions';
 import Landing from './Landing';
 
 import Header from './Header';
-//import Dashboard from './Dashboard';
-//import SurveyNew from './surveys/SurveyNew';
+import About from './About';
+import ResourceIndex from './resources/ResourceTopicIndex';
+import ResourceHome from './resources/ResourceHome';
+
+import { Container } from 'semantic-ui-react';
 
 class App extends Component {
   componentDidMount() {
@@ -14,14 +17,17 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="container">
+      <Container>
         <BrowserRouter>
-          <div className="container">
+          <div>
             <Header />
             <Route exact path="/" component={Landing} />
+            <Route exact path="/about" component={About} />
+            <Route exact path="/resources" component={ResourceIndex} />
+            <Route exact path="/resource" component={ResourceHome} />
           </div>
         </BrowserRouter>
-      </div>
+      </Container>
     );
   }
 }

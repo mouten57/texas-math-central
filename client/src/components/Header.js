@@ -1,49 +1,81 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Menu, Input, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 
-class Header extends Component {
+class Nav extends Component {
+  state = {
+    activeItem: ''
+  };
+
   renderContent() {
+    const linkStyle = {
+      color: 'white'
+    };
     switch (this.props.auth) {
       case null:
         return;
       case false:
         return (
-          <li>
-            <a href="/auth/google">Login With Google</a>
-          </li>
+          <Menu.Item>
+            <Button primary>
+              <a style={linkStyle} href="/auth/google">
+                Login with Google
+              </a>
+            </Button>
+          </Menu.Item>
         );
       default:
-        return [
-          <li key="1" style={{ margin: '0 10px' }}>
-            Credits: {this.props.auth.credits}
-          </li>,
-          <li key="2">
-            <a href="/api/logout">Logout</a>
-          </li>
-        ];
+        console.log(this.props.auth);
+        return (
+          <Menu.Item>
+            <Button>
+              <a href="/api/logout">Logout</a>
+            </Button>
+          </Menu.Item>
+        );
     }
   }
+
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+
   render() {
+    const { activeItem } = this.state;
+
     return (
-      <nav>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="title" color="inherit">
-              Texas Math Central
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </nav>
+      <Menu size="small" stackable>
+        <Link to="/">
+          <Menu.Item>
+            <i className="fas fa-calculator"> TMC</i>
+          </Menu.Item>
+        </Link>
+        <Link to="/about">
+          <Menu.Item
+            name="about"
+            active={activeItem === 'about'}
+            onClick={this.handleItemClick}
+          />
+        </Link>
+        <Link to="/resources">
+          <Menu.Item
+            name="resources"
+            active={activeItem === 'resources'}
+            onClick={this.handleItemClick}
+          />
+        </Link>
+        <Menu.Menu position="right">
+          <Menu.Item>
+            <Input icon="search" placeholder="Search..." />
+          </Menu.Item>
+          {this.renderContent()}
+        </Menu.Menu>
+      </Menu>
     );
   }
 }
 
-function mapStateToProps({ auth }) {
-  return { auth };
+function mapStateToProps(state) {
+  return { auth: state.auth };
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(Nav);

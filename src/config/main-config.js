@@ -8,6 +8,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 
 //important to call model first, before I try to run passport
+require('../models/Resource');
 require('../models/User');
 require('./passport-config');
 
