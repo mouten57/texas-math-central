@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/head.ejs %>
+  </head>
+
+  <body>
+    <% include ./partials/navbar.ejs %>
+    <!-- Page Content -->
+    <main>
+      <% include ./partials/messages.ejs %>
+
+      <!-- Page Features -->
+      <section class="row text-center">
+        <div class="container">
+          <h2>About</h2>
+          <div class="dropdown-divider"></div>
+          <p>
+            This website is all about teachers. It was designed and created with
+            one goal in mind: to get all the best math resources in one
+            location. No more aimless searching.
+          </p>
+          <p>Find the most popular (free) resources today.</p>
+
+          <h3 style="margin-top: 50px">Why Texas Math Central?</h3>
+          <div class="dropdown-divider"></div>
+          <List items={[ 'Resources voted on by Texas Math Teachers' ,
+          'Everything is FREE!' , '...fill this in later...' ]} />
+
+          <h4 style="margin-top:50px">Other Info:</h4>
+          <div class="dropdown-divider"></div>
+        </div>
+      </section>
+
+      <nav aria-label="breadcrumb" class="fixed-bottom">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">About</li>
+        </ol>
+      </nav>
+    </main>
+    <!-- /.container -->
+    <% include ./partials/baseScripts.ejs %>
+  </body>
+</html>

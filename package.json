@@ -9,11 +9,7 @@
   },
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
-    "start": "node src/index.js",
-    "server": "nodemon src/index.js",
-    "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
@@ -27,8 +23,6 @@
   "homepage": "https://github.com/mouten57/texas-math-central#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "cloudinary": "^1.12.0",
-    "concurrently": "^4.0.1",
     "cookie-session": "^2.0.0-beta.3",
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
@@ -36,7 +30,6 @@
     "express-flash": "0.0.2",
     "express-session": "^1.15.6",
     "express-validator": "^5.3.0",
-    "googleapis": "^27.0.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.3.11",
     "morgan": "^1.9.1",
@@ -46,6 +39,7 @@
     "passport-local": "^1.0.0",
     "pg": "^7.6.1",
     "pg-hstore": "^2.3.2",
+    "semantic-ui": "^2.4.2",
     "sendgrid": "^5.2.3",
     "sequelize": "^4.41.1",
     "sequelize-cli": "^5.3.0",

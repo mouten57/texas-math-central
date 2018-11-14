@@ -4,6 +4,7 @@ const flash = require('express-flash');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const path = require('path');
+const viewsFolder = path.join(__dirname, '..', 'views');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
@@ -16,6 +17,10 @@ const keys = require('./keys/keys');
 
 module.exports = {
   init(app, express) {
+    app.set('views', viewsFolder);
+
+    app.set('view engine', 'ejs');
+    app.use(express.static(path.join(__dirname, '..', 'assets')));
     mongoose.connect(keys.mongoURI);
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,5 +40,6 @@ module.exports = {
     });
     app.use(express.static(path.join(__dirname, '..', 'assets')));
     app.use(logger('dev'));
+    app.use(express.static('/assets/images'));
   }
 };

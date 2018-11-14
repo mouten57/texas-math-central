@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+
+  <body>
+    <% include ../static/partials/navbar.ejs %>
+    <!-- Page Content -->
+    <main class="container">
+      <% include ../static/partials/messages.ejs %>
+
+      <!-- Jumbotron Header -->
+      <header class="jumbotron my-4">
+        <h1 class="display-3">Resources</h1>
+        <% console.log(resourceTopics) %>
+        <p class="lead">All the good stuff.</p>
+
+        <br />
+      </header>
+
+      <!-- Page Features -->
+      <section class="container">
+        <div class="row justify-content-center">
+          <% resourceTopics.forEach((topic)=> { %>
+          <div class="col-xs-12" style="margin: 10px">
+            <div class="card" style="width: 18rem; height: 25rem">
+              <img
+                class="card-img-top"
+                src="https://www.corph.in/corph_theme/assets/img/image-placeholder.png"
+                alt="Card image cap"
+              />
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title"><%= topic.name %></h5>
+                <p class="card-text"><%= topic.description %></p>
+                <a href="/" class="btn btn-primary mt-auto">Go somewhere</a>
+              </div>
+            </div>
+          </div>
+          <% } ) %>
+        </div>
+      </section>
+      <!-- /.row -->
+    </main>
+    <!-- /.container -->
+    <% include ../static/partials/baseScripts.ejs %>
+  </body>
+</html>
