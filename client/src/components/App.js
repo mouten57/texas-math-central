@@ -6,11 +6,11 @@ import Landing from './Landing';
 
 import Header from './Header';
 import About from './About';
-import ResourceIndex from './resources/ResourceTopicIndex';
-import ResourceHome from './resources/ResourceHome';
+import TopicIndex from './resources/TopicIndex';
+import ResourceIndex from './resources/ResourceIndex';
 
 import { Container } from 'semantic-ui-react';
-import HeaderItems from './HeaderItems';
+import ResourceNew from './resources/ResourceNew';
 
 class App extends Component {
   componentDidMount() {
@@ -21,14 +21,13 @@ class App extends Component {
       <Container>
         <BrowserRouter>
           <div>
-            <Header
-              leftItems={HeaderItems.leftItems}
-              rightItems={HeaderItems.rightItems}
-            />
+            <Header />
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
-            <Route exact path="/resources" component={ResourceIndex} />
-            <Route exact path="/resource" component={ResourceHome} />
+            <Route exact path="/resource" component={ResourceIndex} />
+            <Route exact path="/resources" component={TopicIndex} />
+
+            <Route exact path="/resources/new" component={ResourceNew} />
           </div>
         </BrowserRouter>
       </Container>

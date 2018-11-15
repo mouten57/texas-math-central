@@ -1,3 +1,7 @@
+//ResourceHome displays the grid of cards of available TYPES
+//of resources
+//like worksheets, games, projects, etc.
+
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ResourceCard from './ResourceCard';

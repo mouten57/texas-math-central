@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Input, Button } from 'semantic-ui-react';
+import { Menu, Input, Button, Icon, MenuItem } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class Nav extends Component {
@@ -64,9 +64,15 @@ class Nav extends Component {
         </Link>
 
         <Menu.Menu position="right">
-          <Menu.Item>
+          {/* <Menu.Item>
             <Input icon="search" placeholder="Search..." />
+          </Menu.Item> */}
+          <Menu.Item>
+            <Link to="/resources/new">
+              <Icon name="add" />
+            </Link>
           </Menu.Item>
+
           <Menu.Item>{this.renderContent()}</Menu.Item>
         </Menu.Menu>
       </Menu>

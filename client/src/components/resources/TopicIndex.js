@@ -1,8 +1,13 @@
+//TopicIndex displays the table of all available
+//TOPICS, like B.O.Y., Addition/Mult, APV, etc.
+
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Table, Breadcrumb } from 'semantic-ui-react';
 import resourceTypes from './resourceTopics';
 import { Link } from 'react-router-dom';
+import ResourceList from './ResourceList';
+import { Container } from 'semantic-ui-react';
 
 export default class Resources extends Component {
   state = {
@@ -42,15 +47,18 @@ export default class Resources extends Component {
           <Breadcrumb.Divider />
           <Breadcrumb.Section active>Resources</Breadcrumb.Section>
         </Breadcrumb>
+        <Container>
+          <ResourceList />
+        </Container>
 
-        <Table sortable celled fixed>
+        <Table sortable celled style={{ marginBottom: '10px' }}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell
                 sorted={column === 'resource' ? direction : null}
                 onClick={this.handleSort('resource')}
               >
-                Resource
+                Topic
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'description' ? direction : null}
