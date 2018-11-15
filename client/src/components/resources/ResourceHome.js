@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ResourceCard from './ResourceCard';
-import { Card, Header, Breadcrumb } from 'semantic-ui-react';
+import { Header, Breadcrumb, Grid, Container } from 'semantic-ui-react';
 import resourceTypes from './resourceTypes';
 import _ from 'lodash';
 
 class Resource extends Component {
   renderContent() {
     return _.map(resourceTypes, ({ name, moreLink }) => {
-      return <ResourceCard key={name} name={name} moreLink={moreLink} />;
+      return (
+        <Grid.Column>
+          <ResourceCard key={name} name={name} moreLink={moreLink} />
+        </Grid.Column>
+      );
     });
   }
 
+  // <Segment>Content</Segment>
+
   render() {
     return (
-      <div>
+      <Container>
         <Breadcrumb>
           <Breadcrumb.Section link>
             <Link to="/">Home</Link>
@@ -30,8 +36,10 @@ class Resource extends Component {
           B.O.Y.
         </Header>
 
-        <Card.Group itemsPerRow={3}>{this.renderContent()}</Card.Group>
-      </div>
+        <Grid columns={3} stackable centered>
+          {this.renderContent()}
+        </Grid>
+      </Container>
     );
   }
 }

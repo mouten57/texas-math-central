@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 
 class Nav extends Component {
   state = {
-    activeItem: ''
+    activeItem: '',
+    visible: false
   };
 
   renderContent() {
@@ -28,11 +29,9 @@ class Nav extends Component {
       default:
         console.log(this.props.auth);
         return (
-          <Menu.Item>
-            <Button>
-              <a href="/api/logout">Logout</a>
-            </Button>
-          </Menu.Item>
+          <Button>
+            <a href="/api/logout">Logout</a>
+          </Button>
         );
     }
   }
@@ -43,7 +42,7 @@ class Nav extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu size="small" stackable>
+      <Menu size="small">
         <Link to="/">
           <Menu.Item>
             <i className="fas fa-calculator"> TMC</i>
@@ -63,11 +62,12 @@ class Nav extends Component {
             onClick={this.handleItemClick}
           />
         </Link>
+
         <Menu.Menu position="right">
           <Menu.Item>
             <Input icon="search" placeholder="Search..." />
           </Menu.Item>
-          {this.renderContent()}
+          <Menu.Item>{this.renderContent()}</Menu.Item>
         </Menu.Menu>
       </Menu>
     );

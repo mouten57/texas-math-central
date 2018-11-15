@@ -11,7 +11,7 @@ const description = [
 ];
 
 const ResourceCard = props => (
-  <Card>
+  <Card centered fluid>
     <Card.Content header={props.name} />
     <Card.Content description={description} />
     <Card.Content extra>
