@@ -1,58 +1,58 @@
 export default [
   {
-    resource: 'B.O.Y.',
+    name: 'B.O.Y.',
     description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation`
   },
   {
-    resource: 'Addition/Multiplication',
+    name: 'Addition/Multiplication',
     description: 'etc etc etc'
   },
   {
-    resource: 'Area, Perimeter, and Volume',
+    name: 'Area, Perimeter, and Volume',
     description: 'etc etc etc'
   },
   {
-    resource: 'Division',
+    name: 'Division',
     description: 'etc etc etc'
   },
   {
-    resource: 'Prime and Composite Numbers',
+    name: 'Prime and Composite Numbers',
     description: 'etc etc etc'
   },
   {
-    resource: 'Graphing',
+    name: 'Graphing',
     description: 'etc etc etc'
   },
   {
-    resource: 'Decimals',
+    name: 'Decimals',
     description: 'etc etc etc'
   },
   {
-    resource: 'Geometry',
+    name: 'Geometry',
     description: 'etc etc etc'
   },
   {
-    resource: 'Fractions',
+    name: 'Fractions',
     description: 'etc etc etc'
   },
   {
-    resource: 'Expressions & Equations',
+    name: 'Expressions & Equations',
     description: 'etc etc etc'
   },
   {
-    resource: 'Measurement',
+    name: 'Measurement',
     description: 'etc etc etc'
   },
   {
-    resource: 'Personal Finance',
+    name: 'Personal Finance',
     description: 'etc etc etc'
   },
   {
-    resource: 'STAAR REVIEW!',
+    name: 'STAAR REVIEW!',
     description: 'etc etc etc'
   },
   {
-    resource: 'Random',
+    name: 'Random',
     description: 'etc etc etc'
   }
 ];

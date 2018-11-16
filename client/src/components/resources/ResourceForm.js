@@ -3,39 +3,94 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
-import ResourceField from './ResourceField';
-
+import unitFields from './unitFields';
 import formFields from './formFields';
 
 class ResourceForm extends Component {
-  renderFields() {
-    return _.map(formFields, ({ label, name }) => {
+  renderUnits() {
+    return _.map(unitFields, ({ name }) => {
       return (
-        <Field
-          key={name}
-          component={ResourceField}
-          type="text"
-          label={label}
-          name={name}
-        />
+        <option key={name} value={name}>
+          {name}
+        </option>
       );
     });
   }
-  render() {
+  renderFields(props) {
     return (
       <div>
         <form onSubmit={this.props.handleSubmit(this.props.onResourceSubmit)}>
-          {this.renderFields()}
-          <Link to="/resources" className="red btn-flat white-text">
-            Cancel
-          </Link>
+          <div>
+            <label>Resource Name</label>
+            <div>
+              <Field
+                name="name"
+                component="input"
+                type="text"
+                placeholder="quick quiz 2"
+              />
+            </div>
+            <div>
+              <label>Unit</label>
+              <div>
+                <Field name="unit" component="select">
+                  <option />
+                  {this.renderUnits()}
+                </Field>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label>Type</label>
+            <div>
+              <label>
+                <Field
+                  name="type"
+                  component="input"
+                  type="radio"
+                  value="link"
+                />{' '}
+                Link
+              </label>
+              <label>
+                <Field
+                  name="type"
+                  component="input"
+                  type="radio"
+                  value="upload"
+                />{' '}
+                Upload
+              </label>
+            </div>
+          </div>
+          <div>
+            <label>Link</label>
+            <div>
+              <Field
+                name="link"
+                component="input"
+                type="text"
+                placeholder="http://"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label>Description</label>
+            <div>
+              <Field name="description" component="textarea" />
+            </div>
+          </div>
           <button type="submit" className="teal btn-flat right white-text">
             Next
-            <i className="material-icons right">done</i>
           </button>
         </form>
       </div>
     );
+  }
+  render() {
+    return <div>{this.renderFields()}</div>;
   }
 }
 

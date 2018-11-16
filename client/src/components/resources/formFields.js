@@ -1,22 +1,27 @@
 export default [
   {
-    label: 'Survey Title',
-    name: 'title',
-    noValueError: 'You must provide a title.'
+    label: 'Resource Name',
+    name: 'name',
+    noValueError: 'You must provide a name.'
   },
   {
-    label: 'Subject Line',
-    name: 'subject',
+    label: 'Unit',
+    name: 'unit',
     noValueError: 'You must provide a subject'
   },
   {
-    label: 'Email Body',
-    name: 'body',
-    noValueError: 'You must provide a body'
+    label: 'Type',
+    name: 'type',
+    noValueError: 'You must provide a type'
   },
   {
-    label: 'Recipient List',
-    name: 'recipients',
-    noValueError: 'You must provide an email'
+    label: 'Link',
+    name: 'link',
+    noValueError: 'N/A'
+  },
+  {
+    label: 'Description',
+    name: 'description',
+    noValueError: 'You must provide a body'
   }
 ];

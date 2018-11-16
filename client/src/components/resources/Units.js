@@ -1,10 +1,10 @@
-//TopicIndex displays the table of all available
+//UnitIndex displays the table of all available
 //TOPICS, like B.O.Y., Addition/Mult, APV, etc.
 
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Table, Breadcrumb } from 'semantic-ui-react';
-import resourceTypes from './resourceTopics';
+import unitFields from './unitFields';
 import { Link } from 'react-router-dom';
 import ResourceList from './ResourceList';
 import { Container } from 'semantic-ui-react';
@@ -12,7 +12,7 @@ import { Container } from 'semantic-ui-react';
 export default class Resources extends Component {
   state = {
     column: null,
-    data: resourceTypes,
+    data: unitFields,
     direction: null
   };
 
@@ -48,17 +48,18 @@ export default class Resources extends Component {
           <Breadcrumb.Section active>Resources</Breadcrumb.Section>
         </Breadcrumb>
         <Container>
+          <h2>sample resource uploads</h2>
           <ResourceList />
         </Container>
-
+        <h2>UNITS</h2>
         <Table sortable celled style={{ marginBottom: '10px' }}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell
-                sorted={column === 'resource' ? direction : null}
-                onClick={this.handleSort('resource')}
+                sorted={column === 'name' ? direction : null}
+                onClick={this.handleSort('name')}
               >
-                Topic
+                Unit
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'description' ? direction : null}
@@ -70,14 +71,14 @@ export default class Resources extends Component {
           </Table.Header>
           <Table.Body>
             <Table.Row>
-              <Table.Cell>Test</Table.Cell>
+              <Table.Cell>Just a test</Table.Cell>
               <Table.Cell>
                 <Link to="/resource">See More Resources</Link>
               </Table.Cell>
             </Table.Row>
-            {_.map(data, ({ resource, description }) => (
-              <Table.Row key={resource}>
-                <Table.Cell>{resource}</Table.Cell>
+            {_.map(data, ({ name, description }) => (
+              <Table.Row key={name}>
+                <Table.Cell>{name}</Table.Cell>
                 <Table.Cell>{description}</Table.Cell>
               </Table.Row>
             ))}

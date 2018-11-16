@@ -6,7 +6,7 @@ import Landing from './Landing';
 
 import Header from './Header';
 import About from './About';
-import TopicIndex from './resources/TopicIndex';
+import Units from './resources/Units';
 import ResourceIndex from './resources/ResourceIndex';
 
 import { Container } from 'semantic-ui-react';
@@ -25,7 +25,7 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
             <Route exact path="/resource" component={ResourceIndex} />
-            <Route exact path="/resources" component={TopicIndex} />
+            <Route exact path="/units" component={Units} />
 
             <Route exact path="/resources/new" component={ResourceNew} />
           </div>

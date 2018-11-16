@@ -13,20 +13,21 @@ module.exports = app => {
   });
 
   app.post('/api/resources', requireLogin, async (req, res) => {
-    const { title, subject, body, recipients } = req.body;
+    const { name, unit, type, link, description } = req.body;
 
     const resource = new Resource({
-      title,
-      subject,
-      body,
-      recipients: recipients.split(',').map(email => ({ email: email.trim() })),
+      name,
+      unit,
+      type,
+      link,
+      description,
       _user: req.user.id,
       dateSent: Date.now()
     });
     //save our resource
     resource.save((err, resource) => {
       if (err) return console.lerror(err);
-      console.log(`${resource.title} saved to collection.`);
+      console.log(`${resource.name} saved to collection.`);
     });
   });
 };

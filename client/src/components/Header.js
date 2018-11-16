@@ -55,7 +55,7 @@ class Nav extends Component {
             onClick={this.handleItemClick}
           />
         </Link>
-        <Link to="/resources">
+        <Link to="/units">
           <Menu.Item
             name="resources"
             active={activeItem === 'resources'}

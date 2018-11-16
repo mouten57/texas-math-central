@@ -15,7 +15,9 @@ const ResourceFormReview = ({
   const reviewFields = _.map(formFields, ({ name, label }) => {
     return (
       <div key={name}>
-        <label>{label}</label>
+        <label>
+          <b>{label}</b>
+        </label>
         <div>{formValues[name]}</div>
       </div>
     );
@@ -35,8 +37,7 @@ const ResourceFormReview = ({
         onClick={() => submitResource(formValues, history)}
         className="green btn-flat right white-text"
       >
-        Send Resource
-        <i className="material-icons right">email</i>
+        Add Resource
       </button>
     </div>
   );

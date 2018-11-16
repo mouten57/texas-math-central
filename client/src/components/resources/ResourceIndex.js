@@ -1,4 +1,4 @@
-//ResourceHome displays the grid of cards of available TYPES
+//ResourceIndex displays the grid of cards of available TYPES
 //of resources
 //like worksheets, games, projects, etc.
 
@@ -34,10 +34,10 @@ class Resource extends Component {
             <Link to="/resources">Resources</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section active>B.O.Y.</Breadcrumb.Section>
+          <Breadcrumb.Section active>TEST</Breadcrumb.Section>
         </Breadcrumb>
         <Header as="h3" dividing block>
-          B.O.Y.
+          TEST
         </Header>
 
         <Grid columns={3} stackable centered>
