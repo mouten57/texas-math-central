@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchResources } from '../../actions';
-import { Card } from 'semantic-ui-react';
+import { Card, Table } from 'semantic-ui-react';
 
 class ResourceList extends Component {
   componentDidMount() {
@@ -14,27 +14,36 @@ class ResourceList extends Component {
   renderResources() {
     return this.props.resources.reverse().map(resource => {
       return (
-        <Card fluid key={resource.id} style={{ marginTop: '10px' }}>
-          <div className="card-content">
-            <span className="card-title">
-              <i>{resource.name}</i>
-            </span>
-            <p>unit: {resource.unit}</p>
-            <p>type: {resource.type}</p>
-            <p>
-              link: <a>{resource.link}</a>
-            </p>
-            <p className="right">
-              Sent On: {new Date(resource.dateSent).toLocaleDateString()}
-            </p>
-          </div>
-        </Card>
+        <Table.Row key={resource.id} style={{ marginTop: '10px' }}>
+          <Table.Cell>{resource.name}</Table.Cell>
+          <Table.Cell>{resource.unit}</Table.Cell>
+          <Table.Cell>{resource.type}</Table.Cell>
+          <Table.Cell>
+            <a href="{resource.link}"> {resource.name}</a>
+          </Table.Cell>
+          <Table.Cell>
+            {new Date(resource.dateSent).toLocaleDateString()}
+          </Table.Cell>
+        </Table.Row>
       );
     });
   }
 
   render() {
-    return <div>{this.renderResources()}</div>;
+    return (
+      <Table style={{ marginBottom: '10px' }}>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Unit</Table.HeaderCell>
+            <Table.HeaderCell>Type</Table.HeaderCell>
+            <Table.HeaderCell>Link</Table.HeaderCell>
+            <Table.HeaderCell>Date Added</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>{this.renderResources()}</Table.Body>
+      </Table>
+    );
   }
 }
 

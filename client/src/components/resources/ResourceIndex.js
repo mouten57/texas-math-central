@@ -8,6 +8,7 @@ import ResourceCard from './ResourceCard';
 import { Header, Breadcrumb, Grid, Container } from 'semantic-ui-react';
 import resourceTypes from './resourceTypes';
 import _ from 'lodash';
+import ResourceList from './ResourceList';
 
 class Resource extends Component {
   renderContent() {
@@ -43,6 +44,10 @@ class Resource extends Component {
         <Grid columns={3} stackable centered>
           {this.renderContent()}
         </Grid>
+        <Container>
+          <h2>sample resource uploads</h2>
+          <ResourceList />
+        </Container>
       </Container>
     );
   }

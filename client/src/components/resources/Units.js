@@ -6,8 +6,6 @@ import React, { Component } from 'react';
 import { Table, Breadcrumb } from 'semantic-ui-react';
 import unitFields from './unitFields';
 import { Link } from 'react-router-dom';
-import ResourceList from './ResourceList';
-import { Container } from 'semantic-ui-react';
 
 export default class Resources extends Component {
   state = {
@@ -47,10 +45,7 @@ export default class Resources extends Component {
           <Breadcrumb.Divider />
           <Breadcrumb.Section active>Resources</Breadcrumb.Section>
         </Breadcrumb>
-        <Container>
-          <h2>sample resource uploads</h2>
-          <ResourceList />
-        </Container>
+
         <h2>UNITS</h2>
         <Table sortable celled style={{ marginBottom: '10px' }}>
           <Table.Header>
