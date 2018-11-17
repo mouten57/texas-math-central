@@ -4,22 +4,49 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchResources } from '../../actions';
-import { Card, Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import unitFields from './data/unitFields.js';
 
 class ResourceList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   componentDidMount() {
     this.props.fetchResources();
+    this.updateUnitResources(this.props.name);
+  }
+
+  updateUnitResources = activeUnit => {
+    let resources = this.props.resources;
+    return resources.filter(resource => resource.unit === activeUnit);
+  };
+
+  match(resource) {
+    console.log(resource);
+    for (let i = 0; i < unitFields.length; i++) {
+      if (resource.unit === unitFields[i].name) {
+        console.log(unitFields[i].link);
+        return unitFields[i].link;
+      }
+    }
   }
 
   renderResources() {
-    return this.props.resources.reverse().map(resource => {
+    let resources = this.updateUnitResources(this.props.name);
+    console.log(resources);
+    return resources.reverse().map(resource => {
       return (
-        <Table.Row key={resource.id} style={{ marginTop: '10px' }}>
+        <Table.Row key={resource._id} style={{ marginTop: '10px' }}>
           <Table.Cell>{resource.name}</Table.Cell>
           <Table.Cell>{resource.unit}</Table.Cell>
           <Table.Cell>{resource.type}</Table.Cell>
           <Table.Cell>
-            <a href="{resource.link}"> {resource.name}</a>
+            <Link to={`/units/${this.match(resource)}/${resource._id}`}>
+              {' '}
+              {resource.name}
+            </Link>
           </Table.Cell>
           <Table.Cell>
             {new Date(resource.dateSent).toLocaleDateString()}

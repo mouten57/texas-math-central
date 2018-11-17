@@ -2,9 +2,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { Link } from 'react-router-dom';
-import unitFields from './unitFields';
-import formFields from './formFields';
+import unitFields from './data/unitFields.js';
+import formFields from './data/formFields.js';
 
 class ResourceForm extends Component {
   renderUnits() {

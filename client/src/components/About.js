@@ -12,7 +12,7 @@ const About = () => {
   return (
     <div>
       <Breadcrumb>
-        <Breadcrumb.Section link>
+        <Breadcrumb.Section>
           <Link to="/">Home</Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider />

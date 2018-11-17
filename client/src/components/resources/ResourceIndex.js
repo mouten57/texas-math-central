@@ -8,9 +8,13 @@ import ResourceCard from './ResourceCard';
 import { Header, Breadcrumb, Grid, Container } from 'semantic-ui-react';
 import resourceTypes from './resourceTypes';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import { fetchResources } from '../../actions';
 import ResourceList from './ResourceList';
 
-class Resource extends Component {
+import unitFields from './data/unitFields.js';
+
+class ResourceIndex extends Component {
   renderContent() {
     return _.map(resourceTypes, ({ name, moreLink }) => {
       return (
@@ -20,6 +24,18 @@ class Resource extends Component {
       );
     });
   }
+  filteredUnit() {
+    const paramName = this.props.match.params.name;
+    for (let i = 0; i < unitFields.length; i++) {
+      if (unitFields[i].link === paramName) {
+        return unitFields[i].name;
+      }
+    }
+  }
+  //Grid layout option
+  //  <Grid columns={3} stackable centered>
+  // {this.renderContent()}
+  // </Grid>
 
   // <Segment>Content</Segment>
 
@@ -27,30 +43,33 @@ class Resource extends Component {
     return (
       <Container>
         <Breadcrumb>
-          <Breadcrumb.Section link>
+          <Breadcrumb.Section>
             <Link to="/">Home</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section link>
-            <Link to="/resources">Resources</Link>
+          <Breadcrumb.Section>
+            <Link to="/units">Resources</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section active>TEST</Breadcrumb.Section>
+          <Breadcrumb.Section active>{this.filteredUnit()}</Breadcrumb.Section>
         </Breadcrumb>
         <Header as="h3" dividing block>
-          TEST
+          {this.filteredUnit()}
         </Header>
 
-        <Grid columns={3} stackable centered>
-          {this.renderContent()}
-        </Grid>
         <Container>
-          <h2>sample resource uploads</h2>
-          <ResourceList />
+          <ResourceList name={this.filteredUnit()} />
         </Container>
       </Container>
     );
   }
 }
 
-export default Resource;
+function mapStateToProps({ resources }) {
+  return { resources };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchResources }
+)(ResourceIndex);

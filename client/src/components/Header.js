@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Input, Button, Icon, MenuItem } from 'semantic-ui-react';
+import { Menu, Button, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class Nav extends Component {
@@ -27,7 +27,6 @@ class Nav extends Component {
           </Menu.Item>
         );
       default:
-        console.log(this.props.auth);
         return (
           <Button>
             <a href="/api/logout">Logout</a>
@@ -45,23 +44,28 @@ class Nav extends Component {
       <Menu size="small">
         <Link to="/">
           <Menu.Item>
-            <i className="fas fa-calculator"> TMC</i>
+            <i className="fas fa-calculator" style={{ marginTop: '4px' }}>
+              {' '}
+              TMC
+            </i>
           </Menu.Item>
         </Link>
-        <Link to="/about">
-          <Menu.Item
-            name="about"
-            active={activeItem === 'about'}
-            onClick={this.handleItemClick}
-          />
-        </Link>
-        <Link to="/units">
-          <Menu.Item
-            name="resources"
-            active={activeItem === 'resources'}
-            onClick={this.handleItemClick}
-          />
-        </Link>
+
+        <Menu.Item
+          as={Link}
+          to="/about"
+          name="about"
+          active={activeItem === 'about'}
+          onClick={this.handleItemClick}
+        />
+
+        <Menu.Item
+          as={Link}
+          to="/units"
+          name="resources"
+          active={activeItem === 'resources'}
+          onClick={this.handleItemClick}
+        />
 
         <Menu.Menu position="right">
           {/* <Menu.Item>

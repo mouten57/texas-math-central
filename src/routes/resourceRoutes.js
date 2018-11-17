@@ -1,16 +1,11 @@
-const _ = require('lodash');
-const Path = require('path-parser').default;
-const { URL } = require('url');
-const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
-
-const Resource = mongoose.model('resources');
+const resourceController = require('../controllers/resourceController');
 
 module.exports = app => {
-  app.get('/api/resources', requireLogin, async (req, res) => {
-    const resources = await Resource.find({ _user: req.user.id });
-    res.send(resources);
-  });
+  // app.get('/api/units/:id', requireLogin, async (req, res) => {
+
+  // })
+  app.get('/api/resources', resourceController.index);
 
   app.post('/api/resources', requireLogin, async (req, res) => {
     const { name, unit, type, link, description } = req.body;

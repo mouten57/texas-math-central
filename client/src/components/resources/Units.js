@@ -4,14 +4,15 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Table, Breadcrumb } from 'semantic-ui-react';
-import unitFields from './unitFields';
+import unitFields from './data/unitFields.js';
 import { Link } from 'react-router-dom';
 
-export default class Resources extends Component {
+export default class Units extends Component {
   state = {
     column: null,
     data: unitFields,
-    direction: null
+    direction: null,
+    units: []
   };
 
   handleSort = clickedColumn => () => {
@@ -39,7 +40,7 @@ export default class Resources extends Component {
     return (
       <div>
         <Breadcrumb>
-          <Breadcrumb.Section link>
+          <Breadcrumb.Section>
             <Link to="/">Home</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
@@ -65,16 +66,13 @@ export default class Resources extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            <Table.Row>
-              <Table.Cell>Just a test</Table.Cell>
-              <Table.Cell>
-                <Link to="/resource">See More Resources</Link>
-              </Table.Cell>
-            </Table.Row>
-            {_.map(data, ({ name, description }) => (
+            {_.map(data, ({ name, description, link }) => (
               <Table.Row key={name}>
                 <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>{description}</Table.Cell>
+                <Table.Cell>
+                  {' '}
+                  <Link to={`/units/${link}`}> {description} </Link>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
