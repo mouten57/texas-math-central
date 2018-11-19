@@ -26,7 +26,7 @@ class App extends Component {
   }
 
   setResources = resources => {
-    this.setState({ resources: resources });
+    this.setState({ resources });
   };
   render() {
     return (
@@ -37,12 +37,7 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
             <Route exact path="/units" component={Units} />
-            <Route
-              exact
-              path="/units/:name"
-              component={ResourceIndex}
-              allResources={this.state.allResources}
-            />
+            <Route exact path="/units/:name" component={ResourceIndex} />
             <Route
               exact
               path="/units/:name/:id"

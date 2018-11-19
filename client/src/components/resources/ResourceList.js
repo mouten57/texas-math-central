@@ -1,5 +1,6 @@
 //ResourceList lists out all the resources from mongo
-//will need to filter for diff pages
+//  /units/:name/
+// this is inside resource index
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -24,10 +25,8 @@ class ResourceList extends Component {
   };
 
   match(resource) {
-    console.log(resource);
     for (let i = 0; i < unitFields.length; i++) {
       if (resource.unit === unitFields[i].name) {
-        console.log(unitFields[i].link);
         return unitFields[i].link;
       }
     }
@@ -35,7 +34,7 @@ class ResourceList extends Component {
 
   renderResources() {
     let resources = this.updateUnitResources(this.props.name);
-    console.log(resources);
+
     return resources.reverse().map(resource => {
       return (
         <Table.Row key={resource._id} style={{ marginTop: '10px' }}>
@@ -44,7 +43,6 @@ class ResourceList extends Component {
           <Table.Cell>{resource.type}</Table.Cell>
           <Table.Cell>
             <Link to={`/units/${this.match(resource)}/${resource._id}`}>
-              {' '}
               {resource.name}
             </Link>
           </Table.Cell>

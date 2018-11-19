@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Button, Icon } from 'semantic-ui-react';
+import { Menu, Button, Icon, Responsive } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class Nav extends Component {
@@ -19,18 +19,41 @@ class Nav extends Component {
       case false:
         return (
           <Menu.Item>
-            <Button primary>
+            <Responsive {...Responsive.onlyMobile} as={Button} Button primary>
               <a style={linkStyle} href="/auth/google">
-                Login with Google
+                Login
               </a>
-            </Button>
+            </Responsive>
+            <Responsive
+              as={Button}
+              Button
+              primary
+              minWidth={Responsive.onlyTablet.minWidth}
+            >
+              <a style={linkStyle} href="/auth/google">
+                Login with <Icon name="google" />
+              </a>
+            </Responsive>
           </Menu.Item>
         );
       default:
         return (
-          <Button>
-            <a href="/api/logout">Logout</a>
-          </Button>
+          <Menu.Item>
+            <Responsive {...Responsive.onlyMobile} as={Button} secondary>
+              <a href="/api/logout" style={linkStyle}>
+                <Icon name="sign-out" />
+              </a>
+            </Responsive>
+            <Responsive
+              as={Button}
+              secondary
+              minWidth={Responsive.onlyTablet.minWidth}
+            >
+              <a href="/api/logout" style={linkStyle}>
+                Logout <Icon name="sign-out" />
+              </a>
+            </Responsive>
+          </Menu.Item>
         );
     }
   }
@@ -42,14 +65,9 @@ class Nav extends Component {
 
     return (
       <Menu size="small">
-        <Link to="/">
-          <Menu.Item>
-            <i className="fas fa-calculator" style={{ marginTop: '4px' }}>
-              {' '}
-              TMC
-            </i>
-          </Menu.Item>
-        </Link>
+        <Menu.Item as={Link} to="/">
+          <Icon name="calculator" />
+        </Menu.Item>
 
         <Menu.Item
           as={Link}
@@ -71,13 +89,9 @@ class Nav extends Component {
           {/* <Menu.Item>
             <Input icon="search" placeholder="Search..." />
           </Menu.Item> */}
-          <Menu.Item>
-            <Link to="/resources/new">
-              <Icon name="add" />
-            </Link>
-          </Menu.Item>
+          <Menu.Item as={Link} to="/resources/new" icon="add" />
 
-          <Menu.Item>{this.renderContent()}</Menu.Item>
+          {this.renderContent()}
         </Menu.Menu>
       </Menu>
     );
