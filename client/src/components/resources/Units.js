@@ -7,13 +7,10 @@ import { Table, Breadcrumb } from 'semantic-ui-react';
 import unitFields from './data/unitFields.js';
 import { Link } from 'react-router-dom';
 
-//remove blank placeholder object
-unitFields.splice(0, 1);
-
 export default class Units extends Component {
   state = {
     column: null,
-    data: unitFields,
+    data: unitFields.slice(1), //remove blank placeholder object
     direction: null,
     units: []
   };
@@ -27,7 +24,6 @@ export default class Units extends Component {
         data: _.sortBy(data, [clickedColumn]),
         direction: 'ascending'
       });
-
       return;
     }
 

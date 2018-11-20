@@ -13,22 +13,29 @@ import IndividualResource from './resources/IndividualResource';
 import { Container } from 'semantic-ui-react';
 import ResourceNew from './resources/ResourceNew';
 
+import axios from 'axios';
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      allResources: []
+      resources: []
     };
   }
   componentDidMount() {
+    //get User
     this.props.fetchUser();
-    this.setResources(this.props.resources);
+    //set Resources
+    axios.get('/api/resources').then(res => {
+      const resources = res.data;
+      this.setState({ resources });
+    });
   }
 
-  setResources = resources => {
-    this.setState({ resources });
-  };
   render() {
+    const myResourceIndex = props => {
+      return <ResourceIndex resources={this.state.resources} {...props} />;
+    };
     return (
       <Container>
         <BrowserRouter>
@@ -37,7 +44,7 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
             <Route exact path="/units" component={Units} />
-            <Route exact path="/units/:name" component={ResourceIndex} />
+            <Route exact path="/units/:name" render={myResourceIndex} />
             <Route
               exact
               path="/units/:name/:id"

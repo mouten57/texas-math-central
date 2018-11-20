@@ -3,8 +3,7 @@
 // this is inside resource index
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchResources } from '../../actions';
+
 import { Table } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import unitFields from './data/unitFields.js';
@@ -16,16 +15,6 @@ class ResourceList extends Component {
       resources: []
     };
   }
-  componentDidMount() {
-    this.props.fetchResources();
-  }
-  componentWillReceiveProps(nextProps) {
-    let filteredResources = nextProps.resources.filter(
-      resource => resource.unit === this.props.param
-    );
-
-    this.setState({ resources: filteredResources });
-  }
 
   match(resource) {
     for (let i = 0; i < unitFields.length; i++) {
@@ -36,7 +25,11 @@ class ResourceList extends Component {
   }
 
   renderResources() {
-    return this.state.resources.reverse().map(resource => {
+    let filteredResources = this.props.resources.filter(
+      resource => resource.unit === this.props.param
+    );
+
+    return filteredResources.reverse().map(resource => {
       return (
         <Table.Row key={resource._id} style={{ marginTop: '10px' }}>
           <Table.Cell>{resource.name}</Table.Cell>
@@ -71,11 +64,4 @@ class ResourceList extends Component {
   }
 }
 
-function mapStateToProps({ resources }) {
-  return { resources };
-}
-
-export default connect(
-  mapStateToProps,
-  { fetchResources }
-)(ResourceList);
+export default ResourceList;

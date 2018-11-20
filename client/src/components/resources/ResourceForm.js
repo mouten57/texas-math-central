@@ -27,7 +27,7 @@ class ResourceForm extends Component {
       );
     });
   }
-  renderFields(props) {
+  renderFields() {
     return (
       <div>
         <Form onSubmit={this.props.handleSubmit(this.props.onResourceSubmit)}>
