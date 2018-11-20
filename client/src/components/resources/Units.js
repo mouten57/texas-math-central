@@ -66,12 +66,12 @@ export default class Units extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {_.map(data, ({ name, description, link }) => (
+            {_.map(data, ({ name, description, param }) => (
               <Table.Row key={name}>
                 <Table.Cell>{name}</Table.Cell>
                 <Table.Cell>
                   {' '}
-                  <Link to={`/units/${link}`}> {description} </Link>
+                  <Link to={`/units/${param}`}> {description} </Link>
                 </Table.Cell>
               </Table.Row>
             ))}

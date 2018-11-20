@@ -2,71 +2,71 @@ export default [
   {
     name: 'B.O.Y.',
     description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation`,
-    link: 'boy'
+    param: 'boy'
   },
   {
     name: 'Addition/Multiplication',
     description: 'etc etc etc',
-    link: 'addsub'
+    param: 'addsub'
   },
   {
     name: 'Area, Perimeter, and Volume',
     description: 'etc etc etc',
-    link: 'APV'
+    param: 'APV'
   },
   {
     name: 'Division',
     description: 'etc etc etc',
-    link: 'division'
+    param: 'division'
   },
   {
     name: 'Prime and Composite Numbers',
     description: 'etc etc etc',
-    link: 'prime-composite'
+    param: 'prime-composite'
   },
   {
     name: 'Graphing',
     description: 'etc etc etc',
-    link: 'graphing'
+    param: 'graphing'
   },
   {
     name: 'Decimals',
     description: 'etc etc etc',
-    link: 'decimals'
+    param: 'decimals'
   },
   {
     name: 'Geometry',
     description: 'etc etc etc',
-    link: 'geometry'
+    param: 'geometry'
   },
   {
     name: 'Fractions',
     description: 'etc etc etc',
-    link: 'fractions'
+    param: 'fractions'
   },
   {
     name: 'Expressions & Equations',
     description: 'etc etc etc',
-    link: 'expressions-equations'
+    param: 'expressions-equations'
   },
   {
     name: 'Measurement',
     description: 'etc etc etc',
-    link: 'measurement'
+    param: 'measurement'
   },
   {
     name: 'Personal Finance',
     description: 'etc etc etc',
-    link: 'finance'
+    param: 'finance'
   },
   {
     name: 'STAAR REVIEW!',
     description: 'etc etc etc',
-    link: 'staar-review'
+    param: 'staar-review'
   },
   {
     name: 'Random',
     description: 'etc etc etc',
-    link: 'random'
+    param: 'random'
   }
 ];

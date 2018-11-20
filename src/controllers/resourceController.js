@@ -9,5 +9,15 @@ module.exports = {
         res.send(resources);
       }
     });
+  },
+
+  show(req, res, next) {
+    resourceQueries.getResource(req.params.id, (err, resource) => {
+      if (err) {
+        res.status(422).send(err);
+      } else {
+        res.send(resource);
+      }
+    });
   }
 };

@@ -12,38 +12,38 @@ import unitFields from './data/unitFields.js';
 class ResourceList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      resources: []
+    };
   }
   componentDidMount() {
     this.props.fetchResources();
-    this.updateUnitResources(this.props.name);
   }
+  componentWillReceiveProps(nextProps) {
+    let filteredResources = nextProps.resources.filter(
+      resource => resource.unit === this.props.param
+    );
 
-  updateUnitResources = activeUnit => {
-    let resources = this.props.resources;
-    return resources.filter(resource => resource.unit === activeUnit);
-  };
+    this.setState({ resources: filteredResources });
+  }
 
   match(resource) {
     for (let i = 0; i < unitFields.length; i++) {
-      if (resource.unit === unitFields[i].name) {
-        return unitFields[i].link;
+      if (resource.unit === unitFields[i].param) {
+        return unitFields[i].param;
       }
     }
   }
 
   renderResources() {
-    let resources = this.updateUnitResources(this.props.name);
-
-    return resources.reverse().map(resource => {
+    return this.state.resources.reverse().map(resource => {
       return (
         <Table.Row key={resource._id} style={{ marginTop: '10px' }}>
           <Table.Cell>{resource.name}</Table.Cell>
-          <Table.Cell>{resource.unit}</Table.Cell>
           <Table.Cell>{resource.type}</Table.Cell>
           <Table.Cell>
             <Link to={`/units/${this.match(resource)}/${resource._id}`}>
-              {resource.name}
+              Click Here
             </Link>
           </Table.Cell>
           <Table.Cell>
@@ -60,7 +60,6 @@ class ResourceList extends Component {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Unit</Table.HeaderCell>
             <Table.HeaderCell>Type</Table.HeaderCell>
             <Table.HeaderCell>Link</Table.HeaderCell>
             <Table.HeaderCell>Date Added</Table.HeaderCell>

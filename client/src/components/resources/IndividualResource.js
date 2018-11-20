@@ -1,12 +1,61 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { fetchResource } from '../../actions';
+import { Container } from 'semantic-ui-react';
+import _ from 'lodash';
 class IndividualResource extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      resource: {}
+    };
+  }
+  componentDidMount() {
+    this.props.fetchResource(this.props.match.params.id);
+  }
   render() {
-    return <h2>IndividualResource</h2>;
+    return (
+      <Container>
+        <h2>IndividualResource</h2>
+        {_.map(
+          this.props.resource,
+          ({ _id, name, unit, type, link, _user, dateSent }) => (
+            <div key={_id}>
+              <p>
+                <b>Name: </b>
+                {name}
+              </p>
+              <p>
+                <b>Unit:</b> {unit}
+              </p>
+              <p>
+                <b>type:</b> {type}
+              </p>
+              <p>
+                <b>Link: </b>{' '}
+                <a href={link} target="_blank">
+                  {link}
+                </a>
+              </p>
+              <p>
+                <b>Uploader:</b> {_user}
+              </p>
+            </div>
+          )
+        )}
+      </Container>
+    );
   }
 }
 
-export default IndividualResource;
+function mapStateToProps({ resource }) {
+  return { resource };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchResource }
+)(IndividualResource);
 
 /* 
 Goal here is to have a resource that's filtered based on it's id.

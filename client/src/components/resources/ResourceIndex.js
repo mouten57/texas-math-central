@@ -27,14 +27,15 @@ class ResourceIndex extends Component {
   //     );
   //   });
   // }
-  filteredUnit() {
+  getUnitName() {
     const paramName = this.props.match.params.name;
     for (let i = 0; i < unitFields.length; i++) {
-      if (unitFields[i].link === paramName) {
+      if (unitFields[i].param === paramName) {
         return unitFields[i].name;
       }
     }
   }
+
   //Grid layout option
   //  <Grid columns={3} stackable centered>
   // {this.renderContent()}
@@ -54,14 +55,14 @@ class ResourceIndex extends Component {
             <Link to="/units">Resources</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section active>{this.filteredUnit()}</Breadcrumb.Section>
+          <Breadcrumb.Section active>{this.getUnitName()}</Breadcrumb.Section>
         </Breadcrumb>
         <Header as="h3" dividing block>
-          {this.filteredUnit()}
+          {this.getUnitName()}
         </Header>
 
         <Container>
-          <ResourceList name={this.filteredUnit()} />
+          <ResourceList param={this.props.match.params.name} />
         </Container>
       </Container>
     );

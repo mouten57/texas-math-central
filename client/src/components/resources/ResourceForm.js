@@ -7,9 +7,9 @@ import formFields from './data/formFields.js';
 
 class ResourceForm extends Component {
   renderUnits() {
-    return _.map(unitFields, ({ name }) => {
+    return _.map(unitFields, ({ name, param }) => {
       return (
-        <option key={name} value={name}>
+        <option key={name} value={param}>
           {name}
         </option>
       );

@@ -1,13 +1,12 @@
 const requireLogin = require('../middlewares/requireLogin');
 const resourceController = require('../controllers/resourceController');
+const mongoose = require('mongoose');
+const Resource = mongoose.model('resources');
 
 module.exports = app => {
-  // app.get('/api/units/:id', requireLogin, async (req, res) => {
+  app.get('/api/resources', requireLogin, resourceController.index);
 
-  // })
-  app.get('/api/resources', resourceController.index);
-
-  app.post('/api/resources', requireLogin, async (req, res) => {
+  app.post('/api/resources/create', requireLogin, (req, res) => {
     const { name, unit, type, link, description } = req.body;
 
     const resource = new Resource({
@@ -25,4 +24,6 @@ module.exports = app => {
       console.log(`${resource.name} saved to collection.`);
     });
   });
+
+  app.get('/api/resources/:id', resourceController.show);
 };
