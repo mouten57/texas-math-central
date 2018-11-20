@@ -2,15 +2,27 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
+import { Form } from 'semantic-ui-react';
 import unitFields from './data/unitFields.js';
-import formFields from './data/formFields.js';
+//import formFields from './data/formFields.js';
+import resourceTypes from './data/resourceTypes';
 
 class ResourceForm extends Component {
   renderUnits() {
     return _.map(unitFields, ({ name, param }) => {
       return (
-        <option key={name} value={param}>
+        <option key={name} value={param} label={name}>
           {name}
+        </option>
+      );
+    });
+  }
+
+  renderTypes() {
+    return resourceTypes.map(resource => {
+      return (
+        <option key={resource} value={resource}>
+          {resource}
         </option>
       );
     });
@@ -18,49 +30,31 @@ class ResourceForm extends Component {
   renderFields(props) {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit(this.props.onResourceSubmit)}>
+        <Form onSubmit={this.props.handleSubmit(this.props.onResourceSubmit)}>
+          <label>Resource Name</label>
+
+          <Field
+            name="name"
+            component="input"
+            type="text"
+            placeholder="quick quiz 2"
+          />
+
           <div>
-            <label>Resource Name</label>
+            <label>Unit</label>
             <div>
-              <Field
-                name="name"
-                component="input"
-                type="text"
-                placeholder="quick quiz 2"
-              />
-            </div>
-            <div>
-              <label>Unit</label>
-              <div>
-                <Field name="unit" component="select">
-                  <option />
-                  {this.renderUnits()}
-                </Field>
-              </div>
+              <Field name="unit" component="select">
+                {this.renderUnits()}
+              </Field>
             </div>
           </div>
 
           <div>
             <label>Type</label>
             <div>
-              <label>
-                <Field
-                  name="type"
-                  component="input"
-                  type="radio"
-                  value="link"
-                />{' '}
-                Link
-              </label>
-              <label>
-                <Field
-                  name="type"
-                  component="input"
-                  type="radio"
-                  value="upload"
-                />{' '}
-                Upload
-              </label>
+              <Field name="type" component="select" label="type">
+                {this.renderTypes()}
+              </Field>
             </div>
           </div>
           <div>
@@ -71,6 +65,7 @@ class ResourceForm extends Component {
                 component="input"
                 type="text"
                 placeholder="http://"
+                label="link"
               />
             </div>
           </div>
@@ -84,7 +79,7 @@ class ResourceForm extends Component {
           <button type="submit" className="teal btn-flat right white-text">
             Next
           </button>
-        </form>
+        </Form>
       </div>
     );
   }
@@ -93,20 +88,20 @@ class ResourceForm extends Component {
   }
 }
 
-function validate(values) {
-  const errors = {};
+// function validate(values) {
+//   const errors = {};
 
-  _.each(formFields, ({ name, noValueError }) => {
-    if (!values[name]) {
-      errors[name] = noValueError;
-    }
-  });
+//   _.each(formFields, ({ name, noValueError }) => {
+//     if (!values[name]) {
+//       errors[name] = noValueError;
+//     }
+//   });
 
-  return errors;
-}
+//   return errors;
+// }
 
 export default reduxForm({
-  validate,
+  //validate,
   form: 'resourceForm',
   //saves values for users when we click 'back'
   destroyOnUnmount: false

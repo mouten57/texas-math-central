@@ -13,6 +13,7 @@ const ResourceFormReview = ({
   history
 }) => {
   const reviewFields = _.map(formFields, ({ name, label }) => {
+    console.log(name);
     return (
       <div key={name}>
         <label>

@@ -1,67 +1,72 @@
 export default [
   {
+    name: 'Please Select',
+    description: '',
+    param: ''
+  },
+  {
     name: 'B.O.Y.',
-    description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation`,
+    description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation.`,
     param: 'boy'
   },
   {
     name: 'Addition/Multiplication',
-    description: 'etc etc etc',
+    description: 'Adding and 3x2 multiplication.',
     param: 'addsub'
   },
   {
     name: 'Area, Perimeter, and Volume',
-    description: 'etc etc etc',
+    description: `Area, Perimeter are easy. Volume is tricker, don't you think?`,
     param: 'APV'
   },
   {
     name: 'Division',
-    description: 'etc etc etc',
+    description: `Good old LONG DIVISION!`,
     param: 'division'
   },
   {
     name: 'Prime and Composite Numbers',
-    description: 'etc etc etc',
+    description: `Fibonacci, anyone?`,
     param: 'prime-composite'
   },
   {
     name: 'Graphing',
-    description: 'etc etc etc',
+    description: `Let's play battleship!`,
     param: 'graphing'
   },
   {
     name: 'Decimals',
-    description: 'etc etc etc',
+    description: `So many rules to remember.`,
     param: 'decimals'
   },
   {
     name: 'Geometry',
-    description: 'etc etc etc',
+    description: 'Polygons, Triangles, and Quadrilaterals!',
     param: 'geometry'
   },
   {
     name: 'Fractions',
-    description: 'etc etc etc',
+    description: `What does it mean if I ate 8/8 of a large Dominoes pizza?`,
     param: 'fractions'
   },
   {
     name: 'Expressions & Equations',
-    description: 'etc etc etc',
+    description: `Sometimes it's hard to express yourself.`,
     param: 'expressions-equations'
   },
   {
     name: 'Measurement',
-    description: 'etc etc etc',
+    description: `Every day I measure the distance to the last day of school.`,
     param: 'measurement'
   },
   {
     name: 'Personal Finance',
-    description: 'etc etc etc',
+    description: 'My favorite unit!',
     param: 'finance'
   },
   {
     name: 'STAAR REVIEW!',
-    description: 'etc etc etc',
+    description: `So many resources for review.`,
     param: 'staar-review'
   },
   {
