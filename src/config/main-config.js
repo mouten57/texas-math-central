@@ -6,6 +6,7 @@ const passport = require('passport');
 const path = require('path');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 //important to call model first, before I try to run passport
 require('../db/models/Resource');
@@ -17,6 +18,7 @@ const keys = require('./keys/keys');
 module.exports = {
   init(app, express) {
     mongoose.connect(keys.mongoURI);
+    app.use(cors());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(expressValidator());
