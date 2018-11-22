@@ -11,6 +11,7 @@ const cors = require('cors');
 //important to call model first, before I try to run passport
 require('../db/models/Resource');
 require('../db/models/User');
+require('../db/models/Upload');
 require('./passport-config');
 
 const keys = require('./keys/keys');

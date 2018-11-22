@@ -31,7 +31,7 @@ class UserForm extends Component {
     console.log('form data ', formData);
 
     axios
-      .post('http://localhost:5000/api/upload', formData)
+      .post('/api/upload', formData)
       .then(result => {
         console.log('>> (onSubmit) file upload result = ', result);
         // access results...
@@ -39,7 +39,7 @@ class UserForm extends Component {
       .catch(function(error) {
         console.log('>> ERROR FILE UPLAOD ', error);
         alert(
-          'File upload failed. Please ensure you are uploading a .zip file only'
+          'File upload failed. Please ensure you are uploading a .jpeg file only'
         );
       });
   };
