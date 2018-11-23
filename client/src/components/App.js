@@ -26,6 +26,7 @@ class App extends Component {
   componentDidMount() {
     //get User
     this.props.fetchUser();
+    console.log(this.props);
     //set Resources
     axios.get('/api/resources').then(res => {
       const resources = res.data;
@@ -53,7 +54,7 @@ class App extends Component {
             />
 
             <Route exact path="/resources/new" component={ResourceNew} />
-            <Route exact path="/resources/upload" component={UploadForm} />
+            <Route exact path="/upload" component={UploadForm} />
           </div>
         </BrowserRouter>
       </Container>

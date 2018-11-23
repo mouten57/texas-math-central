@@ -34,16 +34,22 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       //query returns a promise!
       const existingUser = await User.findOne({ googleId: profile.id });
+
       if (existingUser) {
         //we already have a record with the given profile ID
         //null means we are all good! then return the user file!
+
         return done(null, existingUser);
       }
 
       //we dont have a user record with this ID, make a new record!
       //creates one new record of a user that exists in node APT only
       //.save persists this to mongo database
-      const user = await new User({ googleId: profile.id }).save();
+      const user = await new User({
+        googleId: profile.id,
+        name: profile.displayName,
+        image: profile.photos[0].value
+      }).save();
       done(null, user);
     }
   )

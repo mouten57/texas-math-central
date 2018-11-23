@@ -3,7 +3,9 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
   googleId: String,
-  credits: { type: Number, default: 0 }
+  role: { type: String, default: 'standard' },
+  name: String,
+  image: String
 });
 //create a new collection called users
 //two arguments means we are loading something into mongoose

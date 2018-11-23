@@ -6,8 +6,9 @@ import React, { Component } from 'react';
 import { Table, Breadcrumb } from 'semantic-ui-react';
 import unitFields from './data/unitFields.js';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-export default class Units extends Component {
+class Units extends Component {
   state = {
     column: null,
     data: unitFields.slice(1), //remove blank placeholder object
@@ -32,6 +33,10 @@ export default class Units extends Component {
       direction: direction === 'ascending' ? 'descending' : 'ascending'
     });
   };
+
+  componentDidMount() {
+    console.log(this.props.auth);
+  }
 
   render() {
     const { column, data, direction } = this.state;
@@ -80,3 +85,9 @@ export default class Units extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return { auth: state.auth };
+}
+
+export default connect(mapStateToProps)(Units);
