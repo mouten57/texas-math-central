@@ -13,6 +13,7 @@ import IndividualResource from './resources/IndividualResource';
 import { Container } from 'semantic-ui-react';
 import ResourceNew from './resources/ResourceNew';
 import UploadForm from '../components/Uploads/UploadForm';
+import WelcomeMessage from './WelcomeMessage';
 
 import axios from 'axios';
 
@@ -20,13 +21,18 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resources: []
+      resources: [],
+      user: null
     };
   }
   componentDidMount() {
     //get User
     this.props.fetchUser();
-    console.log(this.props);
+    axios.get('/api/current_user').then(res => {
+      const user = res.data || false;
+      this.setState({ user });
+    });
+
     //set Resources
     axios.get('/api/resources').then(res => {
       const resources = res.data;
@@ -38,11 +44,13 @@ class App extends Component {
     const myResourceIndex = props => {
       return <ResourceIndex resources={this.state.resources} {...props} />;
     };
+
     return (
       <Container>
         <BrowserRouter>
           <div>
             <Header />
+            <WelcomeMessage user={this.state.user} />
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
             <Route exact path="/units" component={Units} />

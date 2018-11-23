@@ -5,6 +5,7 @@ const userSchema = new Schema({
   googleId: String,
   role: { type: String, default: 'standard' },
   name: String,
+  nickname: String,
   image: String
 });
 //create a new collection called users

@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import NotLoggedIn from '../NotLoggedIn';
 
-class UserForm extends Component {
+class UploadForm extends Component {
   constructor() {
     super();
     this.state = {
       description: '',
       selectedFile: ''
     };
+  }
+  componentDidMount() {
+    console.log(this.props);
   }
 
   onChange = e => {
@@ -20,6 +25,29 @@ class UserForm extends Component {
     }
   };
 
+  renderForm() {
+    switch (this.props.auth) {
+      case null:
+        return;
+      case false:
+        return <NotLoggedIn />;
+      default:
+        return (
+          <form onSubmit={this.onSubmit}>
+            <input
+              type="text"
+              name="description"
+              placeholder="Description of file.."
+              value={this.state.description}
+              onChange={this.onChange}
+            />
+            <input type="file" name="selectedFile" onChange={this.onChange} />
+            <button type="submit">Submit</button>
+          </form>
+        );
+    }
+  }
+
   onSubmit = e => {
     e.preventDefault();
     const { description, selectedFile } = this.state;
@@ -28,14 +56,15 @@ class UserForm extends Component {
     formData.append('description', description);
     formData.append('selectedFile', selectedFile);
 
-    console.log('form data ', formData);
-
     axios
       .post('/api/upload', formData)
       .then(result => {
         console.log('>> (onSubmit) file upload result = ', result);
         // access results...
       })
+      .then(() => alert('SUCCESS!'))
+      .then(() => this.props.history.push(`/units`))
+
       .catch(function(error) {
         console.log('>> ERROR FILE UPLAOD ', error);
         alert(
@@ -45,20 +74,11 @@ class UserForm extends Component {
   };
 
   render() {
-    const { description, selectedFile } = this.state;
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          type="text"
-          name="description"
-          value={description}
-          onChange={this.onChange}
-        />
-        <input type="file" name="selectedFile" onChange={this.onChange} />
-        <button type="submit">Submit</button>
-      </form>
-    );
+    return <div>{this.renderForm()}</div>;
   }
 }
 
-export default UserForm;
+function mapStateToProps(state) {
+  return { auth: state.auth };
+}
+export default connect(mapStateToProps)(UploadForm);

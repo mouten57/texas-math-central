@@ -34,10 +34,6 @@ class Units extends Component {
     });
   };
 
-  componentDidMount() {
-    console.log(this.props.auth);
-  }
-
   render() {
     const { column, data, direction } = this.state;
 
