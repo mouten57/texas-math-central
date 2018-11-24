@@ -18,19 +18,19 @@ const Landing = () => {
         content="Upload your own resources, comment, and vote."
       />
       <Responsive {...Responsive.onlyMobile}>
-        <Button color="google plus" fluid>
-          <a href="/auth/google" style={{ color: 'white' }}>
+        <a href="/auth/google" style={{ color: 'white' }}>
+          <Button color="google plus" fluid>
             Login with Google
-          </a>
-          <Icon name="google plus" style={{ marginLeft: '5px' }} />
-        </Button>
+            <Icon name="google plus" style={{ marginLeft: '5px' }} />
+          </Button>
+        </a>
 
-        <Button positive fluid>
-          <Link to="/units" style={{ color: 'white' }}>
+        <Link to="/units" style={{ color: 'white' }}>
+          <Button positive fluid>
             View Resources
-          </Link>
-          <Icon name="file" style={{ marginLeft: '5px' }} />
-        </Button>
+            <Icon name="file" style={{ marginLeft: '5px' }} />
+          </Button>
+        </Link>
       </Responsive>
 
       <Responsive minWidth={Responsive.onlyTablet.minWidth}>
