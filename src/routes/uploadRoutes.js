@@ -2,7 +2,7 @@ const multer = require('multer');
 const uuidv4 = require('uuid/v4');
 const path = require('path');
 const mongoose = require('mongoose');
-const Upload = mongoose.model('uploads');
+const Resource = mongoose.model('resources');
 const fs = require('fs');
 
 const storage = multer.diskStorage({
@@ -31,13 +31,21 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 module.exports = app => {
   app.post('/api/upload', upload.single('selectedFile'), (req, res) => {
     console.log(req.file);
+    console.log(req.body);
     res.send(req.file);
 
-    const upload = new Upload({
-      name: req.file.originalname,
-      type: 'image/png',
-      path: req.file.path,
-      data: fs.readFileSync(req.file.path)
+    const upload = new Resource({
+      name: req.body.name,
+      unit: req.body.unit,
+      type: req.body.type,
+      link: req.body.link,
+      description: req.body.description,
+      _user: req.user.id,
+      dateSent: Date.now(),
+      file_name: req.file.originalname,
+      file_type: req.file.mimetype,
+      file_path: req.file.path,
+      file_data: fs.readFileSync(req.file.path)
     });
     upload
       .save()

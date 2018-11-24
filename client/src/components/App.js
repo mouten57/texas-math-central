@@ -44,6 +44,9 @@ class App extends Component {
     const myResourceIndex = props => {
       return <ResourceIndex resources={this.state.resources} {...props} />;
     };
+    const myIndividualResource = props => {
+      return <IndividualResource resources={this.state.resources} {...props} />;
+    };
 
     return (
       <Container>
@@ -58,7 +61,7 @@ class App extends Component {
             <Route
               exact
               path="/units/:name/:id"
-              component={IndividualResource}
+              component={myIndividualResource}
             />
 
             <Route exact path="/resources/new" component={ResourceNew} />

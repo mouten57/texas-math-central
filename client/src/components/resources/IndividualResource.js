@@ -10,15 +10,20 @@ class IndividualResource extends Component {
       resource: {}
     };
   }
-  componentDidMount() {
-    this.props.fetchResource(this.props.match.params.id);
+  componentWillMount() {
+    this.setState({
+      resource: this.props.resources.filter(
+        resource => resource._id === this.props.match.params.id
+      )
+    });
   }
+
   render() {
     return (
       <Container>
         <h2>IndividualResource</h2>
         {_.map(
-          this.props.resource,
+          this.state.resource,
           ({ _id, name, unit, type, link, _user, dateSent }) => (
             <div key={_id}>
               <p>
@@ -48,14 +53,7 @@ class IndividualResource extends Component {
   }
 }
 
-function mapStateToProps({ resource }) {
-  return { resource };
-}
-
-export default connect(
-  mapStateToProps,
-  { fetchResource }
-)(IndividualResource);
+export default IndividualResource;
 
 /* 
 Goal here is to have a resource that's filtered based on it's id.
