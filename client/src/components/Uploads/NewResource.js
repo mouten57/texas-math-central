@@ -175,7 +175,7 @@ class UploadForm extends Component {
       values.push(value);
     }
     values.splice(1, 1);
-    console.log(values);
+
     if (values.includes('') === true) {
       return alert(`                Please complete all fields. 
 

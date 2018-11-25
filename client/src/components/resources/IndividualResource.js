@@ -11,7 +11,7 @@ class IndividualResource extends Component {
       resource_data: null
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     axios.get(`/api/resources/${this.props.match.params.id}`).then(res => {
       const resource = res.data;
       this.setState({
@@ -33,7 +33,7 @@ class IndividualResource extends Component {
         let link = `/api/resources/${this.props.match.params.id}/download`;
         return (
           <a href={link} download>
-            Download File
+            File
           </a>
         );
     }
@@ -55,7 +55,7 @@ class IndividualResource extends Component {
                 <b>Unit:</b> {unit}
               </p>
               <p>
-                <b>type:</b> {type}
+                <b>Type:</b> {type}
               </p>
               <p>
                 <b>Link: </b>{' '}
@@ -66,14 +66,12 @@ class IndividualResource extends Component {
               <p>
                 <b>Uploader:</b> {_user}
               </p>
+              <p>
+                <b>Download: </b> {this.downloadLink()}
+              </p>
             </div>
           )
         )}
-        <div>
-          <p>
-            <b>Download: </b> {this.downloadLink()}
-          </p>
-        </div>
       </Container>
     );
   }

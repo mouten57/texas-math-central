@@ -19,7 +19,7 @@ class ResourceIndex extends Component {
       resources: []
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     //set Resources
     axios.get('/api/resources').then(res => {
       const resources = res.data;
