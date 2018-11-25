@@ -14,7 +14,7 @@ class UploadForm extends Component {
     super();
     this.state = {
       description: '',
-      selectedFile: '',
+      imageFile: '',
       link: '',
       type: '',
       unit: '',
@@ -42,8 +42,8 @@ class UploadForm extends Component {
 
   onChange = e => {
     switch (e.target.name) {
-      case 'selectedFile':
-        this.setState({ selectedFile: e.target.files[0] });
+      case 'imageFile':
+        this.setState({ imageFile: e.target.files[0] });
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -110,7 +110,31 @@ class UploadForm extends Component {
                 />
               </div>
             </div>
-            <input type="file" name="selectedFile" onChange={this.onChange} />
+            <div>
+              <label>
+                Upload JPG
+                <div>
+                  <input
+                    type="file"
+                    name="imageFile"
+                    onChange={this.onChange}
+                  />
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label>Upload Other (coming soon!)</label>
+              <div>
+                <input
+                  type="file"
+                  name="otherFile"
+                  onChange={this.onChange}
+                  disabled
+                />
+              </div>
+            </div>
+
             <Button
               type="submit"
               className="teal btn-flat right white-text"
@@ -122,17 +146,25 @@ class UploadForm extends Component {
         );
     }
   }
+  isURL = str => {
+    var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+    if (pattern.test(str)) {
+      return true;
+    }
+    alert("Url is not valid! Make sure you start with 'http://...'");
+    return false;
+  };
 
   onSubmit = e => {
     e.preventDefault();
-    const { description, selectedFile, name, link } = this.state;
+    const { description, imageFile, name, link } = this.state;
     let unit, type;
     unit = e.target.elements.unit.value;
     type = e.target.elements.type.value;
     let formData = new FormData();
 
     formData.append('description', description);
-    formData.append('selectedFile', selectedFile);
+    formData.append('imageFile', imageFile);
     formData.append('name', name);
     formData.append('unit', unit);
     formData.append('type', type);
@@ -143,11 +175,14 @@ class UploadForm extends Component {
       values.push(value);
     }
     values.splice(1, 1);
+    console.log(values);
     if (values.includes('') === true) {
       return alert(`                Please complete all fields. 
 
                   (File upload is optional)`);
     }
+
+    if (this.isURL(values[4]) === false) return;
 
     axios
       .post('/api/resources/create', formData)

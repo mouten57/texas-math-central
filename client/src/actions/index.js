@@ -13,7 +13,6 @@ export const handleToken = token => async dispatch => {
 };
 
 export const submitResource = (values, history) => async dispatch => {
-  console.log(values);
   history.push(`/units/${values.unit}`);
   const res = await axios.post('/api/resources/create', values);
 

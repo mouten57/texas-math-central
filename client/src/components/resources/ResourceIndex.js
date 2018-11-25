@@ -39,7 +39,6 @@ class ResourceIndex extends Component {
   }
 
   render() {
-    console.log(this.state.resources);
     return (
       <Container>
         <Breadcrumb>

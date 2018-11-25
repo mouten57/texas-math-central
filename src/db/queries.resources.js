@@ -13,7 +13,7 @@ module.exports = {
     });
   },
   createResource(req, callback) {
-    if (req.body.selectedFile === '') {
+    if (req.body.imageFile === '') {
       const resource = new Resource({
         name: req.body.name,
         unit: req.body.unit,
@@ -36,9 +36,9 @@ module.exports = {
         file_name: req.file.originalname,
         file_type: req.file.mimetype,
         file_path: req.file.path,
-        file_data: fs.readFileSync(req.file.path)
+        file_data: fs.readFileSync('./src/uploads/output.jpg')
       });
-      console.log(req.file.path);
+
       resource
         .save()
         .then(() => {
@@ -55,6 +55,17 @@ module.exports = {
             }
           });
         })
+        .then(() => {
+          fs.unlink(`./src/uploads/output.jpg`, err => {
+            if (err) {
+              console.log('Failed to delete local image:' + err);
+            } else {
+              console.log(
+                `Successfully deleted output.jpg from local storage.`
+              );
+            }
+          });
+        })
         .catch(err => callback(err));
     }
     callback(null, req.file);
@@ -62,12 +73,7 @@ module.exports = {
   getResource(id, callback) {
     return Resource.find({ _id: id })
       .then(resource => {
-        let buffer = new Buffer(resource[0].file_data.buffer);
-        fs.writeFile(resource[0].file_path, buffer, err => {
-          if (err) throw err;
-          console.log('success!!!!!!');
-          callback(null, resource);
-        });
+        callback(null, resource);
       })
 
       .catch(err => {
