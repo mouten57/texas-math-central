@@ -7,7 +7,8 @@ class IndividualResource extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resource: {}
+      resource: {},
+      resource_data: null
     };
   }
   componentWillMount() {
@@ -16,15 +17,18 @@ class IndividualResource extends Component {
       this.setState({
         resource
       });
+      this.setState({
+        resource_data: resource[0].file_data
+      });
     });
   }
 
   downloadLink() {
-    switch (this.state.resource) {
+    switch (this.state.resource_data) {
       case null:
-        return <p>Error</p>;
-      case false:
-        return <p>Download not available.</p>;
+        return 'Error';
+      case undefined:
+        return 'Download not available.';
       default:
         let link = `/api/resources/${this.props.match.params.id}/download`;
         return (
