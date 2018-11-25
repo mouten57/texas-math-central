@@ -3,7 +3,7 @@ const resourceController = require('../controllers/resourceController');
 const multer = require('multer');
 const uuidv4 = require('uuid/v4');
 const path = require('path');
-const processImage = require('../middlewares/processImage');
+//const processImage = require('../middlewares/processImage');  <- add process image in later, don't need it now
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -37,7 +37,6 @@ module.exports = app => {
     '/api/resources/create',
     requireLogin,
     upload.single('selectedFile'),
-    processImage,
     resourceController.create
   );
 };

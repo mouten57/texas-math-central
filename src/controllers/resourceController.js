@@ -27,7 +27,6 @@ module.exports = {
 
   create(req, res) {
     resourceQueries.createResource(req, (err, reqFile) => {
-      console.log(req.file);
       res.send(reqFile);
     });
   }
