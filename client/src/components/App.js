@@ -11,8 +11,8 @@ import ResourceIndex from './resources/ResourceIndex';
 import IndividualResource from './resources/IndividualResource';
 
 import { Container } from 'semantic-ui-react';
-import ResourceNew from './resources/ResourceNew';
-import UploadForm from '../components/Uploads/UploadForm';
+
+import NewResource from './Uploads/NewResource';
 import WelcomeMessage from './WelcomeMessage';
 
 import axios from 'axios';
@@ -64,8 +64,7 @@ class App extends Component {
               component={myIndividualResource}
             />
 
-            <Route exact path="/resources/new" component={ResourceNew} />
-            <Route exact path="/upload" component={UploadForm} />
+            <Route exact path="/resources/new" component={NewResource} />
           </div>
         </BrowserRouter>
       </Container>

@@ -10,8 +10,25 @@ import { Link } from 'react-router-dom';
 import { Header, Breadcrumb, Container } from 'semantic-ui-react';
 import ResourceList from './ResourceList';
 import unitFields from './data/unitFields.js';
+import axios from 'axios';
 
 class ResourceIndex extends Component {
+  constructor(props) {
+    super();
+    this.state = {
+      resources: []
+    };
+  }
+  componentWillMount() {
+    //set Resources
+    axios.get('/api/resources').then(res => {
+      const resources = res.data;
+      this.setState({
+        resources
+      });
+    });
+  }
+
   getUnitName() {
     const paramName = this.props.match.params.name;
     for (let i = 0; i < unitFields.length; i++) {
@@ -22,6 +39,7 @@ class ResourceIndex extends Component {
   }
 
   render() {
+    console.log(this.state.resources);
     return (
       <Container>
         <Breadcrumb>
@@ -42,7 +60,7 @@ class ResourceIndex extends Component {
         <Container>
           <ResourceList
             param={this.props.match.params.name}
-            resources={this.props.resources}
+            resources={this.state.resources}
           />
         </Container>
       </Container>

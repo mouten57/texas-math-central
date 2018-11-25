@@ -1,3 +1,4 @@
+//ResourceForm shows a form for a user to add input
 import _ from 'lodash';
 import { Form, Button, TextArea } from 'semantic-ui-react';
 import React, { Component } from 'react';
@@ -137,8 +138,19 @@ class UploadForm extends Component {
     formData.append('type', type);
     formData.append('link', link);
 
+    let values = [];
+    for (var value of formData.values()) {
+      values.push(value);
+    }
+    values.splice(1, 1);
+    if (values.includes('') === true) {
+      return alert(`                Please complete all fields. 
+
+                  (File upload is optional)`);
+    }
+
     axios
-      .post('/api/upload', formData)
+      .post('/api/resources/create', formData)
       .then(result => {
         console.log('>> (onSubmit) file upload result = ', result);
         // access results...

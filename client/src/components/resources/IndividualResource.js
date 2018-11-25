@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchResource } from '../../actions';
 import { Container } from 'semantic-ui-react';
 import _ from 'lodash';
+import axios from 'axios';
+
 class IndividualResource extends Component {
   constructor(props) {
     super(props);
@@ -10,11 +10,12 @@ class IndividualResource extends Component {
       resource: {}
     };
   }
-  componentWillMount() {
-    this.setState({
-      resource: this.props.resources.filter(
-        resource => resource._id === this.props.match.params.id
-      )
+  componentDidMount() {
+    axios.get(`/api/resources/${this.props.match.params.id}`).then(res => {
+      const resource = res.data;
+      this.setState({
+        resource
+      });
     });
   }
 
@@ -54,23 +55,3 @@ class IndividualResource extends Component {
 }
 
 export default IndividualResource;
-
-/* 
-Goal here is to have a resource that's filtered based on it's id.
-should be able to grab Id from the params.
-Display link to actual resource and 
-
-
-Should I fetch all resources or just one based on ID?
-create new action, route, reducers, etc.
-can call one single resource needed instead of doing filtering
-client-side.
-
-**It seems like if I connect to the redux store, I can pull
-the already-fetched resources and filter from there**
-
-Other option is to bring in all resources 
-and just find the one I need. Definitely slower, 
-but how much slower really?
-
-*/

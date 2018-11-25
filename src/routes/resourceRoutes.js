@@ -1,29 +1,43 @@
 const requireLogin = require('../middlewares/requireLogin');
 const resourceController = require('../controllers/resourceController');
-const mongoose = require('mongoose');
-const Resource = mongoose.model('resources');
+const multer = require('multer');
+const uuidv4 = require('uuid/v4');
+const path = require('path');
+const processImage = require('../middlewares/processImage');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './src/uploads');
+  },
+  filename: (req, file, cb) => {
+    const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
+    cb(null, newFilename);
+  }
+});
+
+var fileFilter = function(req, file, cb) {
+  if (file.mimetype !== 'image/jpeg') {
+    req.fileValidationError = 'goes wrong on the mimetype';
+    return cb(
+      new Error('mimetype does not match application/zip. upload rejected')
+    );
+  }
+  console.log('>> fileFilter good = ', file.mimetype);
+  cb(null, true);
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 module.exports = app => {
   app.get('/api/resources', requireLogin, resourceController.index);
 
-  app.post('/api/resources/create', requireLogin, (req, res) => {
-    const { name, unit, type, link, description } = req.body;
-
-    const resource = new Resource({
-      name,
-      unit,
-      type,
-      link,
-      description,
-      _user: req.user.id,
-      dateSent: Date.now()
-    });
-    //save our resource
-    resource.save((err, resource) => {
-      if (err) return console.lerror(err);
-      console.log(`${resource.name} saved to collection.`);
-    });
-  });
-
   app.get('/api/resources/:id', resourceController.show);
+
+  app.post(
+    '/api/resources/create',
+    requireLogin,
+    upload.single('selectedFile'),
+    processImage,
+    resourceController.create
+  );
 };
