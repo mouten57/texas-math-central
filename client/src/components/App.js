@@ -9,7 +9,7 @@ import About from './About';
 import Units from './resources/Units';
 import ResourceIndex from './resources/ResourceIndex';
 import IndividualResource from './resources/IndividualResource';
-
+import UserProfile from './UserProfile';
 import { Container } from 'semantic-ui-react';
 
 import NewResource from './Uploads/NewResource';
@@ -47,6 +47,9 @@ class App extends Component {
     const myIndividualResource = props => {
       return <IndividualResource resources={this.state.resources} {...props} />;
     };
+    const myUserProfile = props => {
+      return <UserProfile resources={this.state.resources} {...props} />;
+    };
 
     return (
       <Container>
@@ -57,6 +60,7 @@ class App extends Component {
             <Route exact path="/" component={Landing} />
             <Route exact path="/about" component={About} />
             <Route exact path="/units" component={Units} />
+            <Route exact path="/profile" component={myUserProfile} />
             <Route exact path="/units/:name" render={myResourceIndex} />
             <Route
               exact

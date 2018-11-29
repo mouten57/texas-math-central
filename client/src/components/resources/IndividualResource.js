@@ -8,18 +8,19 @@ class IndividualResource extends Component {
     super(props);
     this.state = {
       resource: {},
-      resource_data: null
+      resource_data: null,
+      resource_name: null
     };
   }
   componentDidMount() {
     axios.get(`/api/resources/${this.props.match.params.id}`).then(res => {
       const resource = res.data;
       this.setState({
-        resource
+        resource,
+        resource_data: resource[0].file_data,
+        resource_name: resource[0].name
       });
-      this.setState({
-        resource_data: resource[0].file_data
-      });
+      this.setState({});
     });
   }
 
@@ -42,7 +43,7 @@ class IndividualResource extends Component {
   render() {
     return (
       <Container>
-        <h2>IndividualResource</h2>
+        <h2>"{this.state.resource_name}"</h2>
         {_.map(
           this.state.resource,
           ({ _id, name, unit, type, link, _user }) => (
