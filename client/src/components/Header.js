@@ -63,21 +63,22 @@ class Nav extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu size="small">
+      <Menu size="medium">
         <Menu.Item as={Link} to="/">
-          <Icon name="calculator" />
+          <Icon name="home" />
         </Menu.Item>
+
         <Menu.Item
           as={Link}
           to="/about"
-          name="about"
+          icon="question"
           active={activeItem === 'about'}
           onClick={this.handleItemClick}
         />
         <Menu.Item
           as={Link}
           to="/units"
-          name="resources"
+          icon="folder open"
           active={activeItem === 'resources'}
           onClick={this.handleItemClick}
         />
@@ -85,7 +86,7 @@ class Nav extends Component {
           <Menu.Item
             as={Link}
             to="/profile"
-            name="my profile"
+            icon="id card"
             active={activeItem === 'profile'}
             onClick={this.handleItemClick}
           />
