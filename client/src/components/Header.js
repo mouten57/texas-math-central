@@ -19,14 +19,13 @@ class Nav extends Component {
       case false:
         return (
           <Menu.Item>
-            <Responsive {...Responsive.onlyMobile} as={Button} Button primary>
+            <Responsive {...Responsive.onlyMobile} as={Button} primary>
               <a style={linkStyle} href="/auth/google">
                 Login
               </a>
             </Responsive>
             <Responsive
               as={Button}
-              Button
               primary
               minWidth={Responsive.onlyTablet.minWidth}
             >
@@ -68,7 +67,6 @@ class Nav extends Component {
         <Menu.Item as={Link} to="/">
           <Icon name="calculator" />
         </Menu.Item>
-
         <Menu.Item
           as={Link}
           to="/about"
@@ -76,7 +74,6 @@ class Nav extends Component {
           active={activeItem === 'about'}
           onClick={this.handleItemClick}
         />
-
         <Menu.Item
           as={Link}
           to="/units"
@@ -84,7 +81,17 @@ class Nav extends Component {
           active={activeItem === 'resources'}
           onClick={this.handleItemClick}
         />
-
+        {this.props.auth ? (
+          <Menu.Item
+            as={Link}
+            to="/profile"
+            name="my profile"
+            active={activeItem === 'profile'}
+            onClick={this.handleItemClick}
+          />
+        ) : (
+          <p />
+        )}
         <Menu.Menu position="right">
           {/* <Menu.Item>
             <Input icon="search" placeholder="Search..." />
