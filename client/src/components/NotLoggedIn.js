@@ -1,12 +1,6 @@
 import React from 'react';
 
-import {
-  Message,
-  Container,
-  Button,
-  Icon,
-  Responsive
-} from 'semantic-ui-react';
+import { Message, Container, Button, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const Landing = () => {

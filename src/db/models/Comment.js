@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const userSchema = require('./User');
 
 const commentSchema = new Schema({
+  posted: Date,
   resource_id: {
     type: Schema.Types.ObjectId,
     ref: 'Resource'
   },
-  posted: Date,
-  _user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  text: String
+  _user: [userSchema],
+  body: String
 });
 //create a new collection called comments
 //two arguments means we are loading something into mongoose

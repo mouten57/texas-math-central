@@ -20,7 +20,7 @@ module.exports = {
         type: req.body.type,
         link: req.body.link,
         description: req.body.description,
-        _user: req.user.id,
+        _user: req.user, //saves entire user profile so we can access name, nickname, photo easily on comment form
         dateSent: Date.now()
       });
       resource.save().catch(err => callback(err));
@@ -31,7 +31,7 @@ module.exports = {
         type: req.body.type,
         link: req.body.link,
         description: req.body.description,
-        _user: req.user.id,
+        _user: req.user, //see above comment
         dateSent: Date.now(),
         file_name: req.file.originalname,
         file_type: req.file.mimetype,
@@ -71,13 +71,16 @@ module.exports = {
     callback(null, req.file);
   },
   getResource(id, callback) {
-    return Resource.find({ _id: id })
-      .then(resource => {
-        callback(null, resource);
-      })
+    return (
+      Resource.find({ _id: id })
+        //need to get matching comments, here as well
+        .then(resource => {
+          callback(null, resource);
+        })
 
-      .catch(err => {
-        callback(err);
-      });
+        .catch(err => {
+          callback(err);
+        })
+    );
   }
 };

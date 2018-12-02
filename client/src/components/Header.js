@@ -63,7 +63,7 @@ class Nav extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu size="medium">
+      <Menu size="large">
         <Menu.Item as={Link} to="/">
           <Icon name="home" />
         </Menu.Item>

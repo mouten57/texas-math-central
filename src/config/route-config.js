@@ -7,5 +7,6 @@ module.exports = {
 
     require('../routes/authRoutes')(app);
     require('../routes/resourceRoutes')(app);
+    require('../routes/commentRoutes')(app);
   }
 };

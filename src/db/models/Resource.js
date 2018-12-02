@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const resourceSchema = require('./Resource');
+const userSchema = require('./User');
 
 const uploadSchema = new Schema({
   name: String,
@@ -7,12 +9,13 @@ const uploadSchema = new Schema({
   type: String,
   link: String,
   description: String,
-  _user: { type: Schema.Types.ObjectId, ref: 'User' },
+  _user: [userSchema],
   dateSent: Date,
   file_name: String,
   file_type: String,
   file_path: String,
-  file_data: Buffer
+  file_data: Buffer,
+  comments: [resourceSchema]
 });
 
 mongoose.model('resources', uploadSchema);

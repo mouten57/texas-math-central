@@ -11,6 +11,7 @@ import { Header, Breadcrumb, Container } from 'semantic-ui-react';
 import ResourceList from './ResourceList';
 import unitFields from './data/unitFields.js';
 import axios from 'axios';
+import NotLoggedIn from '../NotLoggedIn';
 
 class ResourceIndex extends Component {
   constructor(props) {
@@ -57,10 +58,14 @@ class ResourceIndex extends Component {
         </Header>
 
         <Container>
-          <ResourceList
-            param={this.props.match.params.name}
-            resources={this.state.resources}
-          />
+          {this.props.user ? (
+            <ResourceList
+              param={this.props.match.params.name}
+              resources={this.state.resources}
+            />
+          ) : (
+            <NotLoggedIn />
+          )}
         </Container>
       </Container>
     );
