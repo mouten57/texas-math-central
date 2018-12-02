@@ -80,7 +80,7 @@ class UserProfile extends Component {
       <Container>
         {this.renderHeading()}
         <Header as="h2" dividing>
-          Latest Resources
+          My Resources
         </Header>
         <div>
           {myResources.map(resource => {
@@ -101,7 +101,7 @@ class UserProfile extends Component {
         </div>
 
         <Header as="h2" dividing>
-          Latest Comments
+          My Comments
         </Header>
         <div>
           {myComments.map(comment => {
@@ -113,7 +113,7 @@ class UserProfile extends Component {
           })}
         </div>
         <Header as="h2" dividing>
-          Favorites
+          My Favorites
         </Header>
       </Container>
     );

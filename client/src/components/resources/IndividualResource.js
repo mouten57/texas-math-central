@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Loader, Form, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import axios from 'axios';
+import Voting from '../Voting';
 
 import ShowComments from '../Comments/Show';
 class IndividualResource extends Component {
@@ -15,7 +16,10 @@ class IndividualResource extends Component {
       resourceComments: [],
       currentComment: null,
       isLoading: true,
-      commentValue: ''
+      commentValue: '',
+      voteTotal: 0,
+      upvoted: false,
+      downvoted: false
     };
   }
 
@@ -34,7 +38,27 @@ class IndividualResource extends Component {
         isLoading: false
       });
     });
+    axios
+      .get(`/api/resources/${this.props.match.params.id}/votes/total`)
+      .then(res => {
+        const votes = res.data;
+        if (votes.length > 0) {
+          this.getVoteTotal(votes);
+        }
+      });
   }
+  getVoteTotal = votes => {
+    let voteTotal = votes
+      .map(v => {
+        return v.value;
+      })
+      .reduce((prev, next) => {
+        return prev + next;
+      });
+    //keeps state updated without calling to database
+
+    this.setState({ voteTotal });
+  };
 
   downloadLink() {
     switch (this.state.resource_data) {
@@ -65,14 +89,47 @@ class IndividualResource extends Component {
       );
   }
 
-  onChangeValue(e) {
+  onChangeValue = e => {
     this.setState({ commentValue: e.target.value });
-  }
+  };
+
+  onUpvote = e => {
+    axios
+      .get(`/api/resources/${this.state.resource_id}/votes/upvote`)
+      .then(res => {
+        if (!this.state.upvoted) {
+          this.setState({
+            voteTotal: this.state.voteTotal + res.data.value,
+            upvoted: true,
+            downvoted: false
+          });
+        }
+      });
+  };
+  onDownvote = e => {
+    axios
+      .get(`/api/resources/${this.state.resource_id}/votes/downvote`)
+      .then(res => {
+        if (!this.state.downvoted) {
+          this.setState({
+            voteTotal: this.state.voteTotal + res.data.value,
+            downvoted: true,
+            upvoted: false
+          });
+        }
+      });
+  };
 
   render() {
     return (
       <Container>
+        <Button.Group vertical size="small" floated="right">
+          <Button onClick={e => this.onUpvote(e)}>&#9650;</Button>
+          <Button basic>{this.state.voteTotal}</Button>
+          <Button onClick={e => this.onDownvote(e)}>&#9660;</Button>
+        </Button.Group>
         <h2>"{this.state.resource_name}"</h2>
+
         {_.map(
           this.state.resource,
           ({ _id, name, unit, type, link, _user }) => (

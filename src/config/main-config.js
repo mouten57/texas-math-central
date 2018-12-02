@@ -12,6 +12,7 @@ const cors = require('cors');
 require('../db/models/Resource');
 require('../db/models/Comment');
 require('../db/models/User');
+require('../db/models/Vote');
 require('./passport-config');
 
 const keys = require('./keys/keys');

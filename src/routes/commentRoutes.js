@@ -2,7 +2,6 @@ const commentController = require('../controllers/commentController');
 const mongoose = require('mongoose');
 const Comment = mongoose.model('comments');
 const Resource = mongoose.model('resources');
-const User = mongoose.model('users');
 
 module.exports = app => {
   app.post('/api/resources/:resourceId/comments/create', async (req, res) => {
