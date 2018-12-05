@@ -22,40 +22,28 @@ class App extends Component {
     super(props);
     this.state = {
       resources: [],
-      user: null,
       comments: []
     };
   }
+  componentDidUpdate() {
+    console.log('didupdate - app');
+  }
   componentDidMount() {
+    console.log('did mount -app');
+
     //get User
     this.props.fetchUser();
-    axios.get('/api/current_user').then(res => {
-      const user = res.data || false;
-      this.setState({ user });
-    });
 
     //set Resources
     axios.get('/api/resources').then(res => {
       const resources = res.data;
       this.setState({ resources });
     });
-
-    //set comments
-    axios.get('/api/comments').then(res => {
-      const comments = res.data;
-      this.setState({ comments });
-    });
   }
 
   render() {
     const myResourceIndex = props => {
-      return (
-        <ResourceIndex
-          resources={this.state.resources}
-          {...props}
-          user={this.state.user}
-        />
-      );
+      return <ResourceIndex resources={this.state.resources} {...props} />;
     };
     const myIndividualResource = props => {
       return <IndividualResource resources={this.state.resources} {...props} />;

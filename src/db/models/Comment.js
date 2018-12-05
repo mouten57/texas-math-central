@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 const userSchema = require('./User');
 
 const commentSchema = new Schema({
-  posted: Date,
+  posted: String,
   resource_id: {
     type: Schema.Types.ObjectId,
     ref: 'Resource'

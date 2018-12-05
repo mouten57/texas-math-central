@@ -3,12 +3,26 @@ import { connect } from 'react-redux';
 import { Image, Header, Container, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import NotLoggedIn from './NotLoggedIn';
+import axios from 'axios';
 
 class UserProfile extends Component {
   state = {
     activeItem: '',
-    visible: false
+    visible: false,
+    comments: [],
+    resources: []
   };
+  componentWillMount() {
+    console.log('profile update');
+    axios.get('/api/comments').then(res => {
+      const comments = res.data;
+
+      this.setState({ comments });
+    });
+  }
+  componentDidMount() {
+    this.setState({ resources: this.props.resources });
+  }
 
   renderHeading() {
     switch (this.props.auth) {
@@ -25,43 +39,18 @@ class UserProfile extends Component {
         );
     }
   }
-  convertTimestamp = timestamp => {
-    var d = new Date(timestamp), // Convert the passed timestamp to milliseconds
-      yyyy = d.getFullYear(),
-      mm = ('0' + (d.getMonth() + 1)).slice(-2), // Months are zero based. Add leading 0.
-      dd = ('0' + d.getDate()).slice(-2), // Add leading 0.
-      hh = d.getHours(),
-      h = hh,
-      min = ('0' + d.getMinutes()).slice(-2), // Add leading 0.
-      ampm = 'AM',
-      time;
-
-    if (hh > 12) {
-      h = hh - 12;
-      ampm = 'PM';
-    } else if (hh === 12) {
-      h = 12;
-      ampm = 'PM';
-    } else if (hh === 0) {
-      h = 12;
-    }
-
-    // ie: 2013-02-18, 8:35 AM
-    time = mm + '/' + dd + '/' + yyyy + ', ' + h + ':' + min + ' ' + ampm;
-    return time;
-  };
 
   renderComments() {
-    switch (this.props.comments) {
+    switch (this.state.comments) {
       case null:
         return;
       case false:
         return <p />;
       default:
-        let myComments = this.props.comments.filter(
+        let myComments = this.state.comments.filter(
           comment => comment._user[0]._id === this.props.auth._id
         );
-        console.log(myComments);
+
         myComments.map(comment => {
           return <p>{comment.body}</p>;
         });
@@ -69,11 +58,8 @@ class UserProfile extends Component {
   }
 
   render() {
-    let myResources = this.props.resources.filter(
+    let myResources = this.state.resources.filter(
       resource => resource._user[0]._id === this.props.auth._id
-    );
-    let myComments = this.props.comments.filter(
-      comment => comment._user[0]._id === this.props.auth._id
     );
 
     return (
@@ -104,10 +90,10 @@ class UserProfile extends Component {
           My Comments
         </Header>
         <div>
-          {myComments.map(comment => {
+          {this.state.comments.map(comment => {
             return (
               <p key={comment._id}>
-                {comment.body} on {this.convertTimestamp(comment.posted)}
+                {comment.body} on {comment.posted}
               </p>
             );
           })}

@@ -23,6 +23,12 @@ class ResourceList extends Component {
       }
     }
   }
+  componentDidMount() {
+    console.log('did mount - resource list');
+  }
+  componentDidUpdate() {
+    console.log('compdidupdte -resourcelist');
+  }
 
   renderResources() {
     let filteredResources = this.props.resources.filter(

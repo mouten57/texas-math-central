@@ -1,18 +1,29 @@
 const commentQueries = require('../db/queries.comments');
 
 module.exports = {
-  create(req, res, next) {
-    let newComment = {
-      body: req.body.body,
-      userId: req.user.id,
-      resourceId: req.params.resourceId
+  create(req, res) {
+    const comment = {
+      resource_id: req.params.resourceId,
+      posted: Date.now(), //add in date helper function here
+      _user: req.user,
+      body: req.body.body
     };
-
-    commentQueries.createComment(newComment, (err, comment) => {
+    commentQueries.createComment(comment, (err, result) => {
       if (err) {
-        res.status(422).send(err);
+        res.send(err);
       }
-      res.send(comments);
+      comment = wiki['comment'];
+      res.send(comment);
+    });
+  },
+
+  showResourceComments(req, res, next) {
+    commentQueries.getResourceComments(req, (err, comments) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(comments);
+      }
     });
   },
 

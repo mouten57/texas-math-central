@@ -14,8 +14,6 @@ class IndividualResource extends Component {
       resource_name: null,
       resource_id: null,
       resourceComments: [],
-      currentComment: null,
-      isLoading: true,
       commentValue: '',
       voteTotal: 0,
       upvoted: false,
@@ -23,21 +21,31 @@ class IndividualResource extends Component {
     };
   }
 
-  componentDidMount() {
+  //is there a way to populate resource with one call rather than 3 separate calls?
+  makeAxiosCalls() {
+    //grab comments with call to api. searches for only comments matching resource_id
+    axios
+      .get(`/api/resources/${this.props.match.params.id}/comments`)
+      .then(res => {
+        const comments = res.data;
+        this.setState({
+          resourceComments: comments
+        });
+      });
+
     //need to keep this axios call in order to get file data
     //in my props resources, I didn't load the binary data on initial call because it was really slow.
-
     axios.get(`/api/resources/${this.props.match.params.id}`).then(res => {
       const resource = res.data;
+
       this.setState({
         resource,
         resource_data: resource[0].file_data,
         resource_name: resource[0].name,
-        resource_id: resource[0]._id,
-        resourceComments: resource[0].comments,
-        isLoading: false
+        resource_id: resource[0]._id
       });
     });
+    //votes
     axios
       .get(`/api/resources/${this.props.match.params.id}/votes/total`)
       .then(res => {
@@ -46,6 +54,14 @@ class IndividualResource extends Component {
           this.getVoteTotal(votes);
         }
       });
+  }
+
+  componentDidMount() {
+    console.log('did mount-individ');
+    this.makeAxiosCalls();
+  }
+  componentDidUpdate() {
+    console.log('did update - individ');
   }
   getVoteTotal = votes => {
     let voteTotal = votes

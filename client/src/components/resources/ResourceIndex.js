@@ -12,6 +12,7 @@ import ResourceList from './ResourceList';
 import unitFields from './data/unitFields.js';
 import axios from 'axios';
 import NotLoggedIn from '../NotLoggedIn';
+import { connect } from 'react-redux';
 
 class ResourceIndex extends Component {
   constructor(props) {
@@ -58,7 +59,7 @@ class ResourceIndex extends Component {
         </Header>
 
         <Container>
-          {this.props.user ? (
+          {this.props.auth ? (
             <ResourceList
               param={this.props.match.params.name}
               resources={this.state.resources}
@@ -71,4 +72,7 @@ class ResourceIndex extends Component {
     );
   }
 }
-export default ResourceIndex;
+function mapStateToProps(state) {
+  return { auth: state.auth };
+}
+export default connect(mapStateToProps)(ResourceIndex);
