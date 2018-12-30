@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const resourceSchema = require('./Resource');
+const commentSchema = require('./Comment');
 const userSchema = require('./User');
 
 const uploadSchema = new Schema({
@@ -15,7 +15,7 @@ const uploadSchema = new Schema({
   file_type: String,
   file_path: String,
   file_data: Buffer,
-  comments: [resourceSchema]
+  comments: [commentSchema]
 });
 
 mongoose.model('resources', uploadSchema);

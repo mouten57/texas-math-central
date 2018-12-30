@@ -2,6 +2,7 @@ const resourceQueries = require('../db/queries.resources');
 
 module.exports = {
   index(req, res, next) {
+    console.log(req.session.token);
     resourceQueries.getAllResources((err, resources) => {
       if (err) {
         res.status(422).send(err);

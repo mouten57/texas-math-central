@@ -6,7 +6,8 @@ const userSchema = new Schema({
   role: { type: String, default: 'standard' },
   name: String,
   nickname: String,
-  image: String
+  image: String,
+  token: String
 });
 //create a new collection called users
 //two arguments means we are loading something into mongoose

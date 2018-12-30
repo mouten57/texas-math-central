@@ -14,6 +14,9 @@ module.exports = app => {
     '/auth/google/callback',
     passport.authenticate('google'),
     (req, res) => {
+      console.log(req.session.token, 'req session token in auth routes');
+      req.session.token = req.user.token;
+
       res.redirect('/');
     }
   );

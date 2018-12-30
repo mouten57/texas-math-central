@@ -49,7 +49,8 @@ passport.use(
         googleId: profile.id,
         name: profile.displayName,
         nickname: profile.name.givenName,
-        image: profile.photos[0].value
+        image: profile.photos[0].value,
+        token: accessToken
       }).save();
       done(null, user);
     }
