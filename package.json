@@ -39,7 +39,7 @@
     "express-session": "^1.15.6",
     "express-validator": "^5.3.0",
     "googleapis": "^27.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "mongoose": "^5.3.11",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
