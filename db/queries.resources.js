@@ -1,19 +1,24 @@
-const mongoose = require('mongoose');
-const Resource = mongoose.model('resources');
-const fs = require('fs');
+const mongoose = require("mongoose");
+const Resource = mongoose.model("resources");
+const Comment = mongoose.model("comments");
+const fs = require("fs");
+var AWS = require("aws-sdk");
+var keys = require("../config/keys/keys");
+
+var s3 = new AWS.S3({
+  apiVersion: "2006-03-01",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 module.exports = {
-  getAllResources(callback) {
-    //get all resources, EXCEPT for the file data
-    //..was TOO slow to load. Need to set up so if they want it,
-    //they should click a download button to get it.
-
-    return Resource.find({}, { file_data: 0 }).then(resources => {
+  getUnitResources(unit, callback) {
+    return Resource.find({ unit: unit }, { file_data: 0 }).then((resources) => {
       callback(null, resources);
     });
   },
   createResource(req, callback) {
-    if (req.body.imageFile === '') {
+    if (req.body.imageFile === "") {
       const resource = new Resource({
         name: req.body.name,
         unit: req.body.unit,
@@ -21,9 +26,9 @@ module.exports = {
         link: req.body.link,
         description: req.body.description,
         _user: req.user, //saves entire user profile so we can access name, nickname, photo easily on comment form
-        dateSent: Date.now()
+        created: Date.now(),
       });
-      resource.save().catch(err => callback(err));
+      resource.save().catch((err) => callback(err));
     } else {
       const resource = new Resource({
         name: req.body.name,
@@ -36,7 +41,7 @@ module.exports = {
         file_name: req.file.originalname,
         file_type: req.file.mimetype,
         file_path: req.file.path,
-        file_data: fs.readFileSync('./src/uploads/output.jpg')
+        file_data: fs.readFileSync("./src/uploads/output.jpg"),
       });
 
       resource
@@ -45,9 +50,9 @@ module.exports = {
           console.log(`${resource.name} saved to collection.`);
         })
         .then(() => {
-          fs.unlink(`./src/uploads/${req.file.filename}`, err => {
+          fs.unlink(`./src/uploads/${req.file.filename}`, (err) => {
             if (err) {
-              console.log('Failed to delete local image:' + err);
+              console.log("Failed to delete local image:" + err);
             } else {
               console.log(
                 `Successfully deleted ${resource.name} from local storage.`
@@ -56,9 +61,9 @@ module.exports = {
           });
         })
         .then(() => {
-          fs.unlink(`./src/uploads/output.jpg`, err => {
+          fs.unlink(`./src/uploads/output.jpg`, (err) => {
             if (err) {
-              console.log('Failed to delete local image:' + err);
+              console.log("Failed to delete local image:" + err);
             } else {
               console.log(
                 `Successfully deleted output.jpg from local storage.`
@@ -66,21 +71,39 @@ module.exports = {
             }
           });
         })
-        .catch(err => callback(err));
+        .catch((err) => callback(err));
     }
     callback(null, req.file);
   },
-  getResource(id, callback) {
-    return (
-      Resource.find({ _id: id })
-        //need to get matching comments, here as well
-        .then(resource => {
-          callback(null, resource);
-        })
+  async getResource(_id, callback) {
+    let result = {};
+    const resource = await Resource.findOne({ _id });
+    resource.populate("_user");
+    result["resource"] = resource;
+    const comments = await Comment.find({ resource_id: _id });
+    result["comments"] = comments;
+    callback(null, result);
+  },
+  async destroyResource(_id, callback) {
+    const resource = await Resource.findOne({ _id });
+    if (resource.s3Object) {
+      let s3Object = resource.s3Object;
 
-        .catch(err => {
-          callback(err);
-        })
-    );
-  }
+      s3.deleteObject({ Bucket: s3Object.Bucket, Key: s3Object.Key }, function (
+        err,
+        data
+      ) {
+        if (err) console.log(err, err.stack);
+        // an error occurred
+        else console.log(data); // successful response
+      });
+    }
+    return Resource.deleteOne({ _id })
+      .then((resource) => {
+        callback(null, resource);
+      })
+      .catch((err) => {
+        callback(err);
+      });
+  },
 };

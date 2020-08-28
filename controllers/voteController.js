@@ -1,4 +1,4 @@
-const voteQueries = require('../db/queries.votes.js');
+const voteQueries = require("../db/queries.votes.js");
 
 module.exports = {
   upvote(req, res, next) {
@@ -23,7 +23,14 @@ module.exports = {
         res.send(vote);
       });
     } else {
-      res.send('You must be signed in to do that.');
+      res.send("You must be signed in to do that.");
     }
-  }
+  },
+  getVotes(req, res, next) {
+    voteQueries.getVotes(req.params.resourceId, (err, votes) => {
+      if (votes) {
+        res.send(votes);
+      }
+    });
+  },
 };

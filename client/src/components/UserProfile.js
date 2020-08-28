@@ -1,27 +1,31 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Image, Header, Container, List } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import NotLoggedIn from './NotLoggedIn';
-import axios from 'axios';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Image, Header, Container, List } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import NotLoggedIn from "./NotLoggedIn";
+import axios from "axios";
+import convertTimestamp from "../helpers/convertTimestamp";
 
 class UserProfile extends Component {
   state = {
-    activeItem: '',
+    activeItem: "",
     visible: false,
     comments: [],
-    resources: []
+    resources: [],
   };
   componentWillMount() {
-    console.log('profile update');
-    axios.get('/api/comments').then(res => {
+    axios.get("/api/comments").then((res) => {
       const comments = res.data;
-
       this.setState({ comments });
     });
   }
   componentDidMount() {
-    this.setState({ resources: this.props.resources });
+    axios.get("/api/profile").then((res) => {
+      this.setState({
+        comments: res.data.comments,
+        resources: res.data.resources,
+      });
+    });
   }
 
   renderHeading() {
@@ -48,10 +52,10 @@ class UserProfile extends Component {
         return <p />;
       default:
         let myComments = this.state.comments.filter(
-          comment => comment._user[0]._id === this.props.auth._id
+          (comment) => comment._user[0]._id === this.props.auth._id
         );
 
-        myComments.map(comment => {
+        myComments.map((comment) => {
           return <p>{comment.body}</p>;
         });
     }
@@ -59,7 +63,7 @@ class UserProfile extends Component {
 
   render() {
     let myResources = this.state.resources.filter(
-      resource => resource._user[0]._id === this.props.auth._id
+      (resource) => resource._user[0]._id === this.props.auth._id
     );
 
     return (
@@ -69,15 +73,15 @@ class UserProfile extends Component {
           My Resources
         </Header>
         <div>
-          {myResources.map(resource => {
+          {myResources.map((resource) => {
             return (
               <div key={resource._id}>
                 <List.Icon name="file" />
                 <Link
-                  style={{ color: '#858DAA' }}
+                  style={{ color: "#858DAA" }}
                   to={`/units/${resource.unit}/${resource._id}`}
                 >
-                  <h3 style={{ display: 'inline-block', marginTop: '5px' }}>
+                  <h3 style={{ display: "inline-block", marginTop: "5px" }}>
                     "{resource.name}"
                   </h3>
                 </Link>
@@ -90,10 +94,13 @@ class UserProfile extends Component {
           My Comments
         </Header>
         <div>
-          {this.state.comments.map(comment => {
+          {this.state.comments.map((comment) => {
             return (
               <p key={comment._id}>
-                {comment.body} on {comment.posted}
+                {comment.body} on{" "}
+                {comment.posted.includes("/")
+                  ? comment.posted
+                  : convertTimestamp(comment.posted)}
               </p>
             );
           })}
