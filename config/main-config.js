@@ -1,21 +1,21 @@
-const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
-const flash = require('express-flash');
-const cookieSession = require('cookie-session');
-const passport = require('passport');
-const path = require('path');
-const logger = require('morgan');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const bodyParser = require("body-parser");
+const expressValidator = require("express-validator");
+const flash = require("express-flash");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
+const path = require("path");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 //important to call model first, before I try to run passport
-require('../db/models/Resource');
-require('../db/models/Comment');
-require('../db/models/User');
-require('../db/models/Vote');
-require('./passport-config');
+require("../db/models/Resource");
+require("../db/models/Comment");
+require("../db/models/User");
+require("../db/models/Vote");
+require("./passport-config");
 
-const keys = require('./keys/keys');
+const keys = require("./keys/keys");
 
 module.exports = {
   init(app, express) {
@@ -23,11 +23,11 @@ module.exports = {
     app.use(cors());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(expressValidator());
+    // app.use(expressValidator());
     app.use(
       cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: [keys.cookieKey]
+        keys: [keys.cookieKey],
       })
     );
     app.use(flash());
@@ -37,7 +37,7 @@ module.exports = {
       res.locals.currentUser = req.user;
       next();
     });
-    app.use(express.static(path.join(__dirname, '..', 'assets')));
-    app.use(logger('dev'));
-  }
+    app.use(express.static(path.join(__dirname, "..", "assets")));
+    app.use(logger("dev"));
+  },
 };
