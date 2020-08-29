@@ -31,10 +31,15 @@ class NewComment extends Component {
           />
 
           <small id="bodyHelp">
-            Comment must be 5 or more characters in length.
+            Comment must be 3 or more characters in length.
           </small>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          disabled={this.props.commentValue.length > 2 ? false : true}
+        >
+          Submit
+        </Button>
       </Form>
     );
   }

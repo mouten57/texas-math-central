@@ -5,7 +5,6 @@ module.exports = (req, res, next) => {
   if (req.file === undefined) {
     next();
   } else if (req.file !== "") {
-    console.log(req.file);
     let images = [req.file.path];
     let promises = [];
 

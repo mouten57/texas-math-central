@@ -34,7 +34,6 @@ module.exports = {
   },
 
   create(req, res, next) {
-    console.log("Req fileS in create", req.files);
     const link = req.body.link.includes("http")
       ? req.body.link
       : `//${req.body.link}`;
@@ -109,28 +108,44 @@ module.exports = {
   download(req, res, next) {
     resourceQueries.getResource(req.params.resourceId, (err, result) => {
       const { resource, comments } = result;
-      console.log("in download", resource);
+
       if (err || resource == null) {
         res.redirect(404, "/");
       } else {
-        let correct_file = resource.files.filter((obj) => {
-          return obj.originalname == req.params.filename;
-        })[0];
-
-        fs.writeFileSync(correct_file.path, correct_file.filename, "binary");
-
-        res.download(`./${correct_file.path}`, (err) => {
-          if (err) {
-            console.log(err);
-          } else {
-            //need to delete file after download is complete
-            fs.unlink(correct_file.path, (err) => {
-              if (err) {
-                throw err;
-              }
-            });
+        var correct_file = (req) => {
+          for (let i = 0; i < resource.files.length; i++) {
+            if (resource.files[i].filename == req.params.filename) {
+              let result = {};
+              result.correct_file = resource.files[i];
+              result.index = i;
+              return result;
+            }
           }
-        });
+        };
+
+        fs.writeFileSync(
+          `./uploads/${correct_file(req).correct_file.originalname}`,
+          resource.file_data[correct_file(req).index].buffer
+        );
+
+        res.download(
+          `./uploads/${correct_file(req).correct_file.originalname}`,
+          (err) => {
+            if (err) {
+              console.log(err);
+            } else {
+              //need to delete file after download is complete
+              fs.unlink(
+                `./uploads/${correct_file(req).correct_file.originalname}`,
+                (err) => {
+                  if (err) {
+                    throw err;
+                  }
+                }
+              );
+            }
+          }
+        );
       }
     });
   },

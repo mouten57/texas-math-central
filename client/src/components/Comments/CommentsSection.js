@@ -48,11 +48,13 @@ class CommentsSection extends Component {
           resourceId={this.props.resourceId}
           onSubmitNewComment={this.onSubmitNewComment}
         />
-        <ShowComments
-          onCommentDelete={this.onCommentDelete}
-          resourceId={this.props.resourceId}
-          comments={this.state.comments}
-        />
+        {this.state.comments.length > 0 ? (
+          <ShowComments
+            onCommentDelete={this.onCommentDelete}
+            resourceId={this.props.resourceId}
+            comments={this.state.comments}
+          />
+        ) : null}
       </Container>
     );
   }

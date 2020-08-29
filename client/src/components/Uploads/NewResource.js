@@ -197,7 +197,6 @@ class UploadForm extends Component {
     formData.append("link", link);
     let values = [];
     for (var value of formData.values()) {
-      console.log(value);
       values.push(value);
     }
     values.splice(1, 1);
@@ -214,7 +213,10 @@ class UploadForm extends Component {
       .post("/api/resources/create", formData)
       .then((res) => {
         alert("SUCCESS!");
-        this.props.history.push(`/units/${unit}/${res.data._id}`);
+        axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
+          this.props.history.push(`/units/${unit}/${res.data.resource_id}`);
+        });
+
         // access results...
       })
       .catch(function (error) {
@@ -224,7 +226,6 @@ class UploadForm extends Component {
   };
 
   render() {
-    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

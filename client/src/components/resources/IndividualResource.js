@@ -81,17 +81,11 @@ class IndividualResource extends Component {
         return "Download not available.";
       default:
         return this.state.resource.files?.map((file, i) => {
-          let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.originalname}`;
+          let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
           return (
             <span>
-              <a
-                href={link}
-                download
-                key={i}
-                style={{ marginLeft: "5px" }}
-                onClick={(e) => console.log(e.currentTarget.innerText)}
-              >
-                {file.filename}
+              <a href={link} download key={i} style={{ marginLeft: "5px" }}>
+                {file.originalname}
               </a>
               {i != this.state.resource.files.length - 1 ? "," : null}
             </span>
@@ -128,7 +122,6 @@ class IndividualResource extends Component {
   };
 
   render() {
-    console.log(this.state);
     const { resource } = this.state;
 
     return (

@@ -19,7 +19,6 @@ const imagePath = "./src/uploads/output.jpg";
 
 module.exports = {
   upload: function (file, callback) {
-    console.log("in aws", file);
     if (file !== undefined) {
       var fileName = file.mimetype == "image/jpeg" ? imagePath : file.path;
     }
