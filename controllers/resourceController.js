@@ -1,8 +1,6 @@
 const resourceQueries = require("../db/queries.resources");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
-const convertTimeStamp = require("../helpers/convertTimeStamp");
-const s3 = require("../config/aws-config");
 
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
