@@ -97,10 +97,7 @@ class UserProfile extends Component {
           {this.state.comments.map((comment) => {
             return (
               <p key={comment._id}>
-                {comment.body} on{" "}
-                {comment.posted.includes("/")
-                  ? comment.posted
-                  : convertTimestamp(comment.posted)}
+                {comment.body} on {convertTimestamp(comment.posted)}
               </p>
             );
           })}

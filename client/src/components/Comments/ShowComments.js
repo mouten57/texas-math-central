@@ -41,12 +41,7 @@ class ShowComment extends Component {
                     {comment._user[0].nickname}
                   </Comment.Author>
                   <Comment.Metadata>
-                    <span>
-                      Posted at{" "}
-                      {comment.posted.includes("/")
-                        ? comment.posted
-                        : convertTimestamp(comment.posted)}
-                    </span>
+                    <span>Posted at {convertTimestamp(comment.posted)}</span>
                   </Comment.Metadata>
                   <Comment.Text>{comment.body}</Comment.Text>
                   {comment._user[0]?._id === this.props.auth._id ||

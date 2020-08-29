@@ -32,9 +32,7 @@ class ResourceList extends Component {
           </Table.Cell>
           <Table.Cell width={3}>{resource.type}</Table.Cell>
           <Table.Cell width={3}>
-            {resource.created?.includes("/")
-              ? resource.created
-              : new Date(resource.created).toLocaleDateString()}
+            {new Date(resource.created).toLocaleDateString()}
           </Table.Cell>
         </Table.Row>
       );
