@@ -7,7 +7,15 @@
 
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Header, Breadcrumb, Container } from "semantic-ui-react";
+import {
+  Header,
+  Breadcrumb,
+  Container,
+  Loader,
+  Segment,
+  Dimmer,
+  Image,
+} from "semantic-ui-react";
 import ResourceList from "./ResourceList";
 import unitFields from "./data/unitFields.js";
 import axios from "axios";
@@ -58,11 +66,19 @@ class ResourceIndex extends Component {
           {this.getUnitName()}
         </Header>
         <Container>
-          {this.props.auth ? (
+          {this.props.auth && this.state.resources ? (
             <ResourceList
               param={this.props.match.params.unit}
               resources={this.state.resources}
             />
+          ) : this.props.auth ? (
+            <Segment>
+              <Dimmer active>
+                <Loader>Loading</Loader>
+              </Dimmer>
+
+              <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+            </Segment>
           ) : (
             <NotLoggedIn />
           )}

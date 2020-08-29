@@ -22,7 +22,7 @@ class UploadForm extends Component {
     super();
     this.state = {
       description: "",
-      file: "",
+      files: [],
       link: "https://www.",
       type: "",
       unit: "",
@@ -50,8 +50,8 @@ class UploadForm extends Component {
 
   onChange = (e) => {
     switch (e.target.name) {
-      case "file":
-        this.setState({ file: e.target.files[0] });
+      case "files":
+        this.setState({ files: e.target.files });
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -151,20 +151,14 @@ class UploadForm extends Component {
             <Segment>
               <Header>Upload</Header>
               <div>
-                <Label>Upload JPG</Label>
-                <div>
-                  <Input type="file" name="file" onChange={this.onChange} />
-                </div>
-              </div>
-
-              <div style={{ paddingTop: "10px" }}>
-                <Label>Upload Other (coming soon!)</Label>
+                <Label>Upload File</Label>
                 <div>
                   <Input
                     type="file"
-                    name="otherFile"
+                    multiple
+                    name="files"
+                    fluid
                     onChange={this.onChange}
-                    disabled
                   />
                 </div>
               </div>
@@ -188,19 +182,22 @@ class UploadForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const { description, file, name, unit, type, link } = this.state;
+    const { description, files, name, unit, type, link } = this.state;
 
     let formData = new FormData();
 
     formData.append("description", description);
-    formData.append("file", file);
+    for (const key of Object.keys(this.state.files)) {
+      formData.append("files", this.state.files[key]);
+    }
+    // formData.append("files", files);
     formData.append("name", name);
     formData.append("unit", unit);
     formData.append("type", type);
     formData.append("link", link);
-
     let values = [];
     for (var value of formData.values()) {
+      console.log(value);
       values.push(value);
     }
     values.splice(1, 1);
@@ -211,26 +208,23 @@ class UploadForm extends Component {
                   (File upload is optional)`);
     }
 
-    if (this.isURL(values[4]) === false) return;
+    //if (this.isURL(values[4]) === false) return;
 
     axios
       .post("/api/resources/create", formData)
-      .then((result) => {
-        console.log(">> (onSubmit) file upload result = ", result);
+      .then((res) => {
+        alert("SUCCESS!");
+        this.props.history.push(`/units/${unit}/${res.data._id}`);
         // access results...
       })
-      .then(() => alert("SUCCESS!"))
-      .then(() => this.props.history.push(`/units/${unit}`))
-
       .catch(function (error) {
         console.log(">> ERROR FILE UPLOAD ", error);
-        alert(
-          "File upload failed. Please ensure you are uploading a .jpeg file only"
-        );
+        alert(error.message);
       });
   };
 
   render() {
+    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

@@ -3,7 +3,7 @@
 // this is inside resource index
 
 import React, { Component } from "react";
-
+import _ from "lodash";
 import { Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import unitFields from "./data/unitFields.js";
@@ -11,9 +11,6 @@ import unitFields from "./data/unitFields.js";
 class ResourceList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      resources: [],
-    };
   }
 
   match(resource) {
@@ -25,21 +22,16 @@ class ResourceList extends Component {
   }
 
   renderResources() {
-    // let filteredResources = this.props.resources.filter(
-    //   (resource) => resource.unit === this.props.param
-    // );
-
     return this.props.resources.reverse().map((resource) => {
       return (
         <Table.Row key={resource._id} style={{ marginTop: "10px" }}>
-          <Table.Cell>{resource.name}</Table.Cell>
-          <Table.Cell>{resource.type}</Table.Cell>
-          <Table.Cell>
+          <Table.Cell width={10}>
             <Link to={`/units/${this.match(resource)}/${resource._id}`}>
-              Click Here
+              {resource.name}
             </Link>
           </Table.Cell>
-          <Table.Cell>
+          <Table.Cell width={3}>{resource.type}</Table.Cell>
+          <Table.Cell width={3}>
             {resource.created?.includes("/")
               ? resource.created
               : new Date(resource.created).toLocaleDateString()}
@@ -51,12 +43,11 @@ class ResourceList extends Component {
 
   render() {
     return (
-      <Table style={{ marginBottom: "10px" }}>
+      <Table style={{ marginBottom: "10px" }} unstackable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Name</Table.HeaderCell>
             <Table.HeaderCell>Type</Table.HeaderCell>
-            <Table.HeaderCell>Link</Table.HeaderCell>
             <Table.HeaderCell>Date Added</Table.HeaderCell>
           </Table.Row>
         </Table.Header>

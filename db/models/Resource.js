@@ -12,10 +12,10 @@ const uploadSchema = new Schema({
   description: String,
   _user: [userSchema],
   created: Date,
-  file: Object,
+  files: Array,
   s3Object: Object,
   s3Link: String,
-  file_data: Buffer,
+  file_data: Array,
 });
 
 mongoose.model("resources", uploadSchema);

@@ -74,18 +74,29 @@ class IndividualResource extends Component {
   };
 
   downloadLink() {
-    switch (this.state.s3Link) {
+    switch (this.state.resource.files?.length) {
       case null:
         return "";
-      case undefined:
+      case 0:
         return "Download not available.";
       default:
-        let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download`;
-        return (
-          <a href={link} download>
-            File
-          </a>
-        );
+        return this.state.resource.files?.map((file, i) => {
+          let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.originalname}`;
+          return (
+            <span>
+              <a
+                href={link}
+                download
+                key={i}
+                style={{ marginLeft: "5px" }}
+                onClick={(e) => console.log(e.currentTarget.innerText)}
+              >
+                {file.filename}
+              </a>
+              {i != this.state.resource.files.length - 1 ? "," : null}
+            </span>
+          );
+        });
     }
   }
 
@@ -117,7 +128,7 @@ class IndividualResource extends Component {
   };
 
   render() {
-    console.log(this.props);
+    console.log(this.state);
     const { resource } = this.state;
 
     return (

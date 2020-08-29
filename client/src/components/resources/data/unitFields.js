@@ -108,7 +108,7 @@ export default [
     key: "Random",
     text: "Random",
     value: "Random",
-    description: "etc etc etc",
+    description: "Etc etc etc",
     param: "random",
   },
 ];

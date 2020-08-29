@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 class Units extends Component {
   state = {
     column: null,
-    data: unitFields, //remove blank placeholder object
+    data: unitFields,
     direction: null,
     units: [],
   };
@@ -67,8 +67,8 @@ class Units extends Component {
           <Table.Body>
             {_.map(data, ({ name, description, param }) => (
               <Table.Row key={name}>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell width={5}>{name}</Table.Cell>
+                <Table.Cell width={11}>
                   {" "}
                   <Link to={`/units/${param}`}> {description} </Link>
                 </Table.Cell>
@@ -76,7 +76,7 @@ class Units extends Component {
             ))}
           </Table.Body>
         </Table>
-        <p>
+        <p style={{ marginBottom: "25px" }}>
           Want to contribute something new?{" "}
           <a href="resources/new">
             <Icon name="add" color="black" />

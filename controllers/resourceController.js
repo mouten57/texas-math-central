@@ -34,43 +34,48 @@ module.exports = {
   },
 
   create(req, res, next) {
-    console.log("Req file in create", req.file);
+    console.log("Req fileS in create", req.files);
     const link = req.body.link.includes("http")
       ? req.body.link
       : `//${req.body.link}`;
-    if (req.file !== undefined) {
-      s3.upload(req.file, (err, data) => {
-        console.log(data);
-        let newResource = {
-          name: req.body.name,
-          unit: req.body.unit,
-          fullUnit: fullUnit(req.body.unit),
-          type: req.body.type,
-          link,
-          description: req.body.description,
-          _user: req.user,
-          created: Date.now(),
-          file: req.file,
-          file_data: fs.readFileSync(`./uploads/${req.file.filename}`),
-          s3Object: data,
-          s3Link: data.Location,
-        };
-
-        resourceQueries.addResource(newResource, (err, resource) => {
-          if (err) {
-            console.log(err);
-          } else {
-            res.send(resource);
+    if (req.files !== undefined) {
+      let newResource = {
+        name: req.body.name,
+        unit: req.body.unit,
+        fullUnit: fullUnit(req.body.unit),
+        type: req.body.type,
+        link,
+        description: req.body.description,
+        _user: req.user,
+        created: Date.now(),
+        files: req.files,
+        file_data: (function () {
+          var data = [];
+          for (let i = 0; i < req.files.length; i++) {
+            data.push(fs.readFileSync(`./uploads/${req.files[i].filename}`));
           }
-        });
-        //delete upload
-        if (req.file !== undefined) {
-          fs.unlink(req.file.path, (err) => {
-            if (err) throw err;
-            console.log(`${req.file.originalname} was deleted.`);
-          });
+          return data;
+        })(),
+        // s3Object: data,
+        // s3Link: data.Location,
+      };
+
+      resourceQueries.addResource(newResource, (err, resource) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send(resource);
         }
       });
+      //delete upload
+      if (req.files !== undefined) {
+        for (let i = 0; i < req.files.length; i++) {
+          fs.unlink(req.files[i].path, (err) => {
+            if (err) throw err;
+            console.log(`${req.files[i].originalname} was deleted.`);
+          });
+        }
+      }
     } else {
       //no file. there has to be a better way to do this
       let newResource = {
@@ -108,14 +113,18 @@ module.exports = {
       if (err || resource == null) {
         res.redirect(404, "/");
       } else {
-        fs.writeFileSync(resource.file.path, resource.file_data, "binary");
+        let correct_file = resource.files.filter((obj) => {
+          return obj.originalname == req.params.filename;
+        })[0];
 
-        res.download(`./${resource.file.path}`, (err) => {
+        fs.writeFileSync(correct_file.path, correct_file.filename, "binary");
+
+        res.download(`./${correct_file.path}`, (err) => {
           if (err) {
             console.log(err);
           } else {
             //need to delete file after download is complete
-            fs.unlink(resource.file.path, (err) => {
+            fs.unlink(correct_file.path, (err) => {
               if (err) {
                 throw err;
               }

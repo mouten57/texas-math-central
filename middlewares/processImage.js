@@ -2,24 +2,22 @@ const sharp = require("sharp");
 const fs = require("fs");
 
 module.exports = (req, res, next) => {
-  if (req.body.imageFile === undefined) {
+  if (req.file === undefined) {
     next();
-  } else if (req.body.imageFile !== "") {
+  } else if (req.file !== "") {
+    console.log(req.file);
     let images = [req.file.path];
     let promises = [];
-    for (const image of images) {
-      promises.push(
-        new Promise((resolve, reject) => {
-          sharp(image)
-            .resize({ height: 400 })
-            .toFile("src/uploads/output.jpg", (err) => {
-              if (err) throw err;
 
-              resolve();
-            });
-        })
-      );
-    }
+    new Promise((resolve, reject) => {
+      sharp(req.file.path)
+        .resize({ height: 400 })
+        .toFile(`uploads/sharp_${req.file.filename}`, (err) => {
+          if (err) throw err;
+          resolve();
+        });
+    });
+
     Promise.all(promises).then(() => next());
   }
 };

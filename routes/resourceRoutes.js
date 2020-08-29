@@ -14,13 +14,13 @@ module.exports = (app) => {
   app.post(
     "/api/resources/create",
     requireLogin,
-    upload.single("file"),
-    processImage,
+    upload.array("files"),
+    // processImage,
     resourceController.create
   );
 
   app.get(
-    "/api/units/:unit/:resourceId/download",
+    "/api/units/:unit/:resourceId/download/:filename",
     requireLogin,
     resourceController.download
   );
