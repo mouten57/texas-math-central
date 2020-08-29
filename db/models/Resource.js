@@ -1,21 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const commentSchema = require('./Comment');
-const userSchema = require('./User');
+const commentSchema = require("./Comment");
+const userSchema = require("./User");
 
 const uploadSchema = new Schema({
   name: String,
   unit: String,
+  fullUnit: String,
   type: String,
   link: String,
   description: String,
   _user: [userSchema],
-  dateSent: Date,
-  file_name: String,
-  file_type: String,
-  file_path: String,
+  created: Date,
+  file: Object,
+  s3Object: Object,
+  s3Link: String,
   file_data: Buffer,
-  comments: [commentSchema]
 });
 
-mongoose.model('resources', uploadSchema);
+mongoose.model("resources", uploadSchema);

@@ -11,7 +11,7 @@ class IndividualResource extends Component {
     super(props);
     this.state = {
       resource: {},
-      resource_data: null,
+      s3Link: null,
       resource_name: null,
       resource_id: null,
       resourceComments: [],
@@ -36,11 +36,10 @@ class IndividualResource extends Component {
       .then((res) => {
         const response = res.data;
         const resource = response.resource;
-        console.log("here is resource:", resource);
         this.setState({
           resource,
           resourceComments: response.comments,
-          resource_data: resource.file_data,
+          s3Link: resource.s3Link,
           resource_name: resource.name,
           resource_id: resource._id,
         });
@@ -75,13 +74,13 @@ class IndividualResource extends Component {
   };
 
   downloadLink() {
-    switch (this.state.resource_data) {
+    switch (this.state.s3Link) {
       case null:
-        return "Error";
+        return "";
       case undefined:
         return "Download not available.";
       default:
-        let link = `/api/resources/${this.props.match.params.id}/download`;
+        let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download`;
         return (
           <a href={link} download>
             File
@@ -118,6 +117,7 @@ class IndividualResource extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { resource } = this.state;
 
     return (
@@ -135,7 +135,7 @@ class IndividualResource extends Component {
             {resource.name}
           </p>
           <p>
-            <b>Unit:</b> {resource.unit}
+            <b>Unit:</b> {resource.fullUnit}
           </p>
           <p>
             <b>Type:</b> {resource.type}

@@ -1,10 +1,10 @@
-const sharp = require('sharp');
-const fs = require('fs');
+const sharp = require("sharp");
+const fs = require("fs");
 
 module.exports = (req, res, next) => {
-  if (req.body.imageFile === '') {
+  if (req.body.imageFile === undefined) {
     next();
-  } else if (req.body.imageFile !== '') {
+  } else if (req.body.imageFile !== "") {
     let images = [req.file.path];
     let promises = [];
     for (const image of images) {
@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
         new Promise((resolve, reject) => {
           sharp(image)
             .resize({ height: 400 })
-            .toFile('src/uploads/output.jpg', err => {
+            .toFile("src/uploads/output.jpg", (err) => {
               if (err) throw err;
 
               resolve();

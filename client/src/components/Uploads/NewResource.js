@@ -22,7 +22,7 @@ class UploadForm extends Component {
     super();
     this.state = {
       description: "",
-      imageFile: "",
+      file: "",
       link: "https://www.",
       type: "",
       unit: "",
@@ -50,8 +50,8 @@ class UploadForm extends Component {
 
   onChange = (e) => {
     switch (e.target.name) {
-      case "imageFile":
-        this.setState({ imageFile: e.target.files[0] });
+      case "file":
+        this.setState({ file: e.target.files[0] });
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -153,11 +153,7 @@ class UploadForm extends Component {
               <div>
                 <Label>Upload JPG</Label>
                 <div>
-                  <Input
-                    type="file"
-                    name="imageFile"
-                    onChange={this.onChange}
-                  />
+                  <Input type="file" name="file" onChange={this.onChange} />
                 </div>
               </div>
 
@@ -192,12 +188,12 @@ class UploadForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const { description, imageFile, name, unit, type, link } = this.state;
+    const { description, file, name, unit, type, link } = this.state;
 
     let formData = new FormData();
 
     formData.append("description", description);
-    formData.append("imageFile", imageFile);
+    formData.append("file", file);
     formData.append("name", name);
     formData.append("unit", unit);
     formData.append("type", type);
@@ -227,7 +223,7 @@ class UploadForm extends Component {
       .then(() => this.props.history.push(`/units/${unit}`))
 
       .catch(function (error) {
-        console.log(">> ERROR FILE UPLAOD ", error);
+        console.log(">> ERROR FILE UPLOAD ", error);
         alert(
           "File upload failed. Please ensure you are uploading a .jpeg file only"
         );
