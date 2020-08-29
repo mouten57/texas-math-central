@@ -4,8 +4,8 @@
   "description": "A one-stop shop for Texas math teachers.",
   "main": "src/index.js",
   "engines": {
-    "node": "8.1.1",
-    "npm": "5.0.3"
+    "node": "12.x",
+    "npm": "6.14.x"
   },
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
