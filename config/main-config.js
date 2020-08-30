@@ -13,6 +13,7 @@ require("../db/models/Resource");
 require("../db/models/Comment");
 require("../db/models/User");
 require("../db/models/Vote");
+require("../db/models/Favorite");
 require("./passport-config");
 
 const keys = require("./keys/keys");

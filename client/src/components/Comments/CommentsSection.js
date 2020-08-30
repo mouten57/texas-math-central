@@ -32,11 +32,21 @@ class CommentsSection extends Component {
   onSubmitNewComment = (allComments) => {
     this.setState({ comments: allComments, commentValue: "" });
   };
-  onCommentDelete = (comment_id) => {
-    let updated_comments = this.state.comments.filter(function (el) {
-      return el._id !== comment_id;
-    });
-    this.setState({ comments: updated_comments });
+  onDeleteComment = (comment, callback) => {
+    var del_post_link = `/api/resources/${comment.resource_id}/comments/${comment._id}/destroy`;
+
+    axios
+      .post(del_post_link)
+      .then((res) => {
+        let updated_comments = this.state.comments.filter(function (el) {
+          return el._id !== comment._id;
+        });
+        this.setState({ comments: updated_comments });
+        callback(null, res.data);
+      })
+      .catch((err) => {
+        callback(err);
+      });
   };
   render() {
     return (
@@ -50,7 +60,7 @@ class CommentsSection extends Component {
         />
         {this.state.comments.length > 0 ? (
           <ShowComments
-            onCommentDelete={this.onCommentDelete}
+            onDeleteComment={this.onDeleteComment}
             resourceId={this.props.resourceId}
             comments={this.state.comments}
           />

@@ -4,7 +4,7 @@ module.exports = {
   create(req, res) {
     const comment = {
       resource_id: req.params.resourceId,
-      posted: Date.now(), //add in date helper function here
+      created_at: Date.now(), //add in date helper function here
       _user: req.user,
       body: req.body.body,
     };

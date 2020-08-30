@@ -2,9 +2,6 @@
 //header with matching unit name, and ResourceList
 //where table of unit actually is located
 
-//currently, this is calling GET /api/resources/ everytime I go to
-//  /units/:name  ...loads all resources. Can I trim it down?
-
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -47,8 +44,23 @@ class ResourceIndex extends Component {
       }
     }
   }
+  onDeleteResource = (resourceId, callback) => {
+    axios
+      .post(`/api/units/${this.props.match.params.unit}/${resourceId}/delete`)
+      .then((res) => {
+        let updated_resources = this.state.resources.filter(function (el) {
+          return el._id !== resourceId;
+        });
+        this.setState({ resources: updated_resources });
+        callback(null, res.data);
+      })
+      .catch((err) => {
+        callback(err);
+      });
+  };
 
   render() {
+    const UnitName = this.getUnitName();
     return (
       <Container>
         <Breadcrumb>
@@ -60,16 +72,18 @@ class ResourceIndex extends Component {
             <Link to="/units">Resources</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section active>{this.getUnitName()}</Breadcrumb.Section>
+          <Breadcrumb.Section active>{UnitName}</Breadcrumb.Section>
         </Breadcrumb>
         <Header as="h3" dividing block>
-          {this.getUnitName()}
+          {UnitName}
         </Header>
         <Container>
           {this.props.auth && this.state.resources ? (
             <ResourceList
+              auth={this.props.auth}
               param={this.props.match.params.unit}
               resources={this.state.resources}
+              onDeleteResource={this.onDeleteResource}
             />
           ) : this.props.auth ? (
             <Segment>

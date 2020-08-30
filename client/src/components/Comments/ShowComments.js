@@ -3,45 +3,26 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import convertTimestamp from "../../helpers/convertTimestamp";
 import axios from "axios";
+import "./style/ShowComments.css";
 
 class ShowComment extends Component {
   constructor(props) {
     super(props);
     this.state = {
       comments: [],
+      commentToDelete: null,
       open: false,
     };
   }
-  show = () => this.setState({ open: true });
+  show = (comment) => this.setState({ open: true, commentToDelete: comment });
   handleConfirm = (e, comment) => {
-    e.preventDefault();
-    var del_post_link = `/api/resources/${comment.resource_id}/comments/${comment._id}/destroy`;
-
-    axios
-      .post(del_post_link, {
-        _id: comment._id,
-        resourceId: comment.resource_id,
-      })
-      .then((response) => {
-        this.props.onCommentDelete(comment._id);
-      });
-    this.setState({ result: "confirmed", open: false });
+    this.props.onDeleteComment(this.state.commentToDelete, (err, result) => {
+      if (err) throw err;
+      this.setState({ result: "confirmed", open: false });
+    });
   };
   handleCancel = () => this.setState({ result: "cancelled", open: false });
 
-  onDelete = (e, comment) => {
-    e.preventDefault();
-    var del_post_link = `/api/resources/${comment.resource_id}/comments/${comment._id}/destroy`;
-
-    axios
-      .post(del_post_link, {
-        _id: comment._id,
-        resourceId: comment.resource_id,
-      })
-      .then((response) => {
-        this.props.onCommentDelete(comment._id);
-      });
-  };
   render() {
     const { open } = this.state;
     return (
@@ -60,21 +41,20 @@ class ShowComment extends Component {
                     {comment._user[0]?.nickname}
                   </Comment.Author>
                   <Comment.Metadata>
-                    <span>Posted at {convertTimestamp(comment.posted)}</span>
+                    <span>
+                      Posted at {convertTimestamp(comment.created_at)}
+                    </span>
                   </Comment.Metadata>
                   <Comment.Text>{comment.body}</Comment.Text>
-                  {comment._user[0] === this.props.auth ||
-                  this.props.auth?.role === "admin" ? (
-                    <Comment.Action onClick={this.show}>Delete</Comment.Action>
+                  {comment._user[0] == this.props.auth ||
+                  this.props.auth?.role == "admin" ? (
+                    <Comment.Action
+                      className="custom_delete_action"
+                      onClick={() => this.show(comment)}
+                    >
+                      Delete
+                    </Comment.Action>
                   ) : null}
-                  <Confirm
-                    open={open}
-                    size="tiny"
-                    cancelButton="Cancel"
-                    confirmButton="Delete Comment"
-                    onCancel={this.handleCancel}
-                    onConfirm={(e) => this.handleConfirm(e, comment)}
-                  />
                 </Comment.Content>
               </Comment>
             );
@@ -82,6 +62,14 @@ class ShowComment extends Component {
         ) : (
           <p />
         )}
+        <Confirm
+          open={open}
+          size="tiny"
+          cancelButton="Cancel"
+          confirmButton="Delete Comment"
+          onCancel={this.handleCancel}
+          onConfirm={this.handleConfirm}
+        />
       </Comment.Group>
     );
   }

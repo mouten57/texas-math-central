@@ -51,7 +51,7 @@ module.exports = {
         link,
         description: req.body.description,
         _user: req.user,
-        created: Date.now(),
+        created_at: Date.now(),
         files: files_plus_data,
         // file_data: (function () {
         //   var data = [];
@@ -90,7 +90,7 @@ module.exports = {
         link,
         description: req.body.description,
         _user: req.user,
-        created: Date.now(),
+        created_at: Date.now(),
       };
       resourceQueries.addResource(newResource, (err, resource) => {
         if (err) {
@@ -104,9 +104,10 @@ module.exports = {
   destroy(req, res, next) {
     resourceQueries.destroyResource(req.params.resourceId, (err, result) => {
       if (err || result == null) {
-        res.redirect(500, `/units/${req.params.unit}/${req.params.resourceId}`);
+        res.send(err);
       } else {
-        res.redirect(303, `/units/${req.params.unit}`);
+        console.log("In Delete");
+        res.send(result);
       }
     });
   },

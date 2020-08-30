@@ -38,7 +38,10 @@ class UserProfile extends Component {
         return (
           <Header as="h1" textAlign="center">
             <Image size="massive" circular src={this.props.auth.image} />
-            <p>{this.props.auth.nickname}'s Profile</p>
+            <p>
+              {this.props.auth.nickname}'s Profile{" "}
+              {this.props.auth.role == "admin" ? "(admin)" : null}
+            </p>
           </Header>
         );
     }
@@ -97,7 +100,7 @@ class UserProfile extends Component {
           {this.state.comments.map((comment) => {
             return (
               <p key={comment._id}>
-                {comment.body} on {convertTimestamp(comment.posted)}
+                {comment.body} on {convertTimestamp(comment.created_at)}
               </p>
             );
           })}

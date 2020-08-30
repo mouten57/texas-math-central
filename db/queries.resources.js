@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Resource = mongoose.model("resources");
 const Comment = mongoose.model("comments");
+const Vote = mongoose.model("votes");
 const fs = require("fs");
 var AWS = require("aws-sdk");
 var keys = require("../config/keys/keys");
@@ -35,23 +36,26 @@ module.exports = {
     callback(null, result);
   },
   async destroyResource(_id, callback) {
-    const resource = await Resource.findOne({ _id });
-    if (resource.s3Object) {
-      let s3Object = resource.s3Object;
+    // const resource = await Resource.findOne({ _id });
+    // if (resource.s3Object) {
+    //   let s3Object = resource.s3Object;
 
-      s3.deleteObject({ Bucket: s3Object.Bucket, Key: s3Object.Key }, function (
-        err,
-        data
-      ) {
-        if (err) console.log(err, err.stack);
-        // an error occurred
-        else console.log(data); // successful response
-      });
-    }
+    //   s3.deleteObject({ Bucket: s3Object.Bucket, Key: s3Object.Key }, function (
+    //     err,
+    //     data
+    //   ) {
+    //     if (err) console.log(err, err.stack);
+    //     // an error occurred
+    //     else console.log(data); // successful response
+    //   });
+    // }
     return Resource.deleteOne({ _id })
-      .then((resource) => {
-        callback(null, resource);
+      .then(() => Comment.deleteMany({ resource_id: _id }))
+      .then(() => Vote.deleteMany({ resource_id: _id }))
+      .then((res) => {
+        callback(null, res);
       })
+
       .catch((err) => {
         callback(err);
       });
