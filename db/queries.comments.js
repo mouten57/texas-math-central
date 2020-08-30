@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Comment = mongoose.model("comments");
-const Resource = mongoose.model("resources");
+const Comment = mongoose.model("Comment");
+const Resource = mongoose.model("Resource");
 
 module.exports = {
   async createComment(newComment, callback) {

@@ -3,7 +3,7 @@ const resourceController = require("../controllers/resourceController");
 const upload = require("../middlewares/multer").upload;
 const processImage = require("../middlewares/processImage");
 const mongoose = require("mongoose");
-const Resource = mongoose.model("resources");
+const Resource = mongoose.model("Resource");
 const fs = require("fs");
 
 module.exports = (app) => {

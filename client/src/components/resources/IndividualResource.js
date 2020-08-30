@@ -15,6 +15,7 @@ class IndividualResource extends Component {
       resource_name: null,
       resource_id: null,
       resourceComments: [],
+      favorited: false,
       commentValue: "",
       voteTotal: 0,
       upvoted: false,
@@ -35,6 +36,7 @@ class IndividualResource extends Component {
       )
       .then((res) => {
         const response = res.data;
+
         const resource = response.resource;
         this.setState({
           resource,
@@ -120,10 +122,18 @@ class IndividualResource extends Component {
         }
       });
   };
+  onAddToFavorites = () => {
+    axios.post(`/api/resources/${this.state.resource_id}/favorites/create`);
+    this.setState({ favorited: true });
+  };
+  onRemoveFromFavorites = () => {
+    axios.post(`/api/resources/${this.state.resource_id}/favorites/destroy`);
+    this.setState({ favorited: false });
+  };
 
   render() {
     console.log(this.state);
-    const { resource } = this.state;
+    const { resource, favorited } = this.state;
 
     return (
       <Container>
@@ -133,6 +143,13 @@ class IndividualResource extends Component {
           <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
         </Button.Group>
         <h2>"{this.state.resource_name}"</h2>
+        {/* <p
+          onClick={
+            favorited ? this.onRemoveFromFavorites : this.onAddToFavorites
+          }
+        >
+          {favorited ? "Remove from" : "Add to"} favorites
+        </p> */}
 
         <div>
           <p>

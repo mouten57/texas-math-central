@@ -10,5 +10,6 @@ module.exports = {
     require("../routes/commentRoutes")(app);
     require("../routes/votingRoutes")(app);
     require("../routes/userRoutes")(app);
+    require("../routes/favoriteRoutes")(app);
   },
 };

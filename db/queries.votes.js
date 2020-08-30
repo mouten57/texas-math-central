@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Vote = mongoose.model("votes");
+const Vote = mongoose.model("Vote");
 
 module.exports = {
   createVote(req, val, callback) {

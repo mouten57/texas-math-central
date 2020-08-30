@@ -8,9 +8,10 @@ const favoriteSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Resource",
   },
-  _user: [userSchema],
+  _user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
-//create a new collection called comments
-//two arguments means we are loading something into mongoose
-//one argument means we are fetching something
-mongoose.model("favorites", favoriteSchema);
+
+mongoose.model("Favorite", favoriteSchema);

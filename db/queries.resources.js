@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Resource = mongoose.model("resources");
-const Comment = mongoose.model("comments");
-const Vote = mongoose.model("votes");
+const Resource = mongoose.model("Resource");
+const Comment = mongoose.model("Comment");
+const Vote = mongoose.model("Vote");
 const fs = require("fs");
 var AWS = require("aws-sdk");
 var keys = require("../config/keys/keys");
@@ -30,6 +30,7 @@ module.exports = {
     let result = {};
     const resource = await Resource.findOne({ _id });
     resource.populate("_user");
+    resource.populate("favorites");
     result["resource"] = resource;
     const comments = await Comment.find({ resource_id: _id });
     result["comments"] = comments;

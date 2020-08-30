@@ -14,4 +14,4 @@ const commentSchema = new Schema({
 //create a new collection called comments
 //two arguments means we are loading something into mongoose
 //one argument means we are fetching something
-mongoose.model("comments", commentSchema);
+mongoose.model("Comment", commentSchema);

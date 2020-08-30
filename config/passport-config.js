@@ -1,10 +1,10 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const mongoose = require('mongoose');
-const keys = require('./keys/keys');
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const mongoose = require("mongoose");
+const keys = require("./keys/keys");
 
 //one arguments means we are fetching something from mongoose
-const User = mongoose.model('users');
+const User = mongoose.model("User");
 
 //user is whatever we pulled out of the database
 passport.serializeUser((user, done) => {
@@ -15,7 +15,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => {
+  User.findById(id).then((user) => {
     done(null, user);
   });
 });
@@ -26,8 +26,8 @@ passport.use(
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       //route user is sent to after they grant permissions to google
-      callbackURL: '/auth/google/callback',
-      proxy: true
+      callbackURL: "/auth/google/callback",
+      proxy: true,
     },
     //callback function -> when user gets back home, it brings this accessToken
     //here is our chance to get user info and create new user in our database
@@ -50,7 +50,7 @@ passport.use(
         name: profile.displayName,
         nickname: profile.name.givenName,
         image: profile.photos[0].value,
-        token: accessToken
+        token: accessToken,
       }).save();
       done(null, user);
     }

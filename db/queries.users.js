@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const User = mongoose.model("users");
-const Resource = mongoose.model("resources");
-const Comment = mongoose.model("comments");
+const User = mongoose.model("User");
+const Resource = mongoose.model("Resource");
+const Comment = mongoose.model("Comment");
 
 module.exports = {
   getAllUsers(callback) {
