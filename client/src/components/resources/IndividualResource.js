@@ -83,7 +83,7 @@ class IndividualResource extends Component {
         return this.state.resource.files?.map((file, i) => {
           let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
           return (
-            <span>
+            <span key={i}>
               <a href={link} download key={i} style={{ marginLeft: "5px" }}>
                 {file.originalname}
               </a>
@@ -122,6 +122,7 @@ class IndividualResource extends Component {
   };
 
   render() {
+    console.log(this.state);
     const { resource } = this.state;
 
     return (

@@ -35,6 +35,13 @@ module.exports = {
     const link = req.body.link.includes("http")
       ? req.body.link
       : `//${req.body.link}`;
+    let files_plus_data = [...req.files];
+    for (let i = 0; i < req.files.length; i++) {
+      files_plus_data[i].file_data = fs.readFileSync(
+        `./uploads/${req.files[i].filename}`
+      );
+    }
+
     if (req.files !== undefined) {
       let newResource = {
         name: req.body.name,
@@ -45,14 +52,14 @@ module.exports = {
         description: req.body.description,
         _user: req.user,
         created: Date.now(),
-        files: req.files,
-        file_data: (function () {
-          var data = [];
-          for (let i = 0; i < req.files.length; i++) {
-            data.push(fs.readFileSync(`./uploads/${req.files[i].filename}`));
-          }
-          return data;
-        })(),
+        files: files_plus_data,
+        // file_data: (function () {
+        //   var data = [];
+        //   for (let i = 0; i < req.files.length; i++) {
+        //     data.push(fs.readFileSync(`./uploads/${req.files[i].filename}`));
+        //   }
+        //   return data;
+        // })(),
         // s3Object: data,
         // s3Link: data.Location,
       };
@@ -110,40 +117,27 @@ module.exports = {
       if (err || resource == null) {
         res.redirect(404, "/");
       } else {
-        var correct_file = (req) => {
-          for (let i = 0; i < resource.files.length; i++) {
-            if (resource.files[i].filename == req.params.filename) {
-              let result = {};
-              result.correct_file = resource.files[i];
-              result.index = i;
-              return result;
-            }
-          }
-        };
+        const found = resource.files.find(
+          (obj) => obj.filename == req.params.filename
+        );
 
         fs.writeFileSync(
-          `./uploads/${correct_file(req).correct_file.originalname}`,
-          resource.file_data[correct_file(req).index].buffer
+          `./uploads/${found.originalname}`,
+          found.file_data.buffer
         );
 
-        res.download(
-          `./uploads/${correct_file(req).correct_file.originalname}`,
-          (err) => {
-            if (err) {
-              console.log(err);
-            } else {
-              //need to delete file after download is complete
-              fs.unlink(
-                `./uploads/${correct_file(req).correct_file.originalname}`,
-                (err) => {
-                  if (err) {
-                    throw err;
-                  }
-                }
-              );
-            }
+        res.download(`./uploads/${found.originalname}`, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            //need to delete file after download is complete
+            fs.unlink(`./uploads/${found.originalname}`, (err) => {
+              if (err) {
+                throw err;
+              }
+            });
           }
-        );
+        });
       }
     });
   },
