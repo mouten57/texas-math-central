@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { NotificationContainer } from "react-notifications";
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../actions";
@@ -14,8 +15,6 @@ import { Container } from "semantic-ui-react";
 
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
-
-import axios from "axios";
 
 class App extends Component {
   constructor(props) {
@@ -74,6 +73,7 @@ class App extends Component {
             <Route exact path="/resources/new" component={NewResource} />
           </div>
         </BrowserRouter>
+        <NotificationContainer />
       </Container>
     );
   }

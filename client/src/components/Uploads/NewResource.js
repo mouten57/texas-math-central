@@ -212,9 +212,12 @@ class UploadForm extends Component {
     axios
       .post("/api/resources/create", formData)
       .then((res) => {
-        alert("SUCCESS!");
+        // alert("SUCCESS!");
         axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
-          this.props.history.push(`/units/${unit}/${res.data.resource_id}`);
+          this.props.history.push({
+            pathname: `/units/${unit}/${res.data.resource_id}`,
+            state: { new_create_data: res.data },
+          });
         });
 
         // access results...

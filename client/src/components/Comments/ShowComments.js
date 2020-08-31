@@ -2,7 +2,7 @@ import { Header, Comment, Confirm } from "semantic-ui-react";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import convertTimestamp from "../../helpers/convertTimestamp";
-import axios from "axios";
+import { NotificationManager } from "react-notifications";
 import "./style/ShowComments.css";
 
 class ShowComment extends Component {
@@ -14,11 +14,29 @@ class ShowComment extends Component {
       open: false,
     };
   }
+  createNotification = (type) => {
+    switch (type) {
+      case "success":
+        NotificationManager.success("Comment successfully removed!", "", 1500);
+        break;
+      case "warning":
+        NotificationManager.warning(
+          "Warning message",
+          "Close after 3000ms",
+          3000
+        );
+        break;
+
+      default:
+        break;
+    }
+  };
   show = (comment) => this.setState({ open: true, commentToDelete: comment });
   handleConfirm = (e, comment) => {
     this.props.onDeleteComment(this.state.commentToDelete, (err, result) => {
       if (err) throw err;
       this.setState({ result: "confirmed", open: false });
+      setTimeout(() => this.createNotification("success"), 300);
     });
   };
   handleCancel = () => this.setState({ result: "cancelled", open: false });

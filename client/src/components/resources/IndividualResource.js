@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { Container, Loader, Button } from "semantic-ui-react";
+import { NotificationManager } from "react-notifications";
+import { Container, Loader, Button, Icon } from "semantic-ui-react";
 import _ from "lodash";
 import axios from "axios";
 //import Voting from '../Voting';
 import { connect } from "react-redux";
 import CommentsSection from "../Comments/CommentsSection";
+import "react-notifications/lib/notifications.css";
 
 class IndividualResource extends Component {
   constructor(props) {
@@ -26,6 +28,9 @@ class IndividualResource extends Component {
 
   componentDidMount = () => {
     this.makeAxiosCalls();
+    if (this.props.history.location.state) {
+      this.createNotification("success");
+    }
   };
   //is there a way to populate resource with one call rather than 3 separate calls?
   makeAxiosCalls = (nextProps) => {
@@ -131,17 +136,46 @@ class IndividualResource extends Component {
         }
       });
   };
+  createNotification = (type) => {
+    switch (type) {
+      case "add_fav":
+        NotificationManager.success("", "Added to favorites!", 1500);
+        break;
+      case "remove_fav":
+        NotificationManager.warning("", "Removed from favorites", 1500);
+        break;
+      case "success":
+        NotificationManager.success("Success!", "", 1500);
+        break;
+      case "warning":
+        NotificationManager.warning(
+          "Warning message",
+          "Close after 3000ms",
+          3000
+        );
+        break;
+      case "error":
+        NotificationManager.error("Error message", "Click me!", 5000, () => {
+          alert("callback");
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   onAddToFavorites = () => {
+    this.createNotification("add_fav");
     axios
       .post(`/api/resources/${this.state.resource_id}/favorites/create`)
       .then((res) => {
-        console.log(res.data);
         this.setState({
           currentUsersFavoriteId: res.data._id,
         });
       });
   };
   onRemoveFromFavorites = () => {
+    this.createNotification("remove_fav");
     axios.post(
       `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
     );
@@ -154,21 +188,29 @@ class IndividualResource extends Component {
     return (
       <Container>
         <Button.Group vertical size="small" floated="right">
+          <Button
+            style={{ marginBottom: "10px" }}
+            icon
+            basic
+            onClick={
+              this.state.currentUsersFavoriteId
+                ? this.onRemoveFromFavorites
+                : this.onAddToFavorites
+            }
+          >
+            <Icon
+              size="large"
+              name={this.state.currentUsersFavoriteId ? "star" : "star outline"}
+            />
+          </Button>
           <Button onClick={(e) => this.onUpvote(e)}>&#9650;</Button>
           <Button basic>{this.state.voteTotal}</Button>
           <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
         </Button.Group>
-        <h2>"{this.state.resource_name}"</h2>
-        <p
-          onClick={
-            this.state.currentUsersFavoriteId
-              ? this.onRemoveFromFavorites
-              : this.onAddToFavorites
-          }
-        >
-          {this.state.currentUsersFavoriteId ? "Remove from" : "Add to"}{" "}
-          favorites
-        </p>
+
+        <h2 onClick={() => this.createNotification("info")}>
+          "{this.state.resource_name}"
+        </h2>
 
         <div>
           <p>
