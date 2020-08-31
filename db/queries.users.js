@@ -14,22 +14,14 @@ module.exports = {
       });
   },
 
-  getUser(user, callback) {
-    let result = {};
-    User.findOne({ _id: user._id }).then((user) => {
-      if (!user) {
-        callback(404);
-      } else {
-        result["user"] = user;
-
-        Resource.find({ _user: user }).then((resources) => {
-          result["resources"] = resources;
-          Comment.find({ _user: user }).then((comments) => {
-            result["comments"] = comments;
-            callback(null, result);
-          });
-        });
-      }
-    });
+  async getUser(_user, callback) {
+    let user = await User.findOne({ _id: _user._id })
+      .populate("resources")
+      .populate("comments");
+    try {
+      callback(null, user);
+    } catch (err) {
+      callback(err);
+    }
   },
 };

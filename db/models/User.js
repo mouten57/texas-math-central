@@ -8,6 +8,8 @@ const userSchema = new Schema({
   nickname: String,
   image: String,
   token: String,
+  resources: [{ type: Schema.Types.ObjectId, ref: "Resource" }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
 });
 //create a new collection called users
 //two arguments means we are loading something into mongoose

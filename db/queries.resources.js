@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Resource = mongoose.model("Resource");
 const Comment = mongoose.model("Comment");
+const User = mongoose.model("User");
 const Vote = mongoose.model("Vote");
 const fs = require("fs");
 var AWS = require("aws-sdk");
@@ -18,47 +19,46 @@ module.exports = {
       callback(null, resources);
     });
   },
-  addResource(newResource, callback) {
-    new Resource(newResource)
-      .save()
-      .then((resource) => {
-        callback(null, resource);
-      })
-      .catch((err) => callback(err));
+  async addResource(newResource, callback) {
+    let resource = await Resource.create(newResource);
+    let user = await User.findById(newResource._user);
+    user.resources = [...user.resources, resource._id];
+
+    try {
+      user.save();
+      callback(null, resource);
+    } catch (err) {
+      callback(err);
+    }
   },
   async getResource(_id, callback) {
-    let result = {};
-    const resource = await Resource.findOne({ _id });
-    resource.populate("_user");
-    resource.populate("favorites");
-    result["resource"] = resource;
-    const comments = await Comment.find({ resource_id: _id });
-    result["comments"] = comments;
-    callback(null, result);
+    const resource = await Resource.findOne({ _id })
+      .populate("_user")
+      .populate("favorites")
+      .populate("votes")
+      .populate("comments");
+
+    // result["resource"] = resource;
+    // console.log(result);
+    // const comments = await Comment.find({ resource_id: _id }).populate("_user");
+    // result["comments"] = comments;
+    callback(null, resource);
   },
-  async destroyResource(_id, callback) {
-    // const resource = await Resource.findOne({ _id });
-    // if (resource.s3Object) {
-    //   let s3Object = resource.s3Object;
-
-    //   s3.deleteObject({ Bucket: s3Object.Bucket, Key: s3Object.Key }, function (
-    //     err,
-    //     data
-    //   ) {
-    //     if (err) console.log(err, err.stack);
-    //     // an error occurred
-    //     else console.log(data); // successful response
-    //   });
-    // }
-    return Resource.deleteOne({ _id })
-      .then(() => Comment.deleteMany({ resource_id: _id }))
-      .then(() => Vote.deleteMany({ resource_id: _id }))
-      .then((res) => {
-        callback(null, res);
-      })
-
-      .catch((err) => {
-        callback(err);
-      });
+  async destroyResource(req, callback) {
+    let _id = req.params.resourceId;
+    let resource = await Resource.deleteOne({ _id });
+    let comment = await Comment.deleteMany({ resource_id: _id });
+    let vote = await Vote.deleteMany({ resource_id: _id });
+    let user = await User.findOne({ _id: req.user._id });
+    let temp = user.resources;
+    let idx = user.resources.indexOf(_id);
+    temp.splice(idx, 1);
+    user.resources = temp;
+    try {
+      user.save();
+      callback(null, user);
+    } catch (err) {
+      callback(err);
+    }
   },
 };

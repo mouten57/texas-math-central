@@ -35,25 +35,17 @@ class IndividualResource extends Component {
         `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}`
       )
       .then((res) => {
-        const response = res.data;
+        const resource = res.data;
 
-        const resource = response.resource;
         this.setState({
           resource,
-          resourceComments: response.comments,
+          resourceComments: resource.comments,
           s3Link: resource.s3Link,
           resource_name: resource.name,
           resource_id: resource._id,
         });
-      });
-
-    //votes
-    axios
-      .get(`/api/resources/${this.props.match.params.id}/votes/total`)
-      .then((res) => {
-        const votes = res.data;
-        if (votes.length > 0) {
-          this.getVoteTotal(votes);
+        if (resource.votes.length > 0) {
+          this.getVoteTotal(resource.votes);
         }
       });
   };
@@ -170,7 +162,7 @@ class IndividualResource extends Component {
           </p>
           <p>
             {" "}
-            <b>Uploader:</b> {resource._user ? resource._user[0].name : null}{" "}
+            <b>Uploader:</b> {resource._user ? resource._user.name : null}{" "}
           </p>
           <p>
             <b>Download: </b> {this.downloadLink()}

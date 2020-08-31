@@ -1,14 +1,23 @@
 const mongoose = require("mongoose");
 const Comment = mongoose.model("Comment");
 const Resource = mongoose.model("Resource");
-
+const User = mongoose.model("User");
 module.exports = {
   async createComment(newComment, callback) {
-    const comment = await Comment.create({
+    let comment = await Comment.create({
       ...newComment,
     });
+    comment = await comment.populate("_user").execPopulate();
+
+    let resource = await Resource.findOne({ _id: comment.resource_id });
+    resource.comments = [...resource.comments, comment];
+
+    let user = await User.findById(comment._user);
+    user.comments = [...user.comments, comment];
 
     try {
+      await user.save();
+      await resource.save();
       await comment.save();
       callback(null, comment);
     } catch (err) {
@@ -19,6 +28,7 @@ module.exports = {
   getResourceComments(req, callback) {
     return (
       Comment.find({ resource_id: req.params.resourceId })
+        .populate("_user")
         .then((comments) => callback(null, comments))
         // return Resource.findOne({ _id: req.params.resourceId }, { comments: true })
         //   .then(comments => {
@@ -37,13 +47,19 @@ module.exports = {
       .catch((err) => callback(err));
   },
 
-  deleteComment(_id, callback) {
-    return Comment.deleteOne({ _id })
-      .then((response) => {
-        callback(null, response);
-      })
-      .catch((err) => {
-        callback(err);
-      });
+  async deleteComment(req, callback) {
+    let comment = await Comment.deleteOne({ _id: req.params.id });
+    let user = await User.findOne({ _id: req.user._id });
+    let temp = user.comments;
+    let idx = user.comments.indexOf(req.params.id);
+    temp.splice(idx, 1);
+    user.comments = temp;
+
+    try {
+      user.save();
+      callback(null, comment);
+    } catch (err) {
+      callback(err);
+    }
   },
 };

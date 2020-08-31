@@ -5,7 +5,7 @@ module.exports = {
     const comment = {
       resource_id: req.params.resourceId,
       created_at: Date.now(),
-      _user: req.user,
+      _user: req.user._id,
       body: req.body.body,
     };
 
@@ -28,7 +28,7 @@ module.exports = {
     });
   },
   showUserComments(req, res, next) {
-    commentQueries.getUserComments(req.user, (err, comments) => {
+    commentQueries.getUserComments(req.user._id, (err, comments) => {
       if (err) {
         res.send(err);
       } else {
@@ -38,7 +38,7 @@ module.exports = {
   },
 
   destroy(req, res, next) {
-    commentQueries.deleteComment(req.params.id, (err, response) => {
+    commentQueries.deleteComment(req, (err, response) => {
       if (err) {
         res.status(422).send(err);
       } else {

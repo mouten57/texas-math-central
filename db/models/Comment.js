@@ -8,7 +8,10 @@ const commentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Resource",
   },
-  _user: [userSchema],
+  _user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   body: String,
 });
 //create a new collection called comments

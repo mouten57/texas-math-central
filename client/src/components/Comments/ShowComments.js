@@ -33,12 +33,13 @@ class ShowComment extends Component {
 
         {this.props.comments ? (
           this.props.comments.map((comment) => {
+            console.log(comment);
             return (
               <Comment key={comment._id}>
-                <Comment.Avatar as="a" src={comment._user[0].image} />
+                <Comment.Avatar as="a" src={comment._user.image} />
                 <Comment.Content>
                   <Comment.Author as="a">
-                    {comment._user[0]?.nickname}
+                    {comment._user.nickname}
                   </Comment.Author>
                   <Comment.Metadata>
                     <span>
@@ -46,7 +47,7 @@ class ShowComment extends Component {
                     </span>
                   </Comment.Metadata>
                   <Comment.Text>{comment.body}</Comment.Text>
-                  {comment._user[0] == this.props.auth ||
+                  {comment._user._id == this.props.auth._id ||
                   this.props.auth?.role == "admin" ? (
                     <Comment.Action
                       className="custom_delete_action"

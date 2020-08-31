@@ -2,13 +2,11 @@ const userQueries = require("../db/queries.users.js");
 
 module.exports = {
   show(req, res, next) {
-    userQueries.getUser(req.user, (err, result) => {
-      if (err || result.user === undefined) {
-        req.flash("notice", "No user found with that ID.");
-        res.redirect("/");
+    userQueries.getUser(req.user, (err, user) => {
+      if (err) {
+        res.send(err);
       } else {
-        result = { ...result };
-        res.send(result);
+        res.send(user);
       }
     });
   },

@@ -13,14 +13,10 @@ class UserProfile extends Component {
     comments: [],
     resources: [],
   };
-  componentWillMount() {
-    axios.get("/api/comments").then((res) => {
-      const comments = res.data;
-      this.setState({ comments });
-    });
-  }
+
   componentDidMount() {
     axios.get("/api/profile").then((res) => {
+      console.log(res.data);
       this.setState({
         comments: res.data.comments,
         resources: res.data.resources,
@@ -54,21 +50,13 @@ class UserProfile extends Component {
       case false:
         return <p />;
       default:
-        let myComments = this.state.comments.filter(
-          (comment) => comment._user[0]._id === this.props.auth._id
-        );
-
-        myComments.map((comment) => {
+        this.state.comments.map((comment) => {
           return <p>{comment.body}</p>;
         });
     }
   }
 
   render() {
-    let myResources = this.state.resources.filter(
-      (resource) => resource._user[0]._id === this.props.auth._id
-    );
-
     return (
       <Container>
         {this.renderHeading()}
@@ -76,7 +64,7 @@ class UserProfile extends Component {
           My Resources
         </Header>
         <div>
-          {myResources.map((resource) => {
+          {this.state.resources.map((resource) => {
             return (
               <div key={resource._id}>
                 <List.Icon name="file" />

@@ -50,18 +50,9 @@ module.exports = {
         type: req.body.type,
         link,
         description: req.body.description,
-        _user: req.user,
+        _user: req.user._id,
         created_at: Date.now(),
         files: files_plus_data,
-        // file_data: (function () {
-        //   var data = [];
-        //   for (let i = 0; i < req.files.length; i++) {
-        //     data.push(fs.readFileSync(`./uploads/${req.files[i].filename}`));
-        //   }
-        //   return data;
-        // })(),
-        // s3Object: data,
-        // s3Link: data.Location,
       };
 
       resourceQueries.addResource(newResource, (err, resource) => {
@@ -102,7 +93,7 @@ module.exports = {
     }
   },
   destroy(req, res, next) {
-    resourceQueries.destroyResource(req.params.resourceId, (err, result) => {
+    resourceQueries.destroyResource(req, (err, result) => {
       if (err || result == null) {
         res.send(err);
       } else {
