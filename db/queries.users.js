@@ -17,7 +17,14 @@ module.exports = {
   async getUser(_user, callback) {
     let user = await User.findOne({ _id: _user._id })
       .populate("resources")
-      .populate("comments");
+      .populate("comments")
+      .populate({
+        path: "favorites",
+        populate: {
+          path: "resource_id",
+        },
+      });
+
     try {
       callback(null, user);
     } catch (err) {

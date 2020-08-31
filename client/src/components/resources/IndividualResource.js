@@ -3,7 +3,7 @@ import { Container, Loader, Button } from "semantic-ui-react";
 import _ from "lodash";
 import axios from "axios";
 //import Voting from '../Voting';
-
+import { connect } from "react-redux";
 import CommentsSection from "../Comments/CommentsSection";
 
 class IndividualResource extends Component {
@@ -15,6 +15,7 @@ class IndividualResource extends Component {
       resource_name: null,
       resource_id: null,
       resourceComments: [],
+      currentUsersFavoriteId: "",
       favorited: false,
       commentValue: "",
       voteTotal: 0,
@@ -23,19 +24,28 @@ class IndividualResource extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.makeAxiosCalls();
+  };
   //is there a way to populate resource with one call rather than 3 separate calls?
-  makeAxiosCalls = () => {
-    //grab comments with call to api. searches for only comments matching resource_id
-    //^moved this to comments area. segmented.
-
-    //need to keep this axios call in order to get file data
-    //in my props resources, I didn't load the binary data on initial call because it was really slow.
+  makeAxiosCalls = (nextProps) => {
     axios
       .get(
         `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}`
       )
       .then((res) => {
         const resource = res.data;
+        if (this.props.auth == undefined) {
+          const currentUsersFavoriteId = resource.favorites.find((favorite) => {
+            return favorite._user == nextProps.auth._id;
+          })?._id;
+          this.setState({ currentUsersFavoriteId });
+        } else {
+          const currentUsersFavoriteId = resource.favorites.find((favorite) => {
+            return favorite._user == this.props.auth._id;
+          })?._id;
+          this.setState({ currentUsersFavoriteId });
+        }
 
         this.setState({
           resource,
@@ -50,10 +60,17 @@ class IndividualResource extends Component {
       });
   };
 
-  componentDidMount() {
-    this.makeAxiosCalls();
+  componentWillReceiveProps(nextProps) {
+    if (this.props.auth == undefined) {
+      this.makeAxiosCalls(nextProps);
+    }
   }
 
+  getFavoriteFor = (userId) => {
+    return this.state.resource.favorites.find((favorite) => {
+      return favorite._user == userId;
+    });
+  };
   getVoteTotal = (votes) => {
     let voteTotal = votes
       .map((v) => {
@@ -115,16 +132,23 @@ class IndividualResource extends Component {
       });
   };
   onAddToFavorites = () => {
-    axios.post(`/api/resources/${this.state.resource_id}/favorites/create`);
-    this.setState({ favorited: true });
+    axios
+      .post(`/api/resources/${this.state.resource_id}/favorites/create`)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({
+          currentUsersFavoriteId: res.data._id,
+        });
+      });
   };
   onRemoveFromFavorites = () => {
-    axios.post(`/api/resources/${this.state.resource_id}/favorites/destroy`);
-    this.setState({ favorited: false });
+    axios.post(
+      `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
+    );
+    this.setState({ currentUsersFavoriteId: "" });
   };
 
   render() {
-    console.log(this.state);
     const { resource, favorited } = this.state;
 
     return (
@@ -135,13 +159,16 @@ class IndividualResource extends Component {
           <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
         </Button.Group>
         <h2>"{this.state.resource_name}"</h2>
-        {/* <p
+        <p
           onClick={
-            favorited ? this.onRemoveFromFavorites : this.onAddToFavorites
+            this.state.currentUsersFavoriteId
+              ? this.onRemoveFromFavorites
+              : this.onAddToFavorites
           }
         >
-          {favorited ? "Remove from" : "Add to"} favorites
-        </p> */}
+          {this.state.currentUsersFavoriteId ? "Remove from" : "Add to"}{" "}
+          favorites
+        </p>
 
         <div>
           <p>
@@ -181,5 +208,8 @@ class IndividualResource extends Component {
     );
   }
 }
-
-export default IndividualResource;
+function mapStateToProps(state) {
+  console.log("mapping state to props");
+  return { auth: state.auth };
+}
+export default connect(mapStateToProps)(IndividualResource);

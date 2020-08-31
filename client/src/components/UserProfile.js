@@ -12,6 +12,7 @@ class UserProfile extends Component {
     visible: false,
     comments: [],
     resources: [],
+    favorites: [],
   };
 
   componentDidMount() {
@@ -20,6 +21,7 @@ class UserProfile extends Component {
       this.setState({
         comments: res.data.comments,
         resources: res.data.resources,
+        favorites: res.data.favorites,
       });
     });
   }
@@ -96,6 +98,23 @@ class UserProfile extends Component {
         <Header as="h2" dividing>
           My Favorites
         </Header>
+        <div>
+          {this.state.favorites.map((favorite) => {
+            return (
+              <div key={favorite._id}>
+                <List.Icon name="file" />
+                <Link
+                  style={{ color: "#858DAA" }}
+                  to={`/units/${favorite.resource_id.unit}/${favorite.resource_id._id}`}
+                >
+                  <h3 style={{ display: "inline-block", marginTop: "5px" }}>
+                    "{favorite.resource_id.name}"
+                  </h3>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
       </Container>
     );
   }

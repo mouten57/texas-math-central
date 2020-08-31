@@ -10,6 +10,7 @@ const userSchema = new Schema({
   token: String,
   resources: [{ type: Schema.Types.ObjectId, ref: "Resource" }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+  favorites: [{ type: Schema.Types.ObjectId, ref: "Favorite" }],
 });
 //create a new collection called users
 //two arguments means we are loading something into mongoose

@@ -3,6 +3,7 @@ const Resource = mongoose.model("Resource");
 const Comment = mongoose.model("Comment");
 const User = mongoose.model("User");
 const Vote = mongoose.model("Vote");
+const Favorite = mongoose.model("Favorite");
 const fs = require("fs");
 var AWS = require("aws-sdk");
 var keys = require("../config/keys/keys");
@@ -38,17 +39,14 @@ module.exports = {
       .populate("votes")
       .populate("comments");
 
-    // result["resource"] = resource;
-    // console.log(result);
-    // const comments = await Comment.find({ resource_id: _id }).populate("_user");
-    // result["comments"] = comments;
     callback(null, resource);
   },
   async destroyResource(req, callback) {
     let _id = req.params.resourceId;
-    let resource = await Resource.deleteOne({ _id });
-    let comment = await Comment.deleteMany({ resource_id: _id });
-    let vote = await Vote.deleteMany({ resource_id: _id });
+    await Resource.deleteOne({ _id });
+    await Comment.deleteMany({ resource_id: _id });
+    await Vote.deleteMany({ resource_id: _id });
+    await Favorite.deleteMany({ resource_id: _id });
     let user = await User.findOne({ _id: req.user._id });
     let temp = user.resources;
     let idx = user.resources.indexOf(_id);

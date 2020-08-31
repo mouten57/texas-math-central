@@ -29,8 +29,11 @@ class CommentsSection extends Component {
   onChangeValue = (e) => {
     this.setState({ commentValue: e.target.value });
   };
+  clearComment = () => {
+    this.setState({ commentValue: "" });
+  };
   onSubmitNewComment = (allComments) => {
-    this.setState({ comments: allComments, commentValue: "" });
+    this.setState({ comments: allComments });
   };
   onDeleteComment = (comment, callback) => {
     var del_post_link = `/api/resources/${comment.resource_id}/comments/${comment._id}/destroy`;
@@ -56,6 +59,7 @@ class CommentsSection extends Component {
           comments={this.state.comments}
           commentValue={this.state.commentValue}
           resourceId={this.props.resourceId}
+          clearComment={this.clearComment}
           onSubmitNewComment={this.onSubmitNewComment}
         />
         {this.state.comments.length > 0 ? (

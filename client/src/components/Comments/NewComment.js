@@ -4,7 +4,7 @@ import axios from "axios";
 
 class NewComment extends Component {
   onSubmitComment = () => {
-    //error in here somewhere
+    this.props.clearComment();
     let comment = {};
     comment.body = this.props.commentValue;
     let allComments = [...this.props.comments];

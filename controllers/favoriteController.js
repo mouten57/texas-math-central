@@ -6,7 +6,7 @@ module.exports = {
     let newFavorite = {
       resource_id: req.params.resourceId,
       created_at: Date.now(),
-      _user: req.user[0],
+      _user: req.user._id,
     };
     favoriteQueries.createFavorite(newFavorite, (err, favorite) => {
       if (err) {
@@ -19,16 +19,11 @@ module.exports = {
     // }
   },
   destroy(req, res, next) {
-    if (req.user) {
-      favoriteQueries.deleteFavorite(req, (err, deletedRecordsCount) => {
-        if (err) {
-          req.flash("error", err);
-        }
-        res.redirect(req.headers.referer);
-      });
-    } else {
-      req.flash("notice", "You must be signed in to do that.");
-      res.redirect(req.headers.referer);
-    }
+    favoriteQueries.deleteFavorite(req, (err, deletedRecordsCount) => {
+      if (err) {
+        res.send(err);
+      }
+      res.send(deletedRecordsCount);
+    });
   },
 };
