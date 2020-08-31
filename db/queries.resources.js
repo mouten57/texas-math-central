@@ -43,18 +43,13 @@ module.exports = {
   },
   async destroyResource(req, callback) {
     let _id = req.params.resourceId;
-    await Resource.deleteOne({ _id });
-    await Comment.deleteMany({ resource_id: _id });
-    await Vote.deleteMany({ resource_id: _id });
-    await Favorite.deleteMany({ resource_id: _id });
-    let user = await User.findOne({ _id: req.user._id });
-    let temp = user.resources;
-    let idx = user.resources.indexOf(_id);
-    temp.splice(idx, 1);
-    user.resources = temp;
+    let resource = await Resource.findOne({ _id });
+
+    // moved all cleanup to Resource model. See Resource.js
+
     try {
-      user.save();
-      callback(null, user);
+      let deleteCount = await resource.deleteOne();
+      callback(null, deleteCount);
     } catch (err) {
       callback(err);
     }

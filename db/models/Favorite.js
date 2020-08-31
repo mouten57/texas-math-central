@@ -14,4 +14,14 @@ const favoriteSchema = new Schema({
   },
 });
 
+favoriteSchema.pre("deleteOne", { query: true }, function (next) {
+  let id = this.getQuery()["_id"];
+  mongoose
+    .model("Resource")
+    .updateOne({}, { $pull: { favorites: id } }, { multi: true }, next);
+  mongoose
+    .model("User")
+    .updateOne({}, { $pull: { favorites: id } }, { multi: true }, next);
+});
+
 mongoose.model("Favorite", favoriteSchema);

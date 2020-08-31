@@ -27,6 +27,14 @@ const voteSchema = new Schema({
   },
 });
 
+voteSchema.pre("deleteOne", { query: true }, function (next) {
+  let id = this.getQuery()["_id"];
+
+  mongoose
+    .model("User")
+    .updateOne({}, { $pull: { votes: id } }, { multi: true }, next);
+});
+
 //create a new collection called users
 //two arguments means we are loading something into mongoose
 //one argument means we are fetching something

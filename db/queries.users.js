@@ -17,7 +17,7 @@ module.exports = {
   async getUser(_user, callback) {
     let user = await User.findOne({ _id: _user._id })
       .populate("resources")
-      .populate("comments")
+      .populate({ path: "comments", populate: { path: "resource_id" } })
       .populate({
         path: "favorites",
         populate: {

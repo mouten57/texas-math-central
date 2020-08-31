@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const commentSchema = require("./Comment");
-const userSchema = require("./User");
-const favoriteSchema = require("./Favorite");
 
 const resourceSchema = new Schema({
   name: String,
@@ -19,6 +16,34 @@ const resourceSchema = new Schema({
   files: Array,
   s3Object: Object,
   s3Link: String,
+});
+//worry about this later
+// resourceSchema.pre("create", { query: true }, function (next) {
+//   let id = this.getQuery()["_id"];
+//   this.model("User").updateOne({}, { $push: { resources: id } }, next);
+// });
+
+resourceSchema.pre("deleteOne", { document: true }, async function (next) {
+  this.model("User").updateOne(
+    {},
+    { $pull: { resources: this._id } },
+    { multi: true },
+    next
+  );
+  let comments = await this.model("Comment").find({ resource_id: this._id });
+  for (let i = 0; i < comments.length; i++) {
+    await this.model("Comment").deleteOne({ _id: comments[i]._id });
+  }
+
+  let votes = await this.model("Vote").find({ resource_id: this._id });
+  for (let i = 0; i < votes.length; i++) {
+    await this.model("Vote").deleteOne({ _id: votes[i]._id });
+  }
+
+  let favorites = await this.model("Favorite").find({ resource_id: this._id });
+  for (let i = 0; i < favorites.length; i++) {
+    await this.model("Favorite").deleteOne({ _id: favorites[i]._id });
+  }
 });
 
 mongoose.model("Resource", resourceSchema);

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Vote = mongoose.model("Vote");
 const Resource = mongoose.model("Resource");
+const User = mongoose.model("User");
 
 module.exports = {
   async createVote(req, val, callback) {
@@ -11,9 +12,13 @@ module.exports = {
     if (vote) {
       vote.value = val;
       let resource = await Resource.findOne({ _id: vote.resource_id });
+      let user = await User.findOne({ _id: vote._user });
       resource.votes = [...resource.votes, vote];
+      user.votes = [...user.votes, vote];
       try {
-        vote.save();
+        await user.save();
+        await resource.save();
+        await vote.save();
         callback(null, vote);
       } catch (err) {
         callback(err);
@@ -25,10 +30,13 @@ module.exports = {
         _user: req.user.id,
       });
       let resource = await Resource.findOne({ _id: vote.resource_id });
+      let user = await User.findOne({ _id: vote._user });
       resource.votes = [...resource.votes, vote];
+      user.votes = [...user.votes, vote];
       try {
-        vote.save();
-        resource.save();
+        await vote.save();
+        await user.save();
+        await resource.save();
         callback(null, vote);
       } catch (err) {
         callback(err);

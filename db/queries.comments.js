@@ -48,24 +48,8 @@ module.exports = {
   },
 
   async deleteComment(req, callback) {
-    let comment = await Comment.findOne({ _id: req.params.id });
-    let resource = await Resource.findOne({ _id: comment.resource_id });
     let deletedCount = await Comment.deleteOne({ _id: req.params.id });
-    let user = await User.findOne({ _id: req.user._id });
-    let temp = user.comments;
-    let idx = user.comments.indexOf(req.params.id);
-    temp.splice(idx, 1);
-    user.comments = temp;
-
-    let temp2 = resource.comments;
-    let idx2 = resource.comments.indexOf(req.params.id);
-    temp2.splice(idx2, 1);
-    console.log(temp2);
-    resource.comments = temp2;
-
     try {
-      await resource.save();
-      await user.save();
       callback(null, deletedCount);
     } catch (err) {
       callback(err);

@@ -14,7 +14,14 @@ const commentSchema = new Schema({
   },
   body: String,
 });
-//create a new collection called comments
-//two arguments means we are loading something into mongoose
-//one argument means we are fetching something
+commentSchema.pre("deleteOne", { query: true }, function (next) {
+  let id = this.getQuery()["_id"];
+  mongoose
+    .model("Resource")
+    .updateOne({}, { $pull: { comments: id } }, { multi: true }, next);
+
+  mongoose
+    .model("User")
+    .updateOne({}, { $pull: { comments: id } }, { multi: true }, next);
+});
 mongoose.model("Comment", commentSchema);

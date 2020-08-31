@@ -30,21 +30,8 @@ module.exports = {
   },
   async deleteFavorite(req, callback) {
     const _id = req.params.id;
-    let favorite = await Favorite.findOne({ _id });
-    let resource = await Resource.findOne({ _id: favorite.resource_id });
     let deletedCount = await Favorite.deleteOne({ _id });
-    let user = await User.findOne({ _id: req.user._id });
-    let temp = user.favorites;
-    let idx = user.favorites.indexOf(_id);
-    temp.splice(idx, 1);
-    user.favorites = temp;
-    let temp2 = resource.favorites;
-    let idx2 = resource.favorites.indexOf(_id);
-    temp2.splice(idx2, 1);
-    resource.favorites = temp2;
     try {
-      await resource.save();
-      await user.save();
       callback(null, deletedCount);
     } catch (err) {
       callback(err);
