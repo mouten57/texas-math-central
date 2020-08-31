@@ -15,6 +15,4 @@ module.exports = (app) => {
     "/api/resources/:resourceId/comments",
     commentController.showResourceComments
   );
-
-  app.get("/api/comments", commentController.showUserComments);
 };

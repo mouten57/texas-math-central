@@ -14,14 +14,20 @@ const favoriteSchema = new Schema({
   },
 });
 
-favoriteSchema.pre("deleteOne", { query: true }, function (next) {
+favoriteSchema.pre("deleteOne", { query: true }, async function (next) {
   let id = this.getQuery()["_id"];
-  mongoose
+
+  await mongoose
     .model("Resource")
-    .updateOne({}, { $pull: { favorites: id } }, { multi: true }, next);
-  mongoose
+    .update({}, { $pull: { favorites: id } }, { multi: true });
+  await mongoose
     .model("User")
-    .updateOne({}, { $pull: { favorites: id } }, { multi: true }, next);
+    .update({}, { $pull: { favorites: id } }, { multi: true });
+  try {
+    next;
+  } catch (err) {
+    throw err;
+  }
 });
 
 mongoose.model("Favorite", favoriteSchema);

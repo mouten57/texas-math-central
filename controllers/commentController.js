@@ -27,15 +27,6 @@ module.exports = {
       }
     });
   },
-  showUserComments(req, res, next) {
-    commentQueries.getUserComments(req.user._id, (err, comments) => {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send(comments);
-      }
-    });
-  },
 
   destroy(req, res, next) {
     commentQueries.deleteComment(req, (err, response) => {

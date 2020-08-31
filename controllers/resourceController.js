@@ -103,9 +103,7 @@ module.exports = {
     });
   },
   download(req, res, next) {
-    resourceQueries.getResource(req.params.resourceId, (err, result) => {
-      const { resource, comments } = result;
-
+    resourceQueries.getResource(req.params.resourceId, (err, resource) => {
       if (err || resource == null) {
         res.redirect(404, "/");
       } else {

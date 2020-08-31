@@ -14,14 +14,36 @@ const commentSchema = new Schema({
   },
   body: String,
 });
-commentSchema.pre("deleteOne", { query: true }, function (next) {
-  let id = this.getQuery()["_id"];
-  mongoose
-    .model("Resource")
-    .updateOne({}, { $pull: { comments: id } }, { multi: true }, next);
 
-  mongoose
+commentSchema.post("save", async function (next) {
+  await mongoose
+    .model("Resource")
+    .update({ _id: this.resource_id }, { $push: { comments: this._id } });
+
+  await mongoose
     .model("User")
-    .updateOne({}, { $pull: { comments: id } }, { multi: true }, next);
+    .update({ _id: this._user }, { $push: { comments: this._id } });
+  try {
+    next;
+  } catch (err) {
+    throw err;
+  }
 });
+
+commentSchema.pre("deleteOne", { query: true }, async function (next) {
+  let id = this.getQuery()["_id"];
+  await mongoose
+    .model("Resource")
+    .update({}, { $pull: { comments: id } }, { multi: true });
+
+  await mongoose
+    .model("User")
+    .update({}, { $pull: { comments: id } }, { multi: true });
+  try {
+    next;
+  } catch (err) {
+    throw err;
+  }
+});
+
 mongoose.model("Comment", commentSchema);
