@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
-import { Container, Loader, Button, Icon } from "semantic-ui-react";
+import { Container, Loader, Button, Icon, Image } from "semantic-ui-react";
 import _ from "lodash";
 import axios from "axios";
 //import Voting from '../Voting';
 import { connect } from "react-redux";
 import CommentsSection from "../Comments/CommentsSection";
 import "react-notifications/lib/notifications.css";
+import "./style/IndividualResource.css";
 
 class IndividualResource extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class IndividualResource extends Component {
         state: null,
       });
     }
+    this.setState({ selectedFile: this.state.files });
   };
   //is there a way to populate resource with one call rather than 3 separate calls?
   makeAxiosCalls = (nextProps) => {
@@ -58,6 +60,7 @@ class IndividualResource extends Component {
 
         this.setState({
           resource,
+          selectedFile: resource.files[0],
           resourceComments: resource.comments,
           s3Link: resource.s3Link,
           resource_name: resource.name,
@@ -106,11 +109,15 @@ class IndividualResource extends Component {
           //use this with s3
           let link = file.s3Link;
           return (
-            <span key={i}>
-              <a href={link} download key={i} style={{ marginLeft: "5px" }}>
-                {file.originalname}
-              </a>
-              {i != this.state.resource.files.length - 1 ? "," : null}
+            <span
+              key={i}
+              className="file_selector"
+              onClick={() => this.setState({ selectedFile: file })}
+            >
+              {/* <a href={link} download key={i} style={{ marginLeft: "5px" }}> */}
+              {file.originalname}
+              {/* </a> */}
+              {i != this.state.resource.files.length - 1 ? ", " : null}
             </span>
           );
         });
@@ -240,7 +247,30 @@ class IndividualResource extends Component {
             <b>Uploader:</b> {resource._user ? resource._user.name : null}{" "}
           </p>
           <p>
-            <b>Download: </b> {this.downloadLink()}
+            <b>
+              Files{" "}
+              {this.state.resource.files?.length > 0
+                ? " (click to preview)"
+                : null}
+              :{" "}
+            </b>{" "}
+            {this.downloadLink()}
+          </p>
+          <p>
+            <b>
+              Preview
+              {this.state.selectedFile
+                ? ` (${this.state.selectedFile.originalname})`
+                : ""}
+              :
+            </b>{" "}
+            {this.state.selectedFile ? (
+              <a href={this.state.selectedFile.s3Link}>
+                <Image src={this.state.selectedFile.s3Link} />
+              </a>
+            ) : (
+              "No Preview Available"
+            )}
           </p>
         </div>
 
