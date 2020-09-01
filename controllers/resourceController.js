@@ -1,6 +1,13 @@
 const resourceQueries = require("../db/queries.resources");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
+var AWS = require("aws-sdk");
+const keys = require("../config/keys/keys");
+var s3 = new AWS.S3({
+  apiVersion: "2006-03-01",
+  accessKeyId: keys.AWS_ACCESS_KEY,
+  secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
+});
 
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
@@ -31,66 +38,53 @@ module.exports = {
     });
   },
 
-  create(req, res, next) {
+  async create(req, res, next) {
+    var newResource;
     const link = req.body.link.includes("http")
       ? req.body.link
       : `//${req.body.link}`;
+
     let files_plus_data = [...req.files];
+
     for (let i = 0; i < req.files.length; i++) {
-      files_plus_data[i].file_data = fs.readFileSync(
-        `./uploads/${req.files[i].filename}`
-      );
+      const params = {
+        Bucket: "texas-math-central",
+        Key: req.files[i].filename,
+        Body: fs.readFileSync(`./uploads/${req.files[i].filename}`),
+      };
+      let s3Data = await s3.upload(params).promise();
+
+      files_plus_data[i].s3Object = s3Data;
+      files_plus_data[i].s3Link = s3Data.Location;
     }
 
-    if (req.files !== undefined) {
-      let newResource = {
-        name: req.body.name,
-        unit: req.body.unit,
-        fullUnit: fullUnit(req.body.unit),
-        type: req.body.type,
-        link,
-        description: req.body.description,
-        _user: req.user._id,
-        created_at: Date.now(),
-        files: files_plus_data,
-      };
-
-      resourceQueries.addResource(newResource, (err, resource) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(resource);
+    var newResource = {
+      name: req.body.name,
+      unit: req.body.unit,
+      fullUnit: fullUnit(req.body.unit),
+      type: req.body.type,
+      link,
+      description: req.body.description,
+      _user: req.user._id,
+      created_at: Date.now(),
+      files: files_plus_data,
+    };
+    resourceQueries.addResource(newResource, (err, resource) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if (req.files !== undefined) {
+          //delete upload
+          for (let i = 0; i < req.files.length; i++) {
+            fs.unlink(req.files[i].path, (err) => {
+              if (err) throw err;
+              console.log(`${req.files[i].originalname} was deleted.`);
+            });
+          }
         }
-      });
-      //delete upload
-      if (req.files !== undefined) {
-        for (let i = 0; i < req.files.length; i++) {
-          fs.unlink(req.files[i].path, (err) => {
-            if (err) throw err;
-            console.log(`${req.files[i].originalname} was deleted.`);
-          });
-        }
+        res.send(resource);
       }
-    } else {
-      //no file. there has to be a better way to do this
-      let newResource = {
-        name: req.body.name,
-        unit: req.body.unit,
-        fullUnit: fullUnit(req.body.unit),
-        type: req.body.type,
-        link,
-        description: req.body.description,
-        _user: req.user,
-        created_at: Date.now(),
-      };
-      resourceQueries.addResource(newResource, (err, resource) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(resource);
-        }
-      });
-    }
+    });
   },
   destroy(req, res, next) {
     resourceQueries.destroyResource(req, (err, result) => {
@@ -102,6 +96,7 @@ module.exports = {
       }
     });
   },
+  //using when storing docs in mongo
   download(req, res, next) {
     resourceQueries.downloadResource(req.params.resourceId, (err, resource) => {
       if (err || resource == null) {

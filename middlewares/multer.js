@@ -9,7 +9,10 @@ const storage = multer.diskStorage({
     cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
+    //if i want to use UUID ..I do for AWS because the file name is a key
     const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
+    //const newFilename = `${file.originalname}`;
+    //const newFilename = file.orginalname;
     cb(null, newFilename);
   },
 });

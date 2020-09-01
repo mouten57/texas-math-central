@@ -19,6 +19,7 @@ module.exports = {
     );
   },
   async addResource(newResource, callback) {
+    console.log(newResource);
     let resource = await Resource.create(newResource);
     let user = await User.findById(newResource._user);
     user.resources = [...user.resources, resource._id];

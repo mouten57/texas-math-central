@@ -16,11 +16,14 @@ import { connect } from "react-redux";
 import NotLoggedIn from "../NotLoggedIn";
 import unitFields from "../resources/data/unitFields.js";
 import resourceTypes from "../resources/data/resourceTypes";
+import Loader from "./Loader";
 
 class UploadForm extends Component {
   constructor() {
     super();
     this.state = {
+      loaderActive: false,
+      submitDisabled: false,
       description: "",
       files: [],
       link: "https://www.",
@@ -84,7 +87,7 @@ class UploadForm extends Component {
         return <NotLoggedIn />;
       default:
         return (
-          <Form onSubmit={this.onSubmit}>
+          <Form onSubmit={this.onSubmit} style={{ marginBottom: "25px" }}>
             <Segment>
               <Header>Create a New Resource!</Header>
               <div>
@@ -137,6 +140,7 @@ class UploadForm extends Component {
 
               <div style={{ paddingTop: "10px" }}>
                 <Label>Description</Label>
+                <Loader active={this.state.loaderActive} />
                 <div>
                   <TextArea
                     name="description"
@@ -148,7 +152,13 @@ class UploadForm extends Component {
                 </div>
               </div>
             </Segment>
-            <Segment>
+            <Segment
+              style={
+                this.state.loaderActive
+                  ? { display: "none" }
+                  : { display: "inherit" }
+              }
+            >
               <Header>Upload</Header>
               <div>
                 <Label>Upload File</Label>
@@ -164,7 +174,11 @@ class UploadForm extends Component {
               </div>
             </Segment>
 
-            <Button type="submit" style={{ marginTop: "5px" }}>
+            <Button
+              type="submit"
+              style={{ marginTop: "5px" }}
+              disabled={this.state.submitDisabled}
+            >
               Submit
             </Button>
           </Form>
@@ -182,6 +196,7 @@ class UploadForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
+    this.setState({ loaderActive: true, submitDisabled: true });
     const { description, files, name, unit, type, link } = this.state;
 
     let formData = new FormData();
@@ -214,6 +229,7 @@ class UploadForm extends Component {
       .then((res) => {
         // alert("SUCCESS!");
         axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
+          this.setState({ loaderActive: false, submitDisabled: false });
           this.props.history.push({
             pathname: `/units/${unit}/${res.data.resource_id}`,
             state: { new_create_data: res.data },
@@ -229,6 +245,7 @@ class UploadForm extends Component {
   };
 
   render() {
+    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

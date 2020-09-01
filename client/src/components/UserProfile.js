@@ -60,7 +60,7 @@ class UserProfile extends Component {
 
   render() {
     return (
-      <Container>
+      <Container style={{ marginBottom: "25px" }}>
         {this.renderHeading()}
         <Header as="h2" dividing>
           My Resources

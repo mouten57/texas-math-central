@@ -101,7 +101,10 @@ class IndividualResource extends Component {
         return "Download not available.";
       default:
         return this.state.resource.files?.map((file, i) => {
-          let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
+          //use this if storing/downloading files directly from mongo db
+          //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
+          //use this with s3
+          let link = file.s3Link;
           return (
             <span key={i}>
               <a href={link} download key={i} style={{ marginLeft: "5px" }}>

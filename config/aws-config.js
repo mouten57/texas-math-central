@@ -15,24 +15,22 @@ var s3 = new AWS.S3({
   secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
 });
 
-const imagePath = "./src/uploads/output.jpg";
-
 module.exports = {
   upload: function (file, callback) {
     if (file !== undefined) {
-      var fileName = file.mimetype == "image/jpeg" ? imagePath : file.path;
+      //var fileName = file.mimetype == "image/jpeg" ? imagePath : file.path;
     }
-    fs.readFile(fileName, (err, data) => {
-      if (err) throw err;
-      const params = {
-        Bucket: bucketName,
-        Key: file.filename,
-        Body: data,
-      };
-      s3.upload(params, (s3Err, data) => {
-        if (s3Err) callback(s3Err);
-        callback(null, data);
-      });
+    const fileContent = fs.readFileSync(file.path);
+    console.log("DATA IN AWS", fileContent);
+
+    const params = {
+      Bucket: bucketName,
+      Key: file.filename,
+      Body: fileContent,
+    };
+    s3.upload(params, (s3Err, data) => {
+      if (s3Err) callback(s3Err);
+      callback(null, data);
     });
   },
 };
