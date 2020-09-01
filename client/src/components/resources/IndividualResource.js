@@ -270,6 +270,7 @@ class IndividualResource extends Component {
                   src={this.state.selectedFile.s3Link}
                   bordered
                   size="huge"
+                  centered
                 />
               </a>
             ) : (
