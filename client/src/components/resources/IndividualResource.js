@@ -30,6 +30,10 @@ class IndividualResource extends Component {
     this.makeAxiosCalls();
     if (this.props.history.location.state) {
       this.createNotification("success");
+      //clear out state so notification doesn't keep going on componentDidMount
+      this.props.history.push({
+        state: null,
+      });
     }
   };
   //is there a way to populate resource with one call rather than 3 separate calls?
@@ -183,6 +187,7 @@ class IndividualResource extends Component {
   };
 
   render() {
+    console.log(this.state);
     const { resource, favorited } = this.state;
 
     return (
@@ -208,9 +213,7 @@ class IndividualResource extends Component {
           <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
         </Button.Group>
 
-        <h2 onClick={() => this.createNotification("info")}>
-          "{this.state.resource_name}"
-        </h2>
+        <h2>"{this.state.resource_name}"</h2>
 
         <div>
           <p>
