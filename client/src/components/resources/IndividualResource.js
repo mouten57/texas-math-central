@@ -266,7 +266,11 @@ class IndividualResource extends Component {
             </b>{" "}
             {this.state.selectedFile ? (
               <a href={this.state.selectedFile.s3Link}>
-                <Image src={this.state.selectedFile.s3Link} />
+                <Image
+                  src={this.state.selectedFile.s3Link}
+                  bordered
+                  size="huge"
+                />
               </a>
             ) : (
               "No Preview Available"
