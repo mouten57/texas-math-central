@@ -16,12 +16,13 @@ module.exports = {
 
   async getUser(_user, callback) {
     let user = await User.findOne({ _id: _user._id })
-      .populate("resources")
-      .populate({ path: "comments", populate: { path: "resource_id" } })
+      .populate("resources", "-files.file_data")
+      .populate({ path: "comments", populate: "resource_id" })
       .populate({
         path: "favorites",
         populate: {
           path: "resource_id",
+          select: "-files.file_data",
         },
       });
 

@@ -53,7 +53,7 @@ class CommentsSection extends Component {
   };
   render() {
     return (
-      <Container>
+      <Container style={{ marginBottom: "25px" }}>
         <NewComment
           onChangeValue={this.onChangeValue}
           comments={this.state.comments}
