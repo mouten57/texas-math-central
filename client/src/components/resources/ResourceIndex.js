@@ -80,7 +80,6 @@ class ResourceIndex extends Component {
         <Container>
           {this.props.auth && this.state.resources ? (
             <ResourceList
-              auth={this.props.auth}
               param={this.props.match.params.unit}
               resources={this.state.resources}
               onDeleteResource={this.onDeleteResource}

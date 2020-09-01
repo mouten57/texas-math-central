@@ -1,7 +1,7 @@
 //ResourceList lists out all the resources from mongo
 //  /units/:name/
 // this is inside resource index
-
+import { connect } from "react-redux";
 import React, { Component } from "react";
 import _ from "lodash";
 import { Table, Icon, Confirm } from "semantic-ui-react";
@@ -37,6 +37,7 @@ class ResourceList extends Component {
   }
 
   render() {
+    console.log(this.props.resources);
     const { open } = this.state;
     return (
       <Table style={{ marginBottom: "10px" }} unstackable>
@@ -52,7 +53,14 @@ class ResourceList extends Component {
           {this.props.resources.reverse().map((resource) => {
             return (
               <Table.Row key={resource._id} style={{ marginTop: "10px" }}>
-                <Table.Cell width={this.props.auth.role == "admin" ? 9 : 10}>
+                <Table.Cell
+                  width={
+                    resource._user == this.props.auth._id ||
+                    this.props.auth?.role == "admin"
+                      ? 9
+                      : 10
+                  }
+                >
                   <Link to={`/units/${this.match(resource)}/${resource._id}`}>
                     {resource.name}
                   </Link>
@@ -61,7 +69,9 @@ class ResourceList extends Component {
                 <Table.Cell width={3}>
                   {new Date(resource.created_at).toLocaleDateString()}
                 </Table.Cell>
-                {this.props.auth.role == "admin" ? (
+
+                {resource._user == this.props.auth._id ||
+                this.props.auth?.role == "admin" ? (
                   <Table.Cell width={1} textAlign="center">
                     <Icon
                       name="delete"
@@ -86,5 +96,8 @@ class ResourceList extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return { auth: state.auth };
+}
 
-export default ResourceList;
+export default connect(mapStateToProps)(ResourceList);
