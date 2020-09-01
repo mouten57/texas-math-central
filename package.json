@@ -56,7 +56,7 @@
     "sequelize": "^6.3.4",
     "sequelize-cli": "^6.2.0",
     "sharp": "^0.26.0",
-    "stripe": "^8.89.0",
+    "stripe": "^8.91.0",
     "uuid": "^8.3.0",
     "uuidv4": "^6.2.3"
   },

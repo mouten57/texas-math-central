@@ -35,6 +35,7 @@ class Units extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { column, data, direction } = this.state;
 
     return (

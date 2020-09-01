@@ -24,6 +24,7 @@ class IndividualResource extends Component {
       voteTotal: 0,
       upvoted: false,
       downvoted: false,
+      item_in_cart: null,
     };
   }
 
@@ -36,27 +37,29 @@ class IndividualResource extends Component {
         state: null,
       });
     }
-    this.setState({ selectedFile: this.state.files });
+    this.setState({
+      selectedFile: this.state.files ? this.state.files[0] : null,
+    });
   };
   //is there a way to populate resource with one call rather than 3 separate calls?
-  makeAxiosCalls = (nextProps) => {
+  makeAxiosCalls = () => {
     axios
       .get(
         `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}`
       )
       .then((res) => {
         const resource = res.data;
-        if (this.props.auth == undefined) {
-          const currentUsersFavoriteId = resource.favorites.find((favorite) => {
-            return favorite._user == nextProps.auth._id;
-          })?._id;
-          this.setState({ currentUsersFavoriteId });
-        } else {
-          const currentUsersFavoriteId = resource.favorites.find((favorite) => {
-            return favorite._user == this.props.auth._id;
-          })?._id;
-          this.setState({ currentUsersFavoriteId });
-        }
+        // if (this.props.auth == undefined) {
+        //   const currentUsersFavoriteId = resource.favorites.find((favorite) => {
+        //     return favorite._user == nextProps.auth._id;
+        //   })?._id;
+        //   this.setState({ currentUsersFavoriteId });
+        // } else {
+        const currentUsersFavoriteId = resource.favorites.find((favorite) => {
+          return favorite._user == this.props.auth._id;
+        })?._id;
+        this.setState({ currentUsersFavoriteId });
+        // }
 
         this.setState({
           resource,
@@ -72,16 +75,22 @@ class IndividualResource extends Component {
       });
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.auth == undefined) {
-      this.makeAxiosCalls(nextProps);
-    }
-  }
-
   getFavoriteFor = (userId) => {
-    return this.state.resource.favorites.find((favorite) => {
-      return favorite._user == userId;
-    });
+    if (this.props.auth && this.state.resource.favorites) {
+      let result = this.state.resource.favorites.find((favorite) => {
+        return favorite._user == userId;
+      });
+      return result ? true : false;
+    }
+  };
+  item_in_cart = (resource_id) => {
+    if (this.props.cart) {
+      let result = this.props.cart.products.find((product) => {
+        return product.resource_id._id == resource_id;
+      });
+
+      return result ? true : false;
+    }
   };
   getVoteTotal = (votes) => {
     let voteTotal = votes
@@ -158,6 +167,12 @@ class IndividualResource extends Component {
       case "remove_fav":
         NotificationManager.warning("", "Removed from favorites", 1500);
         break;
+      case "add_to_cart":
+        NotificationManager.success("", "Added to Shopping Cart!", 1500);
+        break;
+      case "remove_from_cart":
+        NotificationManager.success("", "Removed from Shopping Cart", 1500);
+        break;
       case "success":
         NotificationManager.success("Success!", "", 1500);
         break;
@@ -195,9 +210,29 @@ class IndividualResource extends Component {
     );
     this.setState({ currentUsersFavoriteId: "" });
   };
+  addToCart = (resourceId) => {
+    this.createNotification("add_to_cart");
+    axios
+      .post(`/api/cart/${resourceId}/add`)
+      .then((response) => {
+        this.setState({ item_in_cart: true });
+        this.props.fetchCart();
+      })
+      .catch((err) => console.log(err));
+  };
+  removeFromCart = (resourceId) => {
+    this.createNotification("remove_from_cart");
+    axios
+      .post(`/api/cart/${resourceId}/remove`)
+      .then((response) => {
+        this.setState({ item_in_cart: false });
+        this.props.fetchCart();
+      })
+      .catch((err) => console.log(err));
+  };
 
   render() {
-    console.log(this.state);
+    console.log("state is", this.state, "props are", this.props);
     const { resource, favorited } = this.state;
 
     return (
@@ -215,7 +250,11 @@ class IndividualResource extends Component {
           >
             <Icon
               size="large"
-              name={this.state.currentUsersFavoriteId ? "star" : "star outline"}
+              name={
+                this.getFavoriteFor(this.props?.auth?._id)
+                  ? "star"
+                  : "star outline"
+              }
             />
           </Button>
           <Button onClick={(e) => this.onUpvote(e)}>&#9650;</Button>
@@ -230,6 +269,18 @@ class IndividualResource extends Component {
             <b>Name: </b>
             {resource.name}
           </p>
+          <p
+            onClick={
+              this.item_in_cart(resource._id)
+                ? () => this.removeFromCart(resource._id)
+                : () => this.addToCart(resource._id)
+            }
+          >
+            <b>
+              {this.item_in_cart(resource._id) ? "Remove from" : "Add to"} Cart
+            </b>
+          </p>
+
           <p>
             <b>Unit:</b> {resource.fullUnit}
           </p>
@@ -291,8 +342,7 @@ class IndividualResource extends Component {
     );
   }
 }
-function mapStateToProps(state) {
-  console.log("mapping state to props");
-  return { auth: state.auth };
-}
+const mapStateToProps = (state) => {
+  return { auth: state.auth, cart: state.cart };
+};
 export default connect(mapStateToProps)(IndividualResource);

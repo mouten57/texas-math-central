@@ -1,65 +1,33 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Menu, Button, Icon, Responsive } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Menu, Button, Icon, Responsive, Input } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 class Nav extends Component {
   state = {
-    activeItem: '',
-    visible: false
+    activeItem: "",
+    visible: false,
   };
 
   renderContent() {
-    const linkStyle = {
-      color: 'white'
-    };
     switch (this.props.auth) {
       case null:
         return;
       case false:
         return (
-          <Menu.Item>
-            <Responsive {...Responsive.onlyMobile} as={Button} primary>
-              <a style={linkStyle} href="/auth/google">
-                Login
-              </a>
-            </Responsive>
-            <Responsive
-              as={Button}
-              primary
-              minWidth={Responsive.onlyTablet.minWidth}
-            >
-              <a style={linkStyle} href="/auth/google">
-                Login with <Icon name="google" />
-              </a>
-            </Responsive>
+          <Menu.Item as="a" icon="google" href="/auth/google">
+            Login
           </Menu.Item>
         );
       default:
-        return (
-          <Menu.Item>
-            <Responsive {...Responsive.onlyMobile} as={Button} secondary>
-              <a href="/api/logout" style={linkStyle}>
-                <Icon name="sign-out" />
-              </a>
-            </Responsive>
-            <Responsive
-              as={Button}
-              secondary
-              minWidth={Responsive.onlyTablet.minWidth}
-            >
-              <a href="/api/logout" style={linkStyle}>
-                Logout <Icon name="sign-out" />
-              </a>
-            </Responsive>
-          </Menu.Item>
-        );
+        return <Menu.Item as="a" icon="sign-out" href="/api/logout" />;
     }
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
   render() {
+    console.log(this.props.auth);
     const { activeItem } = this.state;
 
     return (
@@ -72,14 +40,14 @@ class Nav extends Component {
           as={Link}
           to="/about"
           icon="question"
-          active={activeItem === 'about'}
+          active={activeItem === "about"}
           onClick={this.handleItemClick}
         />
         <Menu.Item
           as={Link}
           to="/units"
           icon="folder open"
-          active={activeItem === 'resources'}
+          active={activeItem === "resources"}
           onClick={this.handleItemClick}
         />
         {this.props.auth ? (
@@ -87,18 +55,15 @@ class Nav extends Component {
             as={Link}
             to="/profile"
             icon="id card"
-            active={activeItem === 'profile'}
+            active={activeItem === "profile"}
             onClick={this.handleItemClick}
           />
         ) : (
           <p />
         )}
         <Menu.Menu position="right">
-          {/* <Menu.Item>
-            <Input icon="search" placeholder="Search..." />
-          </Menu.Item> */}
           <Menu.Item as={Link} to="/resources/new" icon="add" />
-
+          <Menu.Item as={Link} to="/cart" icon="cart" />
           {this.renderContent()}
         </Menu.Menu>
       </Menu>

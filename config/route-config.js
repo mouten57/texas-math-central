@@ -11,5 +11,6 @@ module.exports = {
     require("../routes/votingRoutes")(app);
     require("../routes/userRoutes")(app);
     require("../routes/favoriteRoutes")(app);
+    require("../routes/cartRoutes")(app);
   },
 };

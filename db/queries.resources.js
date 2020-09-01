@@ -36,7 +36,7 @@ module.exports = {
       .populate("_user")
       .populate("favorites")
       .populate("votes")
-      .populate("comments");
+      .populate({ path: "comments", populate: { path: "_user" } });
 
     callback(null, resource);
   },

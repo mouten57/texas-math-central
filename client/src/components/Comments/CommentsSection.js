@@ -13,19 +13,13 @@ class CommentsSection extends Component {
       commentValue: "",
     };
   }
-  componentDidMount() {
-    this.getResourceComments();
+
+  componentDidUpdate(prevProps) {
+    if (this.props.comments !== prevProps.comments) {
+      this.setState({ comments: this.props.comments });
+    }
   }
-  getResourceComments() {
-    axios
-      .get(`/api/resources/${this.props.resourceId}/comments`)
-      .then((res) => {
-        const comments = res.data;
-        this.setState({
-          comments,
-        });
-      });
-  }
+
   onChangeValue = (e) => {
     this.setState({ commentValue: e.target.value });
   };
@@ -52,6 +46,7 @@ class CommentsSection extends Component {
       });
   };
   render() {
+    console.log(this.state);
     return (
       <Container style={{ marginBottom: "25px" }}>
         <NewComment

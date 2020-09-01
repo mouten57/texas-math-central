@@ -12,7 +12,9 @@ const userSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   favorites: [{ type: Schema.Types.ObjectId, ref: "Favorite" }],
   votes: [{ type: Schema.Types.ObjectId, ref: "Vote" }],
+  purchasedResources: [{ type: Schema.Types.ObjectId, ref: "Resource" }],
 });
+
 //create a new collection called users
 //two arguments means we are loading something into mongoose
 //one argument means we are fetching something
