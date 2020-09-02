@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@artsy/fresnel": "^1.2.1",
     "axios": "^0.20.0",
     "cloudinary-react": "^1.6.6",
     "http-proxy-middleware": "^1.0.5",

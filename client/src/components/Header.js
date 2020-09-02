@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Menu, Button, Icon, Responsive, Input } from "semantic-ui-react";
+import { Menu, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 class Nav extends Component {
@@ -31,7 +31,7 @@ class Nav extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu size="huge">
+      <Menu>
         <Menu.Item as={Link} to="/">
           <Icon name="home" />
         </Menu.Item>

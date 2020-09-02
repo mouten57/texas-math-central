@@ -1,15 +1,26 @@
 import React from "react";
+import { createMedia } from "@artsy/fresnel";
 import { Grid, Image, Container, Header, Button } from "semantic-ui-react";
-
 import { connect } from "react-redux";
 import img from "../images/sample_doc.png";
-
+const AppMedia = createMedia({
+  breakpoints: {
+    mobile: 320,
+    tablet: 768,
+    computer: 992,
+    largeScreen: 1200,
+    widescreen: 1920,
+  },
+});
+const mediaStyles = AppMedia.createMediaStyle();
+const { Media, MediaContextProvider } = AppMedia;
 const Cart = (props) => {
   return (
     <Container>
-      <Grid columns={16} centered>
+      <style>{mediaStyles}</style>
+      <Grid columns={12} centered as={Media} at="mobile">
         <Grid.Row>
-          <Grid.Column width={12}>
+          <Grid.Column width={7}>
             <Header textAlign="center" style={{ marginBottom: "0" }}>
               Shopping Cart
             </Header>
@@ -18,10 +29,26 @@ const Cart = (props) => {
               {props.cart?.products.length}
             </Header>
           </Grid.Column>
-          <Grid.Column width={2}>
-            <Button.Group>
-              <Button color="blue">Checkout</Button>
-            </Button.Group>
+          <Grid.Column width={5}>
+            <Button color="blue">Checkout</Button>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+      <Grid columns={16} centered as={Media} greaterThanOrEqual="tablet">
+        <Grid.Row>
+          <Grid.Column
+            width={8}
+            floated="right"
+            style={{ textAlign: "center" }}
+          >
+            <Header>Shopping Cart</Header>
+            <Header as="h4" style={{ marginTop: "0" }}>
+              {props.cart?.products.length} Items - $
+              {props.cart?.products.length}
+            </Header>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <Button color="blue">Checkout</Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>
