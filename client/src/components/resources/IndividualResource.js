@@ -43,6 +43,7 @@ class IndividualResource extends Component {
   };
   //is there a way to populate resource with one call rather than 3 separate calls?
   makeAxiosCalls = () => {
+    console.log("making axios calls");
     axios
       .get(
         `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}`
@@ -55,9 +56,10 @@ class IndividualResource extends Component {
         //   })?._id;
         //   this.setState({ currentUsersFavoriteId });
         // } else {
-        const currentUsersFavoriteId = resource.favorites.find((favorite) => {
+        var currentUsersFavoriteId = resource.favorites.find((favorite) => {
           return favorite._user == this.props.auth._id;
         })?._id;
+        if (currentUsersFavoriteId == undefined) currentUsersFavoriteId = "";
         this.setState({ currentUsersFavoriteId });
         // }
 
@@ -74,14 +76,29 @@ class IndividualResource extends Component {
         }
       });
   };
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log("update");
+    if (
+      prevState.resource._id &&
+      prevState.currentUsersFavoriteId != this.state.currentUsersFavoriteId
+    ) {
+      console.log(
+        prevState.resource,
+        "prevState",
+        prevState.currentUsersFavoriteId,
+        "state",
+        this.state.currentUsersFavoriteId
+      );
+      this.makeAxiosCalls();
+    }
+  };
 
   getFavoriteFor = (userId) => {
-    if (this.props.auth && this.state.resource.favorites) {
-      let result = this.state.resource.favorites.find((favorite) => {
-        return favorite._user == userId;
-      });
-      return result ? true : false;
-    }
+    let result = this.state.resource.favorites?.find((favorite) => {
+      return favorite._user == userId;
+    });
+
+    return result ? true : false;
   };
   item_in_cart = (resource_id) => {
     if (this.props.cart) {
@@ -199,16 +216,22 @@ class IndividualResource extends Component {
       .post(`/api/resources/${this.state.resource_id}/favorites/create`)
       .then((res) => {
         this.setState({
-          currentUsersFavoriteId: res.data._id,
+          currentUsersFavoriteId: res.data._id || "",
         });
       });
   };
   onRemoveFromFavorites = () => {
     this.createNotification("remove_fav");
-    axios.post(
-      `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
-    );
-    this.setState({ currentUsersFavoriteId: "" });
+    axios
+      .post(
+        `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
+      )
+      .then((err, result) => {
+        this.setState({ currentUsersFavoriteId: "" });
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
   addToCart = (resourceId) => {
     this.createNotification("add_to_cart");
@@ -232,7 +255,7 @@ class IndividualResource extends Component {
   };
 
   render() {
-    console.log("state is", this.state, "props are", this.props);
+    //console.log("state is", this.state, "props are", this.props);
     const { resource, favorited } = this.state;
 
     return (
