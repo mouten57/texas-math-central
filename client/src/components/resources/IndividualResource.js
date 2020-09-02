@@ -86,7 +86,7 @@ class IndividualResource extends Component {
   item_in_cart = (resource_id) => {
     if (this.props.cart) {
       let result = this.props.cart.products.find((product) => {
-        return product.resource_id._id == resource_id;
+        return product.resource_id?._id == resource_id;
       });
 
       return result ? true : false;

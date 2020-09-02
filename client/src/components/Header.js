@@ -31,7 +31,7 @@ class Nav extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu size="large">
+      <Menu size="huge">
         <Menu.Item as={Link} to="/">
           <Icon name="home" />
         </Menu.Item>

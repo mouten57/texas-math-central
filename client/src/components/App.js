@@ -62,7 +62,9 @@ class App extends Component {
             <Route
               exact
               path="/units/:unit"
-              render={(props) => <ResourceIndex {...props} />}
+              render={(props) => (
+                <ResourceIndex {...props} fetchCart={this.props.fetchCart} />
+              )}
             />
             <Route
               exact

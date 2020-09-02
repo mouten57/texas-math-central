@@ -83,6 +83,7 @@ class ResourceIndex extends Component {
               param={this.props.match.params.unit}
               resources={this.state.resources}
               onDeleteResource={this.onDeleteResource}
+              fetchCart={this.props.fetchCart}
             />
           ) : this.props.auth ? (
             <Segment>

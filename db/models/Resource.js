@@ -24,9 +24,16 @@ const resourceSchema = new Schema({
 // });
 
 resourceSchema.pre("deleteOne", { document: true }, async function (next) {
+  console.log(this);
   this.model("User").updateOne(
     {},
     { $pull: { resources: this._id } },
+    { multi: true },
+    next
+  );
+  this.model("Cart").updateOne(
+    {},
+    { $pull: { products: { resource_id: this._id } } },
     { multi: true },
     next
   );
@@ -44,6 +51,10 @@ resourceSchema.pre("deleteOne", { document: true }, async function (next) {
   for (let i = 0; i < favorites.length; i++) {
     await this.model("Favorite").deleteOne({ _id: favorites[i]._id });
   }
+});
+resourceSchema.post("deletOne", { document: true }, async function (next) {
+  console.log(this);
+  next;
 });
 
 mongoose.model("Resource", resourceSchema);

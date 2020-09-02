@@ -24,6 +24,7 @@ class ResourceList extends Component {
     this.props.onDeleteResource(this.state.resourceToDelete, (err, result) => {
       if (err) throw err;
       this.setState({ result: "confirmed", open: false });
+      this.props.fetchCart();
       console.log(result);
     });
   };
