@@ -1,12 +1,18 @@
 const express = require("express");
+const app = express();
+const server = require("http").createServer(app);
 const mainConfig = require("./config/main-config");
 const routeConfig = require("./config/route-config.js");
+const axios = require("axios");
+const PORT = process.env.PORT || 5000;
+
+const io = require("socket.io")(server);
+const ioConfig = require("./config/io-config");
 // const keys = require("./config/keys/keys");
 // var companion = require("@uppy/companion");
 // const path = require("path");
 // const destFilePath = path.resolve("uploads");
 
-const app = express();
 // const options = {
 //   providerOptions: {
 //     drive: {
@@ -28,6 +34,9 @@ mainConfig.init(app, express);
 //route setup
 routeConfig.init(app);
 
+//socket.io setup
+ioConfig.init(io);
+
 //express to behave in production
 if (process.env.NODE_ENV === "production") {
   //Express will serve up production assets
@@ -42,8 +51,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`now listening on port ${PORT}`);
 });
-// app.use(companion.app(options));

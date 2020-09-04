@@ -16,6 +16,9 @@ import { Container } from "semantic-ui-react";
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart";
+import openSocket from "socket.io-client";
+const keys = require("../components/SocketIO/SocketIO");
+const socket = openSocket(keys.socketPath);
 
 class App extends Component {
   constructor(props) {
