@@ -21,7 +21,6 @@ module.exports = {
       //var fileName = file.mimetype == "image/jpeg" ? imagePath : file.path;
     }
     const fileContent = fs.readFileSync(file.path);
-    console.log("DATA IN AWS", fileContent);
 
     const params = {
       Bucket: bucketName,

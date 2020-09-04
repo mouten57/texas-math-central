@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
+import createNotification from "./Notification";
 import { Container, Loader, Button, Icon, Image } from "semantic-ui-react";
-import _ from "lodash";
+
 import axios from "axios";
 //import Voting from '../Voting';
 import { connect } from "react-redux";
 import CommentsSection from "../Comments/CommentsSection";
 import "react-notifications/lib/notifications.css";
 import "./style/IndividualResource.css";
+import img from "../../images/sample_doc.png";
 
 class IndividualResource extends Component {
   constructor(props) {
@@ -31,7 +33,7 @@ class IndividualResource extends Component {
   componentDidMount = () => {
     this.makeAxiosCalls();
     if (this.props.history.location.state) {
-      this.createNotification("success");
+      createNotification("success");
       //clear out state so notification doesn't keep going on componentDidMount
       this.props.history.push({
         state: null,
@@ -50,14 +52,8 @@ class IndividualResource extends Component {
       )
       .then((res) => {
         const resource = res.data;
-        // if (this.props.auth == undefined) {
-        //   const currentUsersFavoriteId = resource.favorites.find((favorite) => {
-        //     return favorite._user == nextProps.auth._id;
-        //   })?._id;
-        //   this.setState({ currentUsersFavoriteId });
-        // } else {
         var currentUsersFavoriteId = resource.favorites.find((favorite) => {
-          return favorite._user == this.props.auth._id;
+          return favorite._user == this.props.auth?._id;
         })?._id;
         if (currentUsersFavoriteId == undefined) currentUsersFavoriteId = "";
         this.setState({ currentUsersFavoriteId });
@@ -97,7 +93,6 @@ class IndividualResource extends Component {
     let result = this.state.resource.favorites?.find((favorite) => {
       return favorite._user == userId;
     });
-
     return result ? true : false;
   };
   item_in_cart = (resource_id) => {
@@ -129,24 +124,25 @@ class IndividualResource extends Component {
       case 0:
         return "Download not available.";
       default:
-        return this.state.resource.files?.map((file, i) => {
-          //use this if storing/downloading files directly from mongo db
-          //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
-          //use this with s3
-          let link = file.s3Link;
-          return (
-            <span
-              key={i}
-              className="file_selector"
-              onClick={() => this.setState({ selectedFile: file })}
-            >
-              {/* <a href={link} download key={i} style={{ marginLeft: "5px" }}> */}
-              {file.originalname}
-              {/* </a> */}
-              {i != this.state.resource.files.length - 1 ? ", " : null}
-            </span>
-          );
-        });
+        return (
+          <ul style={{ listStyle: "none", marginTop: "5px" }}>
+            {this.state.resource.files?.map((file, i) => {
+              //use this if storing/downloading files directly from mongo db
+              //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
+              //use this with s3
+              // let link = file.s3Link;
+              return (
+                <li
+                  key={i}
+                  className="file_selector"
+                  onClick={() => this.setState({ selectedFile: file })}
+                >
+                  {file.originalname}
+                </li>
+              );
+            })}
+          </ul>
+        );
     }
   }
 
@@ -176,42 +172,9 @@ class IndividualResource extends Component {
         }
       });
   };
-  createNotification = (type) => {
-    switch (type) {
-      case "add_fav":
-        NotificationManager.success("", "Added to favorites!", 1500);
-        break;
-      case "remove_fav":
-        NotificationManager.warning("", "Removed from favorites", 1500);
-        break;
-      case "add_to_cart":
-        NotificationManager.success("", "Added to Shopping Cart!", 1500);
-        break;
-      case "remove_from_cart":
-        NotificationManager.success("", "Removed from Shopping Cart", 1500);
-        break;
-      case "success":
-        NotificationManager.success("Success!", "", 1500);
-        break;
-      case "warning":
-        NotificationManager.warning(
-          "Warning message",
-          "Close after 3000ms",
-          3000
-        );
-        break;
-      case "error":
-        NotificationManager.error("Error message", "Click me!", 5000, () => {
-          alert("callback");
-        });
-        break;
-      default:
-        break;
-    }
-  };
 
   onAddToFavorites = () => {
-    this.createNotification("add_fav");
+    createNotification("add_fav");
     axios
       .post(`/api/resources/${this.state.resource_id}/favorites/create`)
       .then((res) => {
@@ -221,7 +184,7 @@ class IndividualResource extends Component {
       });
   };
   onRemoveFromFavorites = () => {
-    this.createNotification("remove_fav");
+    createNotification("remove_fav");
     axios
       .post(
         `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
@@ -234,7 +197,7 @@ class IndividualResource extends Component {
       });
   };
   addToCart = (resourceId) => {
-    this.createNotification("add_to_cart");
+    createNotification("add_to_cart");
     axios
       .post(`/api/cart/${resourceId}/add`)
       .then((response) => {
@@ -244,7 +207,7 @@ class IndividualResource extends Component {
       .catch((err) => console.log(err));
   };
   removeFromCart = (resourceId) => {
-    this.createNotification("remove_from_cart");
+    createNotification("remove_from_cart");
     axios
       .post(`/api/cart/${resourceId}/remove`)
       .then((response) => {
@@ -256,7 +219,7 @@ class IndividualResource extends Component {
 
   render() {
     //console.log("state is", this.state, "props are", this.props);
-    const { resource, favorited } = this.state;
+    const { resource } = this.state;
 
     return (
       <Container>
@@ -320,7 +283,7 @@ class IndividualResource extends Component {
             {" "}
             <b>Uploader:</b> {resource._user ? resource._user.name : null}{" "}
           </p>
-          <p>
+          <div>
             <b>
               Files{" "}
               {this.state.resource.files?.length > 0
@@ -329,7 +292,7 @@ class IndividualResource extends Component {
               :{" "}
             </b>{" "}
             {this.downloadLink()}
-          </p>
+          </div>
           <p>
             <b>
               Preview
@@ -339,9 +302,17 @@ class IndividualResource extends Component {
               :
             </b>{" "}
             {this.state.selectedFile ? (
+              // need to wrap this link with check to see
+              //if user has bought resource, all resources, or is admin
               <a href={this.state.selectedFile.s3Link}>
                 <Image
-                  src={this.state.selectedFile.s3Link}
+                  src={
+                    this.state.selectedFile?.mimetype?.includes("image")
+                      ? this.state.selectedFile.s3Link
+                      : this.state.selectedFile.previewLink
+                      ? this.state.selectedFile.previewLink
+                      : img
+                  }
                   bordered
                   size="huge"
                   centered

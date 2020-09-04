@@ -7,9 +7,9 @@ import Landing from "./Landing";
 
 import Header from "./Header";
 import About from "./About";
-import Units from "./resources/Units";
-import ResourceIndex from "./resources/ResourceIndex";
-import IndividualResource from "./resources/IndividualResource";
+import Units from "./Resources/Units";
+import ResourceIndex from "./Resources/ResourceIndex";
+import IndividualResource from "./Resources/IndividualResource";
 import UserProfile from "./UserProfile";
 import { Container } from "semantic-ui-react";
 
@@ -37,12 +37,13 @@ class App extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <Container>
         <BrowserRouter>
           <div>
             <Header />
-            <WelcomeMessage user={this.state.user} />
+            <WelcomeMessage user={this.props.auth} />
             <Route exact path="/" component={Landing} />
             <Route
               exact
@@ -79,7 +80,7 @@ class App extends Component {
 
             <Route
               exact
-              path="/resources/new"
+              path="/Resources/new"
               render={(props) => <NewResource {...props} />}
             />
             <Route exact path="/cart" render={(props) => <Cart {...props} />} />
@@ -90,5 +91,8 @@ class App extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return { auth: state.auth };
+}
 
-export default connect(null, actions)(App);
+export default connect(mapStateToProps, actions)(App);

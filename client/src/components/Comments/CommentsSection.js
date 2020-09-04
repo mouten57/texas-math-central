@@ -46,7 +46,6 @@ class CommentsSection extends Component {
       });
   };
   render() {
-    console.log(this.state);
     return (
       <Container style={{ marginBottom: "25px" }}>
         <NewComment

@@ -3,7 +3,7 @@
 // this is inside resource index
 import { connect } from "react-redux";
 import React, { Component } from "react";
-import _ from "lodash";
+
 import { Table, Icon, Confirm } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import unitFields from "./data/unitFields.js";
@@ -25,7 +25,6 @@ class ResourceList extends Component {
       if (err) throw err;
       this.setState({ result: "confirmed", open: false });
       this.props.fetchCart();
-      console.log(result);
     });
   };
   handleCancel = () => this.setState({ result: "cancelled", open: false });
@@ -38,7 +37,6 @@ class ResourceList extends Component {
   }
 
   render() {
-    console.log(this.props.resources);
     const { open } = this.state;
     return (
       <Table style={{ marginBottom: "10px" }} unstackable>

@@ -44,7 +44,6 @@ class ShowComment extends Component {
   renderContent = () => {
     if (this.props.comments) {
       return this.props.comments.map((comment) => {
-        console.log(comment);
         return (
           <Comment key={comment._id}>
             <Comment.Avatar as="a" src={comment._user.image} />

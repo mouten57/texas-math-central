@@ -8,7 +8,6 @@ export const fetchUser = () => async (dispatch) => {
 
 export const fetchCart = () => async (dispatch) => {
   const res = await axios.get("/api/cart");
-  console.log("IN INDEX.js", res.data);
   dispatch({ type: FETCH_CART, payload: res.data });
 };
 

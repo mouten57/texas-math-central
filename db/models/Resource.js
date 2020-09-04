@@ -24,7 +24,6 @@ const resourceSchema = new Schema({
 // });
 
 resourceSchema.pre("deleteOne", { document: true }, async function (next) {
-  console.log(this);
   this.model("User").updateOne(
     {},
     { $pull: { resources: this._id } },
@@ -53,7 +52,6 @@ resourceSchema.pre("deleteOne", { document: true }, async function (next) {
   }
 });
 resourceSchema.post("deletOne", { document: true }, async function (next) {
-  console.log(this);
   next;
 });
 

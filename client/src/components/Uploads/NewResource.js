@@ -1,5 +1,6 @@
 //ResourceForm shows a form for a user to add input
 import _ from "lodash";
+import FilePicker from "./FilePicker/FilePicker";
 import {
   Form,
   Button,
@@ -9,14 +10,16 @@ import {
   Segment,
   Select,
   Header,
+  Container,
 } from "semantic-ui-react";
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
 import NotLoggedIn from "../NotLoggedIn";
-import unitFields from "../resources/data/unitFields.js";
-import resourceTypes from "../resources/data/resourceTypes";
+import unitFields from "../Resources/data/unitFields.js";
+import resourceTypes from "../Resources/data/resourceTypes";
 import Loader from "./Loader";
+import GoogleWrapper from "../../google/GoogleWrapper";
 
 class UploadForm extends Component {
   constructor() {
@@ -78,7 +81,17 @@ class UploadForm extends Component {
       type,
     });
   };
-
+  setFilesFromUppy = (action, file) => {
+    let files = [...this.state.files];
+    action == "add"
+      ? files.push(file.name)
+      : files.splice(files.indexOf(file), 1);
+    this.setState({ files });
+  };
+  googleCallback = (googleId) => {
+    console.log(`the user selected ${googleId}`);
+    window.temp_props = undefined;
+  };
   renderForm() {
     switch (this.props.auth) {
       case null:
@@ -87,71 +100,73 @@ class UploadForm extends Component {
         return <NotLoggedIn />;
       default:
         return (
-          <Form onSubmit={this.onSubmit} style={{ marginBottom: "25px" }}>
-            <Segment>
-              <Header>Create a New Resource!</Header>
-              <div>
-                <Label>Resource Name</Label>
+          <Container>
+            <Form style={{ marginBottom: "25px" }}>
+              <Segment>
+                <Header>Create a New Resource!</Header>
                 <div>
-                  <Input
-                    name="name"
-                    component="input"
+                  <Label>Resource Name</Label>
+                  <div>
+                    <Input
+                      name="name"
+                      component="input"
+                      fluid
+                      value={this.state.name}
+                      onChange={this.onChange}
+                      placeholder="Resource Name"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Unit</Label>
+                  <Select
+                    placeholder="Select Type"
                     fluid
-                    value={this.state.name}
-                    onChange={this.onChange}
-                    placeholder="Resource Name"
+                    selection
+                    options={unitFields}
+                    onChange={this.onSelectUnit}
                   />
                 </div>
-              </div>
 
-              <div style={{ paddingTop: "10px" }}>
-                <Label>Unit</Label>
-                <Select
-                  placeholder="Select Type"
-                  fluid
-                  selection
-                  options={unitFields}
-                  onChange={this.onSelectUnit}
-                />
-              </div>
-
-              <div style={{ paddingTop: "10px" }}>
-                <Label>Type</Label>
-                <Select
-                  placeholder="Select Type"
-                  fluid
-                  selection
-                  options={resourceTypes}
-                  onChange={this.onSelectResourceType}
-                />
-              </div>
-              <div style={{ paddingTop: "10px" }}>
-                <Label>Link</Label>
-                <div>
-                  <Form.Input
-                    name="link"
-                    component="input"
-                    placeholder="http://"
-                    value={this.state.link}
-                    onChange={this.onChange}
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Type</Label>
+                  <Select
+                    placeholder="Select Type"
+                    fluid
+                    selection
+                    options={resourceTypes}
+                    onChange={this.onSelectResourceType}
                   />
                 </div>
-              </div>
-
-              <div style={{ paddingTop: "10px" }}>
-                <Label>Description</Label>
-                <Loader active={this.state.loaderActive} />
-                <div>
-                  <TextArea
-                    name="description"
-                    component="textarea"
-                    placeholder="Something noteworthy..."
-                    value={this.state.description}
-                    onChange={this.onChange}
-                  />
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Link</Label>
+                  <div>
+                    <Form.Input
+                      name="link"
+                      component="input"
+                      placeholder="http://"
+                      value={this.state.link}
+                      onChange={this.onChange}
+                    />
+                  </div>
                 </div>
-              </div>
-            </Segment>
+
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Description</Label>
+                  <Loader active={this.state.loaderActive} />
+                  <div>
+                    <TextArea
+                      name="description"
+                      component="textarea"
+                      placeholder="Something noteworthy..."
+                      value={this.state.description}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                </div>
+              </Segment>
+            </Form>
             <Segment
               style={
                 this.state.loaderActive
@@ -160,7 +175,26 @@ class UploadForm extends Component {
               }
             >
               <Header>Upload</Header>
-              <div>
+
+              <FilePicker
+                test="TEST"
+                setFilesFromUppy={this.setFilesFromUppy}
+              />
+              {this.state.files.length > 0 ? (
+                <div style={{ marginTop: "15px" }}>
+                  <h5>Uploaded Files</h5>
+                  <ul>
+                    {this.state.files.map((file) => {
+                      return <li key={file}>{file}</li>;
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+              {/* <GoogleWrapper
+                googleCallback={(data) => this.googleCallback(data)}
+              /> */}
+
+              {/* <div>
                 <Label>Upload File</Label>
                 <div>
                   <Input
@@ -171,40 +205,33 @@ class UploadForm extends Component {
                     onChange={this.onChange}
                   />
                 </div>
-              </div>
+              </div> */}
             </Segment>
 
             <Button
-              type="submit"
+              onClick={this.onSubmit}
               style={{ marginTop: "5px" }}
               disabled={this.state.submitDisabled}
             >
               Submit
             </Button>
-          </Form>
+          </Container>
         );
     }
   }
-  isURL = (str) => {
-    var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-    if (pattern.test(str)) {
-      return true;
-    }
-    alert("Url is not valid! Make sure you start with 'http://...'");
-    return false;
-  };
 
   onSubmit = (e) => {
+    console.log(e);
     e.preventDefault();
-    this.setState({ loaderActive: true, submitDisabled: true });
-    const { description, files, name, unit, type, link } = this.state;
+
+    const { description, name, unit, type, link } = this.state;
 
     let formData = new FormData();
 
     formData.append("description", description);
-    for (const key of Object.keys(this.state.files)) {
-      formData.append("files", this.state.files[key]);
-    }
+    // for (const key of Object.keys(this.state.files)) {
+    //   formData.append("files", this.state.files[key]);
+    // }
     // formData.append("files", files);
     formData.append("name", name);
     formData.append("unit", unit);
@@ -220,14 +247,14 @@ class UploadForm extends Component {
       return alert(`                Please complete all fields. 
 
                   (File upload is optional)`);
+    } else {
+      this.setState({ loaderActive: true, submitDisabled: true });
     }
-
-    //if (this.isURL(values[4]) === false) return;
 
     axios
       .post("/api/resources/create", formData)
       .then((res) => {
-        // alert("SUCCESS!");
+        console.log(res.data);
         axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
           this.setState({ loaderActive: false, submitDisabled: false });
           this.props.history.push({
@@ -245,7 +272,6 @@ class UploadForm extends Component {
   };
 
   render() {
-    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

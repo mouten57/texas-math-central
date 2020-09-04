@@ -17,7 +17,6 @@ class UserProfile extends Component {
 
   componentDidMount() {
     axios.get("/api/profile").then((res) => {
-      console.log(res.data);
       this.setState({
         comments: res.data.comments,
         resources: res.data.resources,

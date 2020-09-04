@@ -13,7 +13,7 @@ const AppMedia = createMedia({
   },
 });
 const mediaStyles = AppMedia.createMediaStyle();
-const { Media, MediaContextProvider } = AppMedia;
+const { Media } = AppMedia;
 const Cart = (props) => {
   return (
     <Container>
@@ -56,7 +56,6 @@ const Cart = (props) => {
       <Grid columns={2} centered="true">
         {props.cart?.products?.map((product) => {
           if (product.resource_id) {
-            console.log(product.resource_id.files[0]);
             return (
               <Grid.Column key={product._id} centered={true}>
                 <Image
@@ -74,7 +73,7 @@ const Cart = (props) => {
                   }}
                   style={{ margin: "0 auto" }}
                   src={
-                    product.resource_id.files[0]
+                    product.resource_id.files[0]?.mimetype?.includes("image")
                       ? product.resource_id.files[0].s3Link
                       : img
                   }

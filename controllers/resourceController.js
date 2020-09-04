@@ -3,6 +3,8 @@ const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
 var AWS = require("aws-sdk");
 const keys = require("../config/keys/keys");
+const deleteUploads = require("../middlewares/deleteUploads");
+
 var s3 = new AWS.S3({
   apiVersion: "2006-03-01",
   accessKeyId: keys.AWS_ACCESS_KEY,
@@ -39,18 +41,19 @@ module.exports = {
   },
 
   async create(req, res, next) {
+    console.log("in create");
+    global.createController = "started";
+    let files = global.files || [];
     var newResource;
-    const link = req.body.link.includes("http")
-      ? req.body.link
-      : `//${req.body.link}`;
+    const link = req.body.link;
 
-    let files_plus_data = [...req.files];
+    var files_plus_data = [...files];
 
-    for (let i = 0; i < req.files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const params = {
         Bucket: "texas-math-central",
-        Key: req.files[i].filename,
-        Body: fs.readFileSync(`./uploads/${req.files[i].filename}`),
+        Key: files[i].filename,
+        Body: fs.readFileSync(`./uploads/${files[i].filename}`),
       };
       let s3Data = await s3.upload(params).promise();
 
@@ -71,18 +74,13 @@ module.exports = {
     };
     resourceQueries.addResource(newResource, (err, resource) => {
       if (err) {
-        console.log(err);
+        res.send(err);
       } else {
-        if (req.files !== undefined) {
-          //delete upload
-          for (let i = 0; i < req.files.length; i++) {
-            fs.unlink(req.files[i].path, (err) => {
-              if (err) throw err;
-              console.log(`${req.files[i].originalname} was deleted.`);
-            });
-          }
-        }
+        global.files = null;
+        global.createController = "finished";
         res.send(resource);
+        //delete files from Upload dir
+        deleteUploads();
       }
     });
   },
@@ -91,7 +89,6 @@ module.exports = {
       if (err || result == null) {
         res.send(err);
       } else {
-        console.log("In Delete");
         res.send(result);
       }
     });
@@ -113,7 +110,7 @@ module.exports = {
 
         res.download(`./uploads/${found.originalname}`, (err) => {
           if (err) {
-            console.log(err);
+            res.send(err);
           } else {
             //need to delete file after download is complete
             fs.unlink(`./uploads/${found.originalname}`, (err) => {

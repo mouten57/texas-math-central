@@ -1,5 +1,4 @@
 const bodyParser = require("body-parser");
-const expressValidator = require("express-validator");
 const flash = require("express-flash");
 const cookieSession = require("cookie-session");
 const passport = require("passport");

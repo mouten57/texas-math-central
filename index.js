@@ -1,9 +1,27 @@
 const express = require("express");
 const mainConfig = require("./config/main-config");
 const routeConfig = require("./config/route-config.js");
+// const keys = require("./config/keys/keys");
+// var companion = require("@uppy/companion");
+// const path = require("path");
+// const destFilePath = path.resolve("uploads");
 
 const app = express();
-
+// const options = {
+//   providerOptions: {
+//     drive: {
+//       key: keys.googleClientID,
+//       secret: keys.googleClientSecret,
+//     },
+//   },
+//   server: {
+//     host: "localhost:5000",
+//     protocol: "http",
+//   },
+//   filePath: destFilePath,
+//   secret: keys.cookieKey,
+//   debug: true,
+// };
 //main setup
 mainConfig.init(app, express);
 
@@ -25,4 +43,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`now listening on port ${PORT}`);
+});
+// app.use(companion.app(options));

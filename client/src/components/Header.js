@@ -27,7 +27,6 @@ class Nav extends Component {
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
   render() {
-    console.log(this.props.auth);
     const { activeItem } = this.state;
 
     return (
