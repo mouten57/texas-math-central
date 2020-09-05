@@ -151,8 +151,9 @@ class IndividualResource extends Component {
         return "Download not available.";
         break;
       case 1:
+        //if index 0 of files is "TBD", that means we are still waiting for s3 upload to complete
         if (this.state.resource.files[0] == "TBD") {
-          return "Waiting for data...";
+          return <Loader active inline="centered" />;
           break;
         }
 
@@ -329,41 +330,35 @@ class IndividualResource extends Component {
             </b>{" "}
             {this.downloadLink()}
           </div>
-          <p>
-            <b>
-              Preview
-              {this.state.selectedFile
-                ? this.state.selectedFile == "TBD"
-                  ? null
-                  : ` (${this.state.selectedFile.originalname})`
-                : ""}
-              :
-            </b>{" "}
-            {this.state.selectedFile ? (
-              this.state.selectedFile == "TBD" ? (
-                "Waiting for data..."
-              ) : (
-                // need to wrap this link with check to see
-                //if user has bought resource, all resources, or is admin
+
+          {this.state.selectedFile ? (
+            this.state.selectedFile == "TBD" ? null : (
+              <p>
+                <b>
+                  Preview
+                  {`(${this.state.selectedFile.originalname})`}
+                </b>
+
                 <a href={this.state.selectedFile.s3Link}>
                   <Image
                     src={
+                      //use s3 direct link as src if file type is image
                       this.state.selectedFile?.mimetype?.includes("image")
                         ? this.state.selectedFile.s3Link
-                        : this.state.selectedFile.previewLink
+                        : //else use the previewLink of the file
+                        this.state.selectedFile.previewLink
                         ? this.state.selectedFile.previewLink
-                        : img
+                        : //else use placeholder image
+                          img
                     }
                     bordered
                     size="huge"
                     centered
                   />
                 </a>
-              )
-            ) : (
-              "No Preview Available"
-            )}
-          </p>
+              </p>
+            )
+          ) : null}
         </div>
 
         {this.state.isLoading ? (
