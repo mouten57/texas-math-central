@@ -6,18 +6,18 @@ const processImage = require("../middlewares/processImage");
 module.exports = (app) => {
   app.get("/api/units/:unit", requireLogin, resourceController.index);
   app.post("/api/filepreview", (req, res) => {
-    console.log(req.body);
     res.status(200).send("OK");
   });
   //handles uploads from uppy file uploader, one at a time
-  app.post("/api/upload", upload.single("my_file"), (req, res) => {
-    if (global.files == undefined || global.createController == "started") {
-      global.files = [];
-    }
-    global.files = [...global.files, req.file];
+  //removing for now, bc I don't want global.files
+  // app.post("/api/upload", upload.single("my_file"), (req, res) => {
+  //   if (global.files == undefined || global.createController == "started") {
+  //     global.files = [];
+  //   }
+  //   global.files = [...global.files, req.file];
 
-    res.status(200).send("success");
-  });
+  //   res.status(200).send("success");
+  // });
 
   app.get("/api/units/:unit/:id", requireLogin, resourceController.show);
 

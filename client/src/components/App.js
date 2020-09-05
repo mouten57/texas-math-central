@@ -77,6 +77,7 @@ class App extends Component {
                 <IndividualResource
                   {...props}
                   fetchCart={this.props.fetchCart}
+                  socket={socket}
                 />
               )}
             />

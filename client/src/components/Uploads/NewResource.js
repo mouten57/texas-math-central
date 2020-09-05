@@ -57,6 +57,7 @@ class UploadForm extends Component {
   onChange = (e) => {
     switch (e.target.name) {
       case "files":
+        console.log(e.target.files);
         this.setState({ files: e.target.files });
         break;
       default:
@@ -175,26 +176,7 @@ class UploadForm extends Component {
               }
             >
               <Header>Upload</Header>
-
-              <FilePicker
-                test="TEST"
-                setFilesFromUppy={this.setFilesFromUppy}
-              />
-              {this.state.files.length > 0 ? (
-                <div style={{ marginTop: "15px" }}>
-                  <h5>Uploaded Files</h5>
-                  <ul>
-                    {this.state.files.map((file) => {
-                      return <li key={file}>{file}</li>;
-                    })}
-                  </ul>
-                </div>
-              ) : null}
-              {/* <GoogleWrapper
-                googleCallback={(data) => this.googleCallback(data)}
-              /> */}
-
-              {/* <div>
+              <div>
                 <Label>Upload File</Label>
                 <div>
                   <Input
@@ -205,7 +187,25 @@ class UploadForm extends Component {
                     onChange={this.onChange}
                   />
                 </div>
-              </div> */}
+              </div>
+
+              {/* <FilePicker
+                test="TEST"
+                setFilesFromUppy={this.setFilesFromUppy}
+              /> */}
+              {this.state.files.length > 0 ? (
+                <div style={{ marginTop: "15px" }}>
+                  <h5>Selected Files</h5>
+                  <ul>
+                    {Array.from(this.state.files).map((file) => {
+                      return <li key={file.name}>{file.name}</li>;
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+              {/* <GoogleWrapper
+                googleCallback={(data) => this.googleCallback(data)}
+              /> */}
             </Segment>
 
             <Button
@@ -224,15 +224,15 @@ class UploadForm extends Component {
     console.log(e);
     e.preventDefault();
 
-    const { description, name, unit, type, link } = this.state;
+    const { description, name, files, unit, type, link } = this.state;
 
     let formData = new FormData();
 
     formData.append("description", description);
-    // for (const key of Object.keys(this.state.files)) {
-    //   formData.append("files", this.state.files[key]);
-    // }
-    // formData.append("files", files);
+    for (const key of Object.keys(this.state.files)) {
+      formData.append("files", this.state.files[key]);
+    }
+    formData.append("files", files);
     formData.append("name", name);
     formData.append("unit", unit);
     formData.append("type", type);

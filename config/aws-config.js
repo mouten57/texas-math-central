@@ -32,4 +32,5 @@ module.exports = {
       callback(null, data);
     });
   },
+  s3,
 };

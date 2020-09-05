@@ -2,15 +2,10 @@ const resourceQueries = require("../db/queries.resources");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
 var AWS = require("aws-sdk");
+const awsConfig = require("../config/aws-config");
 const keys = require("../config/keys/keys");
 const deleteUploads = require("../middlewares/deleteUploads");
-
-var s3 = new AWS.S3({
-  apiVersion: "2006-03-01",
-  accessKeyId: keys.AWS_ACCESS_KEY,
-  secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
-});
-
+var { s3 } = awsConfig;
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
     if (unitFields[i].param == unit) {
@@ -41,25 +36,10 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    console.log("in create");
-    global.createController = "started";
-    let files = global.files || [];
-    var newResource;
-    const link = req.body.link;
-
-    var files_plus_data = [...files];
-
-    for (let i = 0; i < files.length; i++) {
-      const params = {
-        Bucket: "texas-math-central",
-        Key: files[i].filename,
-        Body: fs.readFileSync(`./uploads/${files[i].filename}`),
-      };
-      let s3Data = await s3.upload(params).promise();
-
-      files_plus_data[i].s3Object = s3Data;
-      files_plus_data[i].s3Link = s3Data.Location;
-    }
+    var files = req.files || [],
+      newResource,
+      link = req.body.link;
+    // var files_plus_data = [...files];
 
     var newResource = {
       name: req.body.name,
@@ -70,17 +50,45 @@ module.exports = {
       description: req.body.description,
       _user: req.user._id,
       created_at: Date.now(),
-      files: files_plus_data,
+
+      files: ["TBD"],
     };
-    resourceQueries.addResource(newResource, (err, resource) => {
+    resourceQueries.addResource(newResource, async (err, resource) => {
       if (err) {
         res.send(err);
       } else {
-        global.files = null;
-        global.createController = "finished";
         res.send(resource);
-        //delete files from Upload dir
-        deleteUploads();
+        //after sending initial, send files
+        //start upload with aws
+        for (let i = 0; i < files.length; i++) {
+          const params = {
+            Bucket: "texas-math-central",
+            Key: files[i].filename,
+            Body: fs.readFileSync(`./uploads/${files[i].filename}`),
+          };
+
+          let s3Data = await s3.upload(params).promise();
+          files[i].s3Object = s3Data;
+          files[i].s3Link = s3Data.Location;
+        }
+
+        resourceQueries.updateResourceWithFiles(
+          resource._id,
+          files,
+          async (err, update) => {
+            console.log(update);
+            try {
+              req.app.io.emit("updated-resource-post-upload", update);
+              //clear out global
+              global.files = null;
+              global.createController = "finished";
+              //delete files from Upload dir
+              deleteUploads();
+            } catch (err) {
+              throw err;
+            }
+          }
+        );
       }
     });
   },

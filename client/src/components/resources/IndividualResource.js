@@ -28,9 +28,26 @@ class IndividualResource extends Component {
       downvoted: false,
       item_in_cart: null,
     };
+
+    this.updateResourcePostUpload = (resource) => {
+      if (resource._id == this.props.match.params.id) {
+        this.setState({
+          resource,
+          selectedFile: resource.files[0],
+          resourceComments: resource.comments,
+          s3Link: resource.s3Link,
+          resource_name: resource.name,
+          resource_id: resource._id,
+        });
+      }
+    };
   }
 
   componentDidMount = () => {
+    this.props.socket.on(
+      "updated-resource-post-upload",
+      this.updateResourcePostUpload
+    );
     this.makeAxiosCalls();
     if (this.props.history.location.state) {
       createNotification("success");
@@ -43,7 +60,31 @@ class IndividualResource extends Component {
       selectedFile: this.state.files ? this.state.files[0] : null,
     });
   };
-  //is there a way to populate resource with one call rather than 3 separate calls?
+
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log("update");
+    if (
+      prevState.resource._id &&
+      prevState.currentUsersFavoriteId != this.state.currentUsersFavoriteId
+    ) {
+      console.log(
+        prevState.resource,
+        "prevState",
+        prevState.currentUsersFavoriteId,
+        "state",
+        this.state.currentUsersFavoriteId
+      );
+      this.makeAxiosCalls();
+    }
+  };
+
+  componentWillUnmount() {
+    this.props.socket.off(
+      "updated-resource-post-upload",
+      this.updateResourcePostUpload
+    );
+  }
+
   makeAxiosCalls = () => {
     console.log("making axios calls");
     axios
@@ -71,22 +112,6 @@ class IndividualResource extends Component {
           this.getVoteTotal(resource.votes);
         }
       });
-  };
-  componentDidUpdate = (prevProps, prevState) => {
-    console.log("update");
-    if (
-      prevState.resource._id &&
-      prevState.currentUsersFavoriteId != this.state.currentUsersFavoriteId
-    ) {
-      console.log(
-        prevState.resource,
-        "prevState",
-        prevState.currentUsersFavoriteId,
-        "state",
-        this.state.currentUsersFavoriteId
-      );
-      this.makeAxiosCalls();
-    }
   };
 
   getFavoriteFor = (userId) => {
@@ -121,8 +146,16 @@ class IndividualResource extends Component {
     switch (this.state.resource.files?.length) {
       case null:
         return "";
+        break;
       case 0:
         return "Download not available.";
+        break;
+      case 1:
+        if (this.state.resource.files[0] == "TBD") {
+          return "Waiting for data...";
+          break;
+        }
+
       default:
         return (
           <ul style={{ listStyle: "none", marginTop: "5px" }}>
@@ -218,6 +251,7 @@ class IndividualResource extends Component {
   };
 
   render() {
+    console.log(this.state);
     //console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
 
@@ -287,7 +321,9 @@ class IndividualResource extends Component {
             <b>
               Files{" "}
               {this.state.resource.files?.length > 0
-                ? " (click to preview)"
+                ? this.state.resource.files[0] == "TBD"
+                  ? null
+                  : " (click to preview)"
                 : null}
               :{" "}
             </b>{" "}
@@ -297,27 +333,33 @@ class IndividualResource extends Component {
             <b>
               Preview
               {this.state.selectedFile
-                ? ` (${this.state.selectedFile.originalname})`
+                ? this.state.selectedFile == "TBD"
+                  ? null
+                  : ` (${this.state.selectedFile.originalname})`
                 : ""}
               :
             </b>{" "}
             {this.state.selectedFile ? (
-              // need to wrap this link with check to see
-              //if user has bought resource, all resources, or is admin
-              <a href={this.state.selectedFile.s3Link}>
-                <Image
-                  src={
-                    this.state.selectedFile?.mimetype?.includes("image")
-                      ? this.state.selectedFile.s3Link
-                      : this.state.selectedFile.previewLink
-                      ? this.state.selectedFile.previewLink
-                      : img
-                  }
-                  bordered
-                  size="huge"
-                  centered
-                />
-              </a>
+              this.state.selectedFile == "TBD" ? (
+                "Waiting for data..."
+              ) : (
+                // need to wrap this link with check to see
+                //if user has bought resource, all resources, or is admin
+                <a href={this.state.selectedFile.s3Link}>
+                  <Image
+                    src={
+                      this.state.selectedFile?.mimetype?.includes("image")
+                        ? this.state.selectedFile.s3Link
+                        : this.state.selectedFile.previewLink
+                        ? this.state.selectedFile.previewLink
+                        : img
+                    }
+                    bordered
+                    size="huge"
+                    centered
+                  />
+                </a>
+              )
             ) : (
               "No Preview Available"
             )}

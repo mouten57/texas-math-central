@@ -6,11 +6,6 @@ var keys = require("../config/keys/keys");
 const http = require("http");
 const fs = require("fs");
 var FilePreviews = require("filepreviews");
-var previews = new FilePreviews({
-  debug: true,
-  apiKey: "uLrMz5O3cirmVDqz2N5SeDERBiJwQJ",
-  apiSecret: "tDsbqgb58Nyxn32KnowEPpk7qobhyE",
-});
 
 var s3 = new AWS.S3({
   apiVersion: "2006-03-01",
@@ -27,13 +22,29 @@ module.exports = {
     );
   },
   async addResource(newResource, callback) {
-    console.log("in query");
     let resource = await Resource.create(newResource);
     let user = await User.findById(newResource._user);
     user.resources = [...user.resources, resource._id];
 
     try {
       await user.save();
+      callback(null, resource);
+    } catch (err) {
+      callback(err);
+    }
+  },
+  async updateResourceWithFiles(_id, files, callback) {
+    let resource = await Resource.findOneAndUpdate(
+      { _id },
+      { files },
+      { new: true }
+    )
+      .populate("_user")
+      .populate("favorites")
+      .populate("votes")
+      .populate({ path: "comments", populate: { path: "_user" } });
+
+    try {
       callback(null, resource);
     } catch (err) {
       callback(err);
