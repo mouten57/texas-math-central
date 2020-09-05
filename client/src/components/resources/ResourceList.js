@@ -49,7 +49,7 @@ class ResourceList extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {this.props.resources.reverse().map((resource) => {
+          {this.props.resources.map((resource) => {
             return (
               <Table.Row key={resource._id} style={{ marginTop: "10px" }}>
                 <Table.Cell

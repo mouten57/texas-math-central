@@ -15,11 +15,11 @@ var s3 = new AWS.S3({
 
 module.exports = {
   getUnitResources(unit, callback) {
-    return Resource.find({ unit: unit }, "-files.file_data").then(
-      (resources) => {
+    return Resource.find({ unit: unit }, "-files.file_data")
+      .sort({ created_at: "desc" })
+      .then((resources) => {
         callback(null, resources);
-      }
-    );
+      });
   },
   async addResource(newResource, callback) {
     let resource = await Resource.create(newResource);
