@@ -37,7 +37,6 @@ class IndividualResource extends Component {
           selectedFile: resource.files[0],
           comments: resource.comments,
           s3Link: resource.s3Link,
-          resource_name: resource.name,
           resource_id: resource._id,
         });
       }
@@ -283,8 +282,37 @@ class IndividualResource extends Component {
       .catch((err) => console.log(err));
   };
 
+  renderCartOptions = (resource) => {
+    if (resource && this.props.auth && resource._user) {
+      if (resource._user?._id == this.props.auth?._id) {
+        return <p>My resource</p>;
+      } else if (
+        this.props.auth.role == "admin" ||
+        this.props.auth.role == "all_access"
+      ) {
+        return <p>Premium User Access!</p>;
+      } else if (this.props.auth?.purchasedResources.includes(resource._id)) {
+        return <p>Purchased Item</p>;
+      } else {
+        return (
+          <p
+            className="add-to-cart"
+            onClick={
+              this.item_in_cart(resource._id)
+                ? () => this.removeFromCart(resource._id)
+                : () => this.addToCart(resource._id)
+            }
+          >
+            <b style={{ backgroundColor: "yellow" }}>
+              {this.item_in_cart(resource._id) ? "Remove from" : "Add to"} Cart
+            </b>
+          </p>
+        );
+      }
+    }
+  };
   render() {
-    console.log("state is", this.state, "props are", this.props);
+    //console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
 
     return (
@@ -314,34 +342,15 @@ class IndividualResource extends Component {
           <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
         </Button.Group>
 
-        <h2>"{this.state.resource_name}"</h2>
+        <h2>"{resource.name}"</h2>
+
+        {this.renderCartOptions(resource)}
 
         <div>
           <p>
             <b>Name: </b>
             {resource.name}
           </p>
-          {resource._user?._id !== this.props.auth?._id ? (
-            this.props.auth?.purchasedResources.includes(resource._id) ? (
-              <p>Purchased Item</p>
-            ) : (
-              <p
-                className="add-to-cart"
-                onClick={
-                  this.item_in_cart(resource._id)
-                    ? () => this.removeFromCart(resource._id)
-                    : () => this.addToCart(resource._id)
-                }
-              >
-                <b style={{ backgroundColor: "yellow" }}>
-                  {this.item_in_cart(resource._id) ? "Remove from" : "Add to"}{" "}
-                  Cart
-                </b>
-              </p>
-            )
-          ) : (
-            <p>My resource</p>
-          )}
 
           <p>
             <b>Unit:</b> {resource.fullUnit}
