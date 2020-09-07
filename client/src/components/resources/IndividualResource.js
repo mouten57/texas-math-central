@@ -153,7 +153,11 @@ class IndividualResource extends Component {
       case 1:
         //if index 0 of files is "TBD", that means we are still waiting for s3 upload to complete
         if (this.state.resource.files[0] == "TBD") {
-          return <Loader active inline="centered" />;
+          return (
+            <Loader active inline="centered">
+              Fetching a personal preview
+            </Loader>
+          );
           break;
         }
 

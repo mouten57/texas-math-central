@@ -75,6 +75,8 @@ const Cart = (props) => {
                   src={
                     product.resource_id.files[0]?.mimetype?.includes("image")
                       ? product.resource_id.files[0].s3Link
+                      : product.resource_id.files[0].previewLink
+                      ? product.resource_id.files[0].previewLink
                       : img
                   }
                 />
