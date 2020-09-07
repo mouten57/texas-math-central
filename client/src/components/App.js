@@ -16,10 +16,17 @@ import { Container } from "semantic-ui-react";
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart";
+//stripe checkout
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutForm from "./Checkout/CheckoutForm";
+
+//socket
 import openSocket from "socket.io-client";
 const keys = require("../components/SocketIO/SocketIO");
 const socket = openSocket(keys.socketPath);
 
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 class App extends Component {
   constructor(props) {
     super(props);
@@ -87,7 +94,31 @@ class App extends Component {
               path="/Resources/new"
               render={(props) => <NewResource {...props} />}
             />
-            <Route exact path="/cart" render={(props) => <Cart {...props} />} />
+            <Route
+              exact
+              path="/cart"
+              render={(props) => (
+                <Cart
+                  {...props}
+                  auth={this.props.auth}
+                  cart={this.props.cart}
+                  fetchCart={this.props.fetchCart}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/checkout"
+              render={(props) => (
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm
+                    auth={this.props.auth}
+                    cart={this.props.cart}
+                    {...props}
+                  />
+                </Elements>
+              )}
+            />
           </div>
         </BrowserRouter>
         <NotificationContainer />
@@ -96,7 +127,7 @@ class App extends Component {
   }
 }
 function mapStateToProps(state) {
-  return { auth: state.auth };
+  return { auth: state.auth, cart: state.cart };
 }
 
 export default connect(mapStateToProps, actions)(App);

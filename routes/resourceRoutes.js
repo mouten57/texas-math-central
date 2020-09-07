@@ -5,9 +5,6 @@ const processImage = require("../middlewares/processImage");
 
 module.exports = (app) => {
   app.get("/api/units/:unit", requireLogin, resourceController.index);
-  app.post("/api/filepreview", (req, res) => {
-    res.status(200).send("OK");
-  });
   //handles uploads from uppy file uploader, one at a time
   //removing for now, bc I don't want global.files
   // app.post("/api/upload", upload.single("my_file"), (req, res) => {

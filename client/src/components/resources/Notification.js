@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
-export default function createNotification(type) {
+export default function createNotification(type, error) {
   switch (type) {
     case "add_fav":
       NotificationManager.success("", "Added to favorites!", 1500);
@@ -16,6 +16,17 @@ export default function createNotification(type) {
     case "remove_from_cart":
       NotificationManager.success("", "Removed from Shopping Cart", 1500);
       break;
+    case "purchase_success":
+      NotificationManager.success(
+        "Thank you for your purchase!",
+        "Success!",
+        2000
+      );
+      break;
+    case "purchase_failure":
+      NotificationManager.error("", error, 1500);
+      break;
+
     case "success":
       NotificationManager.success("Success!", "", 1500);
       break;

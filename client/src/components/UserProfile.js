@@ -114,6 +114,27 @@ class UserProfile extends Component {
             );
           })}
         </div>
+        <Header as="h2" dividing>
+          My Purchases
+        </Header>
+        <div>
+          Coming soon...
+          {/* {this.state.favorites.map((favorite) => {
+            return (
+              <div key={favorite._id}>
+                <List.Icon name="file" />
+                <Link
+                  style={{ color: "#858DAA" }}
+                  to={`/units/${favorite.resource_id.unit}/${favorite.resource_id._id}`}
+                >
+                  <h3 style={{ display: "inline-block", marginTop: "5px" }}>
+                    "{favorite.resource_id.name}"
+                  </h3>
+                </Link>
+              </div>
+            );
+          })} */}
+        </div>
       </Container>
     );
   }

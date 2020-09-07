@@ -12,5 +12,6 @@ module.exports = {
     require("../routes/userRoutes")(app);
     require("../routes/favoriteRoutes")(app);
     require("../routes/cartRoutes")(app);
+    require("../routes/billingRoutes")(app);
   },
 };

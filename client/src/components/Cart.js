@@ -1,6 +1,18 @@
 import React from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import { createMedia } from "@artsy/fresnel";
-import { Grid, Image, Container, Header, Button } from "semantic-ui-react";
+import createNotification from "./Resources/Notification";
+import {
+  Grid,
+  Image,
+  Container,
+  Header,
+  Button,
+  Icon,
+  Popup,
+  Segment,
+} from "semantic-ui-react";
 import { connect } from "react-redux";
 import img from "../images/sample_doc.png";
 const AppMedia = createMedia({
@@ -15,6 +27,12 @@ const AppMedia = createMedia({
 const mediaStyles = AppMedia.createMediaStyle();
 const { Media } = AppMedia;
 const Cart = (props) => {
+  console.log(props);
+  const onRemoveItem = async (id) => {
+    let result = await axios.post(`/api/cart/${id}/remove`);
+    createNotification("remove_from_cart");
+    props.fetchCart();
+  };
   return (
     <Container>
       <style>{mediaStyles}</style>
@@ -30,7 +48,15 @@ const Cart = (props) => {
             </Header>
           </Grid.Column>
           <Grid.Column width={5}>
-            <Button color="blue">Checkout</Button>
+            <Button
+              labelPosition="arrow circle right"
+              as={Link}
+              to="/checkout"
+              disabled={!props.cart?.products?.length > 0}
+            >
+              Checkout
+              <Icon name="arrow circle right" style={{ marginRight: "5px" }} />
+            </Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -48,7 +74,15 @@ const Cart = (props) => {
             </Header>
           </Grid.Column>
           <Grid.Column width={4}>
-            <Button color="blue">Checkout</Button>
+            <Button
+              labelPosition="arrow circle right"
+              as={Link}
+              to="/checkout"
+              disabled={!props.cart?.products?.length > 0}
+            >
+              Checkout
+              <Icon name="arrow circle right" style={{ marginRight: "5px" }} />
+            </Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -57,28 +91,48 @@ const Cart = (props) => {
         {props.cart?.products?.map((product) => {
           if (product.resource_id) {
             return (
-              <Grid.Column key={product._id} centered={true}>
-                <Image
-                  fluid
-                  size="big"
-                  as="a"
-                  href={`/units/${product.resource_id.unit}/${product.resource_id._id}`}
-                  label={{
-                    as: "a",
-
-                    color: "black",
-                    content: product.name,
-                    icon: "hotel",
-                    ribbon: true,
-                  }}
-                  style={{ margin: "0 auto" }}
-                  src={
-                    product.resource_id.files[0]?.mimetype?.includes("image")
-                      ? product.resource_id.files[0].s3Link
-                      : product.resource_id.files[0].previewLink
-                      ? product.resource_id.files[0].previewLink
-                      : img
+              <Grid.Column key={product._id}>
+                <Popup
+                  trigger={
+                    <Image
+                      size="big"
+                      bordered
+                      label={{
+                        color: "black",
+                        content: product.name,
+                        icon: "hotel",
+                        ribbon: true,
+                      }}
+                      src={
+                        product.resource_id.files[0]?.mimetype?.includes(
+                          "image"
+                        )
+                          ? product.resource_id.files[0].s3Link
+                          : product.resource_id.files[0].previewLink
+                          ? product.resource_id.files[0].previewLink
+                          : img
+                      }
+                    />
                   }
+                  content={
+                    <Button.Group>
+                      <Button
+                        color="grey"
+                        content="View"
+                        as="a"
+                        href={`/units/${product.resource_id.unit}/${product.resource_id._id}`}
+                      />
+                      <Button
+                        color="red"
+                        as="a"
+                        onClick={() => onRemoveItem(product.resource_id._id)}
+                      >
+                        Remove
+                      </Button>
+                    </Button.Group>
+                  }
+                  on="click"
+                  position="top left"
                 />
               </Grid.Column>
             );
