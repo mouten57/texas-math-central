@@ -10,14 +10,16 @@ module.exports = {
       _user: req.user.id,
     });
     if (vote) {
+      //means this is an update
       vote.value = val;
-      let resource = await Resource.findOne({ _id: vote.resource_id });
-      let user = await User.findOne({ _id: vote._user });
-      resource.votes = [...resource.votes, vote];
-      user.votes = [...user.votes, vote];
+      //I dont think we need to add values to resource and user if votes already exist
+      // let resource = await Resource.findOne({ _id: vote.resource_id });
+      // let user = await User.findOne({ _id: vote._user });
+      // resource.votes = [...resource.votes, vote];
+      // user.votes = [...user.votes, vote];
       try {
-        await user.save();
-        await resource.save();
+        // await user.save();
+        // await resource.save();
         await vote.save();
         callback(null, vote);
       } catch (err) {

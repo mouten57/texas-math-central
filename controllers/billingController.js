@@ -14,16 +14,13 @@ module.exports = {
     res.json({ client_secret: intent.client_secret });
   },
   postcharge(req, res) {
-    billingQueries.postcharge(
-      req.user._id,
-      req.params.resourceId,
-      (err, cart) => {
-        if (err) {
-          res.status(422).send(err);
-        } else {
-          res.send(cart);
-        }
+    //new resource IDs come in as array on req.body
+    billingQueries.postcharge(req.user._id, req.body, (err, cart) => {
+      if (err) {
+        res.status(422).send(err);
+      } else {
+        res.send(cart);
       }
-    );
+    });
   },
 };

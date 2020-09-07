@@ -34,6 +34,7 @@ module.exports = {
     let cart = await Cart.findOneAndUpdate(
       {
         _user,
+        //don't add resource if it's already there
         "products.resource_id": { $ne: resource_id },
       },
       {

@@ -68,13 +68,20 @@ class App extends Component {
             <Route
               exact
               path="/profile"
-              render={(props) => <UserProfile {...props} />}
+              render={(props) => (
+                <UserProfile {...props} fetchCart={this.props.fetchCart} />
+              )}
             />
             <Route
               exact
               path="/units/:unit"
               render={(props) => (
-                <ResourceIndex {...props} fetchCart={this.props.fetchCart} />
+                <ResourceIndex
+                  {...props}
+                  fetchCart={this.props.fetchCart}
+                  auth={this.props.auth}
+                  cart={this.props.cart}
+                />
               )}
             />
             <Route
@@ -114,6 +121,8 @@ class App extends Component {
                   <CheckoutForm
                     auth={this.props.auth}
                     cart={this.props.cart}
+                    fetchUser={this.props.fetchUser}
+                    fetchCart={this.props.fetchCart}
                     {...props}
                   />
                 </Elements>

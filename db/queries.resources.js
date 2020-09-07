@@ -17,6 +17,7 @@ module.exports = {
   getUnitResources(unit, callback) {
     return Resource.find({ unit: unit }, "-files.file_data")
       .sort({ created_at: "desc" })
+      .populate("votes")
       .then((resources) => {
         callback(null, resources);
       });

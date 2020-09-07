@@ -24,6 +24,9 @@ module.exports = {
           path: "resource_id",
           select: "-files.file_data",
         },
+      })
+      .populate({
+        path: "purchasedResources",
       });
 
     try {

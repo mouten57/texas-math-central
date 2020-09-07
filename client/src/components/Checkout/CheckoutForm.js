@@ -5,9 +5,13 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import axios from "axios";
 import CardSection from "./CardSection";
 import createNotification from "../Resources/Notification";
+import NotLoggedIn from "../NotLoggedIn";
 
 const CheckoutForm = (props) => {
-  console.log(props);
+  let products = props.cart?.products;
+  let resourceIDs = products?.map((p) => p.resource_id._id);
+  console.log(products, resourceIDs);
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -56,8 +60,11 @@ const CheckoutForm = (props) => {
         //success message
         createNotification("purchase_success");
         //do DB stuff - hit 'api/stripe/postcharge'
+        await axios.post("/api/stripe/postcharge", resourceIDs);
         //add purchased items to user
         //find and clear current user's cart
+        props.fetchCart();
+        props.fetchUser();
         //redirect to their profile when finished. should have "Purchased Items" populated
         setTimeout(() => {
           props.history.push({
@@ -72,26 +79,37 @@ const CheckoutForm = (props) => {
       }
     }
   };
-  return (
-    <Container>
-      <Button labelPosition="arrow circle left" as={Link} to="/cart">
-        <Icon name="arrow circle left" />
-        Back to cart
-      </Button>
-      <Segment>Your total is: ${props?.cart?.products.length} </Segment>
-      <Segment>
-        <Form onSubmit={handleSubmit}>
-          <CardSection />
-          <Button
-            style={{ marginTop: "10px" }}
-            disabled={!stripe || !props.cart?.products}
-          >
-            Confirm order
-          </Button>
-        </Form>
-      </Segment>
-    </Container>
-  );
+  const renderForm = () => {
+    switch (props.auth) {
+      case null:
+        return null;
+      case false:
+        return <NotLoggedIn />;
+        break;
+      default:
+        return (
+          <Container>
+            <Button labelPosition="arrow circle left" as={Link} to="/cart">
+              <Icon name="arrow circle left" />
+              Back to cart
+            </Button>
+            <Segment>Your total is: ${props?.cart?.products?.length} </Segment>
+            <Segment>
+              <Form onSubmit={handleSubmit}>
+                <CardSection />
+                <Button
+                  style={{ marginTop: "10px" }}
+                  disabled={!stripe || !props.cart?.products}
+                >
+                  Confirm order
+                </Button>
+              </Form>
+            </Segment>
+          </Container>
+        );
+    }
+  };
+  return renderForm();
 };
 
 export default CheckoutForm;

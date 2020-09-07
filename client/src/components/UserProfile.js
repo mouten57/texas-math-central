@@ -21,6 +21,7 @@ class UserProfile extends Component {
         comments: res.data.comments,
         resources: res.data.resources,
         favorites: res.data.favorites,
+        purchased: res.data.purchasedResources,
       });
     });
   }
@@ -58,6 +59,7 @@ class UserProfile extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
       <Container style={{ marginBottom: "25px" }}>
         {this.renderHeading()}
@@ -118,22 +120,21 @@ class UserProfile extends Component {
           My Purchases
         </Header>
         <div>
-          Coming soon...
-          {/* {this.state.favorites.map((favorite) => {
+          {this.state.purchased?.map((resource) => {
             return (
-              <div key={favorite._id}>
+              <div key={resource._id}>
                 <List.Icon name="file" />
                 <Link
                   style={{ color: "#858DAA" }}
-                  to={`/units/${favorite.resource_id.unit}/${favorite.resource_id._id}`}
+                  to={`/units/${resource.unit}/${resource._id}`}
                 >
                   <h3 style={{ display: "inline-block", marginTop: "5px" }}>
-                    "{favorite.resource_id.name}"
+                    "{resource.name}"
                   </h3>
                 </Link>
               </div>
             );
-          })} */}
+          })}
         </div>
       </Container>
     );

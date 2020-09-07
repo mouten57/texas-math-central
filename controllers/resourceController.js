@@ -62,6 +62,7 @@ module.exports = {
       if (err) {
         res.send(err);
       } else {
+        console.log(resource._id);
         res.send(resource);
         //after sending initial, send files
         //start upload with aws
@@ -85,45 +86,45 @@ module.exports = {
                 filetype_settings(file_path, file_ext),
                 file_ext
               );
-
-              function convertImage() {
-                return new Promise((resolve, reject) => {
-                  im.convert(
-                    [
-                      "-flatten",
-                      "-background",
-                      "#fff",
-                      "-quality",
-                      100,
-                      // "-resize",
-                      // "1530x1980",
-                      `./uploads/${files[i].filename}.pdf`,
-                      `./uploads/${files[i].filename}.jpg`,
-                    ],
-                    function (err, stdout) {
-                      if (err) {
-                        reject(err);
-                      }
-                      resolve(stdout);
-                    }
-                  );
-                });
-              }
-
               await result.file.save(`./uploads/${files[i].filename}.pdf`);
-
-              //optional: use imagemagick to convert pdf to jpg
-              await convertImage();
-
-              let s3Data = await s3
-                .upload({
-                  Bucket: "texas-math-central",
-                  Key: `${files[i].filename}.jpg`,
-                  Body: fs.readFileSync(`./uploads/${files[i].filename}.jpg`),
-                })
-                .promise();
-              files[i].previewLink = s3Data.Location;
             }
+            function convertImage() {
+              return new Promise((resolve, reject) => {
+                im.convert(
+                  [
+                    "-flatten",
+                    "-background",
+                    "#fff",
+                    "-quality",
+                    100,
+                    // "-resize",
+                    // "1530x1980",
+                    `./uploads/${files[i].filename}${
+                      file_ext == "pdf" ? "" : ".pdf"
+                    }`,
+                    `./uploads/${files[i].filename}.jpg`,
+                  ],
+                  function (err, stdout) {
+                    if (err) {
+                      reject(err);
+                    }
+                    resolve(stdout);
+                  }
+                );
+              });
+            }
+
+            //optional: use imagemagick to convert pdf to jpg
+            await convertImage();
+
+            let s3Data = await s3
+              .upload({
+                Bucket: "texas-math-central",
+                Key: `${files[i].filename}.jpg`,
+                Body: fs.readFileSync(`./uploads/${files[i].filename}.jpg`),
+              })
+              .promise();
+            files[i].previewLink = s3Data.Location;
 
             //optional: use convertapi again to convert pdf to thumbnail
             // await convertapi

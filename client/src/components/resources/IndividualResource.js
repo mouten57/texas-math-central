@@ -19,10 +19,11 @@ class IndividualResource extends Component {
       s3Link: null,
       resource_name: null,
       resource_id: null,
-      resourceComments: [],
+      comments: [],
       currentUsersFavoriteId: "",
       favorited: false,
       commentValue: "",
+      votes: [],
       voteTotal: 0,
       upvoted: false,
       downvoted: false,
@@ -34,7 +35,7 @@ class IndividualResource extends Component {
         this.setState({
           resource,
           selectedFile: resource.files[0],
-          resourceComments: resource.comments,
+          comments: resource.comments,
           s3Link: resource.s3Link,
           resource_name: resource.name,
           resource_id: resource._id,
@@ -102,8 +103,9 @@ class IndividualResource extends Component {
 
         this.setState({
           resource,
+          votes: resource.votes,
           selectedFile: resource.files[0],
-          resourceComments: resource.comments,
+          comments: resource.comments,
           s3Link: resource.s3Link,
           resource_name: resource.name,
           resource_id: resource._id,
@@ -128,18 +130,6 @@ class IndividualResource extends Component {
 
       return result ? true : false;
     }
-  };
-  getVoteTotal = (votes) => {
-    let voteTotal = votes
-      .map((v) => {
-        return v.value;
-      })
-      .reduce((prev, next) => {
-        return prev + next;
-      });
-    //keeps state updated without calling to database
-
-    this.setState({ voteTotal });
   };
 
   downloadLink() {
@@ -183,14 +173,40 @@ class IndividualResource extends Component {
         );
     }
   }
+  getVoteTotal = (votes) => {
+    let voteTotal = votes
+      .map((v) => {
+        return v.value;
+      })
+      .reduce((prev, next) => {
+        return prev + next;
+      });
+    //keeps state updated without calling to database
+
+    this.setState({ voteTotal });
+    return voteTotal;
+  };
 
   onUpvote = (e) => {
     axios
       .get(`/api/resources/${this.state.resource_id}/votes/upvote`)
-      .then((res) => {
+      .then(({ data }) => {
+        let value = data.value;
+        let votes = this.state.votes;
+
+        let objIndex = votes.findIndex(
+          (obj) => obj._user == this.props.auth._id
+        );
+        console.log(objIndex);
+        if (objIndex > -1) {
+          console.log(objIndex);
+          votes[objIndex].value = 1;
+        } else {
+          votes.push(data);
+        }
+        this.getVoteTotal(votes);
         if (!this.state.upvoted) {
           this.setState({
-            voteTotal: this.state.voteTotal + res.data.value,
             upvoted: true,
             downvoted: false,
           });
@@ -200,10 +216,22 @@ class IndividualResource extends Component {
   onDownvote = (e) => {
     axios
       .get(`/api/resources/${this.state.resource_id}/votes/downvote`)
-      .then((res) => {
+      .then(({ data }) => {
+        let value = data.value;
+        let votes = this.state.votes;
+        let objIndex = votes.findIndex(
+          (obj) => obj._user == this.props.auth._id
+        );
+        if (objIndex > -1) {
+          votes[objIndex].value = -1;
+        } else {
+          votes.push(data);
+        }
+        console.log(votes);
+        this.getVoteTotal(votes);
+
         if (!this.state.downvoted) {
           this.setState({
-            voteTotal: this.state.voteTotal + res.data.value,
             downvoted: true,
             upvoted: false,
           });
@@ -256,8 +284,7 @@ class IndividualResource extends Component {
   };
 
   render() {
-    console.log(this.state);
-    //console.log("state is", this.state, "props are", this.props);
+    console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
 
     return (
@@ -294,17 +321,27 @@ class IndividualResource extends Component {
             <b>Name: </b>
             {resource.name}
           </p>
-          <p
-            onClick={
-              this.item_in_cart(resource._id)
-                ? () => this.removeFromCart(resource._id)
-                : () => this.addToCart(resource._id)
-            }
-          >
-            <b>
-              {this.item_in_cart(resource._id) ? "Remove from" : "Add to"} Cart
-            </b>
-          </p>
+          {resource._user?._id !== this.props.auth?._id ? (
+            this.props.auth?.purchasedResources.includes(resource._id) ? (
+              <p>Purchased Item</p>
+            ) : (
+              <p
+                className="add-to-cart"
+                onClick={
+                  this.item_in_cart(resource._id)
+                    ? () => this.removeFromCart(resource._id)
+                    : () => this.addToCart(resource._id)
+                }
+              >
+                <b style={{ backgroundColor: "yellow" }}>
+                  {this.item_in_cart(resource._id) ? "Remove from" : "Add to"}{" "}
+                  Cart
+                </b>
+              </p>
+            )
+          ) : (
+            <p>My resource</p>
+          )}
 
           <p>
             <b>Unit:</b> {resource.fullUnit}
@@ -370,7 +407,7 @@ class IndividualResource extends Component {
         ) : (
           <CommentsSection
             resourceId={this.props.match.params.id}
-            comments={this.state.resourceComments}
+            comments={this.state.comments}
           />
         )}
       </Container>

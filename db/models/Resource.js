@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const resourceSchema = new Schema({
   name: String,
+  subject: String,
   unit: String,
   fullUnit: String,
   type: String,

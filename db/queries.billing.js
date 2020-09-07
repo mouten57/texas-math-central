@@ -1,51 +1,36 @@
 const mongoose = require("mongoose");
 const Cart = mongoose.model("Cart");
 const Resource = mongoose.model("Resource");
+const User = mongoose.model("User");
 
 module.exports = {
-  async charge(_user, callback) {
-    let cart = await Cart.findOneAndUpdate(
-      {
-        _user,
-      },
-      {
-        $set: {
-          updated_at: Date.now(),
-        },
-      },
+  async postcharge(_user, resource_ids, callback) {
+    console.log(resource_ids);
+    //add purchased items to user
+    let user = await User.findOneAndUpdate(
+      { _id: _user },
+      //addToSet adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.
+      { $addToSet: { purchasedResources: { $each: resource_ids } } },
       { upsert: true, returnNewDocument: true }
-    ).populate({ path: "products", populate: "resource_id" });
+    );
 
-    try {
-      callback(null, cart);
-    } catch (err) {
-      callback(err);
-    }
-  },
-  async postcharge(_user, resource_id, callback) {
-    let resource = await Resource.findOne({ _id: resource_id });
-
-    let product = {
-      resource_id,
-      quantity: 1,
-      name: resource.name,
-      price: 1,
-    };
-    let cart = await Cart.findOneAndUpdate(
+    //find and clear current user's cart
+    await Cart.findOneAndUpdate(
       {
         _user,
-        "products.resource_id": { $ne: resource_id },
       },
       {
         $set: {
           updated_at: Date.now(),
+          products: [],
         },
-        $push: { products: product },
       },
       { upsert: true, returnNewDocument: true }
     );
+
     try {
-      callback(null, cart);
+      console.log(user);
+      callback(null, user);
     } catch (err) {
       callback(err);
     }

@@ -3,7 +3,7 @@
 // this is inside resource index
 import { connect } from "react-redux";
 import React, { Component } from "react";
-
+import _ from "lodash";
 import { Table, Icon, Confirm } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import unitFields from "./data/unitFields.js";
@@ -14,8 +14,19 @@ class ResourceList extends Component {
     super(props);
     this.state = {
       open: false,
+      column: null,
+      data: this.props.resources,
+      direction: "descending",
       resourceToDelete: null,
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      data: nextProps.resources,
+      column: "voteTotal",
+      data: _.sortBy(nextProps.resources, ["voteTotal"]).reverse(),
+      direction: "descending",
+    });
   }
   show = (resource) =>
     this.setState({ open: true, resourceToDelete: resource });
@@ -35,50 +46,101 @@ class ResourceList extends Component {
       }
     }
   }
+  handleSort = (clickedColumn) => () => {
+    const { column, data, direction } = this.state;
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        data: _.sortBy(data, [clickedColumn]).reverse(),
+        direction: "descending",
+      });
+      return;
+    }
+
+    this.setState({
+      data: data.reverse(),
+      direction: direction === "ascending" ? "descending" : "ascending",
+    });
+  };
 
   render() {
-    const { open } = this.state;
+    console.log(this.state);
+    const { open, column, data, direction } = this.state;
+
     return (
-      <Table style={{ marginBottom: "10px" }} unstackable>
+      <Table style={{ marginBottom: "10px" }} unstackable sortable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Type</Table.HeaderCell>
-            <Table.HeaderCell>Date Added</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
+            <Table.HeaderCell
+              sorted={column === "name" ? direction : null}
+              onClick={this.handleSort("name")}
+            >
+              Name
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              textAlign="center"
+              sorted={column === "type" ? direction : null}
+              onClick={this.handleSort("type")}
+            >
+              Type
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              textAlign="center"
+              sorted={column === "voteTotal" ? direction : null}
+              onClick={this.handleSort("voteTotal")}
+            >
+              Votes
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              textAlign="center"
+              sorted={column === "created_at" ? direction : null}
+              onClick={this.handleSort("created_at")}
+            >
+              Date Added
+            </Table.HeaderCell>
+            <Table.HeaderCell> </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {this.props.resources.map((resource) => {
+          {this.state.data?.map((resource) => {
             return (
-              <Table.Row key={resource._id} style={{ marginTop: "10px" }}>
+              <Table.Row
+                key={resource._id}
+                style={{ marginTop: "10px" }}
+                verticalAlign="middle"
+              >
                 <Table.Cell
                   width={
                     resource._user == this.props.auth._id ||
                     this.props.auth?.role == "admin"
-                      ? 9
-                      : 10
+                      ? 1
+                      : 2
                   }
                 >
                   <Link to={`/units/${this.match(resource)}/${resource._id}`}>
                     {resource.name}
                   </Link>
                 </Table.Cell>
-                <Table.Cell width={3}>{resource.type}</Table.Cell>
-                <Table.Cell width={3}>
+                <Table.Cell width={1} textAlign="center">
+                  {resource.type}
+                </Table.Cell>
+                <Table.Cell width={1} textAlign="center">
+                  {resource.voteTotal}
+                </Table.Cell>
+                <Table.Cell width={1} textAlign="center">
                   {new Date(resource.created_at).toLocaleDateString()}
                 </Table.Cell>
-
-                {resource._user == this.props.auth._id ||
-                this.props.auth?.role == "admin" ? (
-                  <Table.Cell width={1} textAlign="center">
+                <Table.Cell width={1} textAlign="center">
+                  {resource._user == this.props.auth._id ||
+                  this.props.auth?.role == "admin" ? (
                     <Icon
                       name="delete"
                       className="custom_icon"
                       onClick={() => this.show(resource._id)}
                     />
-                  </Table.Cell>
-                ) : null}
+                  ) : null}
+                </Table.Cell>
               </Table.Row>
             );
           })}
