@@ -36,7 +36,7 @@ class Units extends Component {
 
   render() {
     const { column, data, direction } = this.state;
-
+    const { auth } = this.props;
     return (
       <Container>
         <Breadcrumb>
@@ -47,6 +47,11 @@ class Units extends Component {
           <Breadcrumb.Section active>Resources</Breadcrumb.Section>
         </Breadcrumb>
         <h2>UNITS</h2>
+        {auth?.role != "admin" && auth?.role != "all_access" ? (
+          <p style={{ marginBottom: "25px" }}>
+            Get your <Link to="/upgrade">ALL-ACCESS PASS</Link> TODAY!{" "}
+          </p>
+        ) : null}
         <Table sortable celled style={{ marginBottom: "10px" }}>
           <Table.Header>
             <Table.Row>

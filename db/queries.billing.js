@@ -35,4 +35,20 @@ module.exports = {
       callback(err);
     }
   },
+  async all_access_postcharge(_user, callback) {
+    //add purchased items to user
+    let user = await User.findOneAndUpdate(
+      { _id: _user },
+      //addToSet adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.
+      { role: "all_access" },
+      { upsert: true, returnNewDocument: true }
+    );
+
+    try {
+      console.log(user);
+      callback(null, user);
+    } catch (err) {
+      callback(err);
+    }
+  },
 };

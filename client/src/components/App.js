@@ -16,6 +16,7 @@ import { Container } from "semantic-ui-react";
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart";
+import Upgrade from "./UpgradeAllAccess";
 //stripe checkout
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -112,6 +113,11 @@ class App extends Component {
                   fetchCart={this.props.fetchCart}
                 />
               )}
+            />
+            <Route
+              exact
+              path="/upgrade"
+              render={(props) => <Upgrade {...props} />}
             />
             <Route
               exact

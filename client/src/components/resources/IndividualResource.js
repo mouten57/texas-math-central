@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
 import createNotification from "./Notification";
-import { Container, Loader, Button, Icon, Image } from "semantic-ui-react";
+import {
+  Container,
+  Loader,
+  Button,
+  Icon,
+  Image,
+  Popup,
+} from "semantic-ui-react";
 
 import axios from "axios";
 //import Voting from '../Voting';
@@ -314,6 +321,14 @@ class IndividualResource extends Component {
   render() {
     //console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
+    if (
+      resource._user?._id == this.props.auth?._id ||
+      this.props.auth?.purchasedResources.includes(resource._id) ||
+      this.props.auth?.role == "admin" ||
+      this.props.auth?.role == "all_access"
+    ) {
+      var authorized = true;
+    }
 
     return (
       <Container>
@@ -389,17 +404,7 @@ class IndividualResource extends Component {
                   {` (${this.state.selectedFile.originalname})`}
                 </b>
 
-                <a
-                  href={
-                    resource._user?._id == this.props.auth?._id ||
-                    this.props.auth?.purchasedResources.includes(
-                      resource._id
-                    ) ||
-                    this.props.auth?.role == "admin"
-                      ? this.state.selectedFile.s3Link
-                      : null
-                  }
-                >
+                <a href={authorized ? this.state.selectedFile.s3Link : null}>
                   <Image
                     src={
                       //use s3 direct link as src if file type is image

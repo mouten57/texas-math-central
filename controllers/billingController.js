@@ -14,13 +14,31 @@ module.exports = {
     res.json({ client_secret: intent.client_secret });
   },
   postcharge(req, res) {
-    //new resource IDs come in as array on req.body
-    billingQueries.postcharge(req.user._id, req.body, (err, cart) => {
-      if (err) {
-        res.status(422).send(err);
-      } else {
-        res.send(cart);
-      }
-    });
+    if (req.body.allAccess == true) {
+      billingQueries.all_access_postcharge(
+        req.user._id,
+
+        (err, user) => {
+          if (err) {
+            res.status(422).send(err);
+          } else {
+            res.send(user);
+          }
+        }
+      );
+    } else {
+      //new resource IDs come in as array on req.body
+      billingQueries.postcharge(
+        req.user._id,
+        req.body.resourceIDs,
+        (err, user) => {
+          if (err) {
+            res.status(422).send(err);
+          } else {
+            res.send(user);
+          }
+        }
+      );
+    }
   },
 };

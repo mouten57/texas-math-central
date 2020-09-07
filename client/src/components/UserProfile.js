@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Image, Header, Container, List } from "semantic-ui-react";
+import { Image, Header, Container, List, Segment } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import NotLoggedIn from "./NotLoggedIn";
 import axios from "axios";
 import convertTimestamp from "../helpers/convertTimestamp";
+import Upgrade from "./UpgradeAllAccess";
 
 class UserProfile extends Component {
   state = {
@@ -34,13 +35,30 @@ class UserProfile extends Component {
         return <NotLoggedIn />;
       default:
         return (
-          <Header as="h1" textAlign="center">
-            <Image size="massive" circular src={this.props.auth.image} />
-            <p>
-              {this.props.auth.nickname}'s Profile{" "}
-              {this.props.auth.role == "admin" ? "(admin)" : null}
-            </p>
-          </Header>
+          <Segment color="blue">
+            <Header as="h1" textAlign="center">
+              <Image size="massive" circular src={this.props.auth.image} />
+              <p>
+                {this.props.auth.nickname}'s Profile{" "}
+                {this.props.auth.role == "admin"
+                  ? "(admin)"
+                  : this.props.auth.role == "all_access"
+                  ? "(ALL ACCESS!)"
+                  : null}
+              </p>
+            </Header>
+            {this.props.auth.role != "admin" &&
+            this.props.auth.role != "all_access" ? (
+              <p>
+                Feel like getting <Link to="/upgrade">all access</Link>?
+              </p>
+            ) : this.props.auth.role == "all_access" ? (
+              <p style={{ textAlign: "center" }}>
+                Congrats! You can now download any resource by viewing them
+                through the <Link to="/units">Units</Link> page.
+              </p>
+            ) : null}
+          </Segment>
         );
     }
   }
