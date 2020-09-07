@@ -85,7 +85,7 @@ class UserProfile extends Component {
           My Resources
         </Header>
         <div>
-          {this.state.resources.map((resource) => {
+          {this.state.resources?.map((resource) => {
             return (
               <div key={resource._id}>
                 <List.Icon name="file" />
@@ -106,7 +106,7 @@ class UserProfile extends Component {
           My Comments
         </Header>
         <div>
-          {this.state.comments.map((comment) => {
+          {this.state.comments?.map((comment) => {
             return (
               <p key={comment._id}>
                 {comment.body} on {convertTimestamp(comment.created_at)}
@@ -118,7 +118,7 @@ class UserProfile extends Component {
           My Favorites
         </Header>
         <div>
-          {this.state.favorites.map((favorite) => {
+          {this.state.favorites?.map((favorite) => {
             return (
               <div key={favorite._id}>
                 <List.Icon name="file" />
