@@ -7,7 +7,7 @@ import Landing from "./Landing";
 
 import Header from "./Header";
 import About from "./About";
-import Units from "./Resources/Units";
+import Units from "./Resources/Units.js";
 import ResourceIndex from "./Resources/ResourceIndex";
 import IndividualResource from "./Resources/IndividualResource";
 import UserProfile from "./UserProfile";
