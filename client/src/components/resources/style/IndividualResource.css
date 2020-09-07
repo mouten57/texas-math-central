@@ -1,3 +1,6 @@
 .file_selector:hover {
   cursor: pointer;
 }
+.product_image:hover {
+  cursor: pointer;
+}
