@@ -377,10 +377,20 @@ class IndividualResource extends Component {
               <p>
                 <b>
                   Preview
-                  {`(${this.state.selectedFile.originalname})`}
+                  {` (${this.state.selectedFile.originalname})`}
                 </b>
 
-                <a href={this.state.selectedFile.s3Link}>
+                <a
+                  href={
+                    resource._user?._id == this.props.auth?._id ||
+                    this.props.auth?.purchasedResources.includes(
+                      resource._id
+                    ) ||
+                    this.props.auth?.role == "admin"
+                      ? this.state.selectedFile.s3Link
+                      : null
+                  }
+                >
                   <Image
                     src={
                       //use s3 direct link as src if file type is image
