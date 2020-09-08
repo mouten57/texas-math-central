@@ -54,7 +54,7 @@ class ResourceIndex extends Component {
     const paramName = this.props.match.params.unit;
     for (let i = 0; i < unitFields.length; i++) {
       if (unitFields[i].param === paramName) {
-        return unitFields[i].name;
+        return unitFields[i].key;
       }
     }
   }

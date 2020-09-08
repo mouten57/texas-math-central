@@ -70,9 +70,9 @@ class Units extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {_.map(data, ({ name, description, param }) => (
-              <Table.Row key={name}>
-                <Table.Cell width={5}>{name}</Table.Cell>
+            {_.map(data, ({ key, description, param }) => (
+              <Table.Row key={key}>
+                <Table.Cell width={5}>{key}</Table.Cell>
                 <Table.Cell width={11}>
                   {" "}
                   <Link to={`/units/${param}`}> {description} </Link>

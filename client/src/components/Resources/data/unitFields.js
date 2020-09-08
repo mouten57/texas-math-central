@@ -4,7 +4,7 @@ export default [
     key: "B.O.Y.",
     text: "B.O.Y.",
     value: "B.O.Y.",
-    // description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation.`,
+    description: `Schedule Templates, Lesson Plan Templates, Rosters, Transportation.`,
     param: "boy",
   },
   {
@@ -12,7 +12,7 @@ export default [
     key: "Addition/Multiplication",
     text: "Addition/Multiplication",
     value: "Addition/Multiplication",
-    //description: "Adding and 3x2 multiplication.",
+    description: "Adding and 3x2 multiplication.",
     param: "addsub",
   },
   {
@@ -20,7 +20,7 @@ export default [
     key: "Area, Perimeter, and Volume",
     text: "Area, Perimeter, and Volume",
     value: "Area, Perimeter, and Volume",
-    //description: `Area, Perimeter are easy. Volume is tricker, don't you think?`,
+    description: `Area, Perimeter are easy. Volume is tricker, don't you think?`,
     param: "APV",
   },
   {
@@ -28,7 +28,7 @@ export default [
     key: "Division",
     text: "Division",
     value: "Division",
-    // description: `Good old LONG DIVISION!`,
+    description: `Good old LONG DIVISION!`,
     param: "division",
   },
   {
@@ -36,7 +36,7 @@ export default [
     key: "Prime and Composite Numbers",
     text: "Prime and Composite Numbers",
     value: "Prime and Composite Numbers",
-    //description: `Fibonacci, anyone?`,
+    description: `Fibonacci, anyone?`,
     param: "prime-composite",
   },
   {
@@ -44,7 +44,7 @@ export default [
     key: "Graphing",
     text: "Graphing",
     value: "Graphing",
-    //description: `Let's play battleship!`,
+    description: `Let's play battleship!`,
     param: "graphing",
   },
   {
@@ -52,7 +52,7 @@ export default [
     key: "Decimals",
     text: "Decimals",
     value: "Decimals",
-    //description: `So many rules to remember.`,
+    description: `So many rules to remember.`,
     param: "decimals",
   },
   {
@@ -60,7 +60,7 @@ export default [
     key: "Geometry",
     text: "Geometry",
     value: "Geometry",
-    //description: "Polygons, Triangles, and Quadrilaterals!",
+    description: "Polygons, Triangles, and Quadrilaterals!",
     param: "geometry",
   },
   {
@@ -68,7 +68,7 @@ export default [
     key: "Fractions",
     text: "Fractions",
     value: "Fractions",
-    //description: `What does it mean if I ate 8/8 of a large Dominoes pizza?`,
+    description: `What does it mean if I ate 8/8 of a large Dominoes pizza?`,
     param: "fractions",
   },
   {
@@ -76,7 +76,7 @@ export default [
     key: "Expressions & Equations",
     text: "Expressions & Equations",
     value: "Expressions & Equations",
-    //description: `Sometimes it's hard to express yourself.`,
+    description: `Sometimes it's hard to express yourself.`,
     param: "expressions-equations",
   },
   {
@@ -84,7 +84,7 @@ export default [
     key: "Measurement",
     text: "Measurement",
     value: "Measurement",
-    //description: `Every day I measure the distance to the last day of school.`,
+    description: `Every day I measure the distance to the last day of school.`,
     param: "measurement",
   },
   {
@@ -92,7 +92,7 @@ export default [
     key: "Personal Finance",
     text: "Personal Finance",
     value: "Personal Finance",
-    //description: "My favorite unit!",
+    description: "My favorite unit!",
     param: "finance",
   },
   {
@@ -100,7 +100,7 @@ export default [
     key: "STAAR REVIEW!",
     text: "STAAR REVIEW!",
     value: "STAAR REVIEW!",
-    //description: `So many resources for review.`,
+    description: `So many resources for review.`,
     param: "staar-review",
   },
   {
@@ -108,7 +108,7 @@ export default [
     key: "Random",
     text: "Random",
     value: "Random",
-    //description: "Etc etc etc",
+    description: "Etc etc etc",
     param: "random",
   },
 ];
