@@ -11,4 +11,5 @@ module.exports = {
   redirectDomain: process.env.REDIRECT_DOMAIN,
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+  convertapi_KEY: process.env.CONVERT_API_KEY,
 };
