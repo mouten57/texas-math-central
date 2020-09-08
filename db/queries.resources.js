@@ -14,6 +14,20 @@ var s3 = new AWS.S3({
 });
 
 module.exports = {
+  async getAllResources(req, callback) {
+    let resources = await Resource.find({})
+      .sort({ created_at: "desc" })
+      .populate("_user")
+      .populate("favorites")
+      .populate("votes")
+      .populate({ path: "comments", populate: { path: "_user" } });
+
+    try {
+      callback(null, resources);
+    } catch (err) {
+      callback(err);
+    }
+  },
   getUnitResources(unit, callback) {
     return Resource.find({ unit: unit }, "-files.file_data")
       .sort({ created_at: "desc" })

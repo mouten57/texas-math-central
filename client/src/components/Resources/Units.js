@@ -7,6 +7,7 @@ import { Table, Breadcrumb, Container, Icon } from "semantic-ui-react";
 import unitFields from "./data/unitFields.js";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import Search from "../Search/Search";
 
 class Units extends Component {
   state = {
@@ -35,6 +36,7 @@ class Units extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { column, data, direction } = this.state;
     const { auth } = this.props;
     return (
@@ -46,8 +48,18 @@ class Units extends Component {
           <Breadcrumb.Divider />
           <Breadcrumb.Section active>Resources</Breadcrumb.Section>
         </Breadcrumb>
-        <h2>UNITS</h2>
-        {auth?.role != "admin" && auth?.role != "all_access" ? (
+        <div
+          style={{
+            marginTop: "15px",
+            marginBottom: "15px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <h2 style={{ display: "inline", margin: 0 }}>UNITS</h2>
+          <Search resources={this.props.resources} />
+        </div>
+        {auth && auth?.role != "admin" && auth?.role != "all_access" ? (
           <p style={{ marginBottom: "25px" }}>
             Get your <Link to="/upgrade">ALL-ACCESS PASS</Link> TODAY!{" "}
           </p>
@@ -93,7 +105,7 @@ class Units extends Component {
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth };
+  return { auth: state.auth, resources: state.resources };
 }
 
 export default connect(mapStateToProps)(Units);

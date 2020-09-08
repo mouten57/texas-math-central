@@ -22,6 +22,15 @@ const fullUnit = (unit) => {
 
 module.exports = {
   index(req, res, next) {
+    resourceQueries.getAllResources(req, (err, resources) => {
+      if (err) {
+        res.status(422).send(err);
+      } else {
+        res.send(resources);
+      }
+    });
+  },
+  getUnitResources(req, res, next) {
     resourceQueries.getUnitResources(req.params.unit, (err, resources) => {
       if (err) {
         res.status(422).send(err);

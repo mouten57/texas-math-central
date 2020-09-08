@@ -42,6 +42,8 @@ class App extends Component {
     this.props.fetchUser();
     //get ShoppingCart
     this.props.fetchCart();
+    //get all resources
+    this.props.fetchResources();
   }
   fetchCart = () => {
     this.props.fetchCart();
@@ -92,6 +94,7 @@ class App extends Component {
                 <IndividualResource
                   {...props}
                   fetchCart={this.props.fetchCart}
+                  fetchResources={this.props.fetchResources}
                   socket={socket}
                 />
               )}
@@ -100,7 +103,12 @@ class App extends Component {
             <Route
               exact
               path="/Resources/new"
-              render={(props) => <NewResource {...props} />}
+              render={(props) => (
+                <NewResource
+                  {...props}
+                  fetchResources={this.props.fetchResources}
+                />
+              )}
             />
             <Route
               exact
@@ -142,7 +150,7 @@ class App extends Component {
   }
 }
 function mapStateToProps(state) {
-  return { auth: state.auth, cart: state.cart };
+  return { auth: state.auth, cart: state.cart, resources: state.resources };
 }
 
 export default connect(mapStateToProps, actions)(App);

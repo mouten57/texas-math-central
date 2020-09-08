@@ -324,7 +324,8 @@ class UploadForm extends Component {
     axios
       .post("/api/resources/create", formData)
       .then((res) => {
-        console.log(res.data);
+        //re-grab full list of resources at App.js
+        this.props.fetchResources();
         axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
           this.setState({ loaderActive: false, submitDisabled: false });
           this.props.history.push({
