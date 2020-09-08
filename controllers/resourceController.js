@@ -43,17 +43,19 @@ module.exports = {
 
   async create(req, res, next) {
     var files = req.files || [],
-      newResource,
-      link = req.body.link;
-    // var files_plus_data = [...files];
+      newResource;
 
+    // var files_plus_data = [...files];
+    const { name, grade, subject, unit, type, link, description } = req.body;
     var newResource = {
-      name: req.body.name,
-      unit: req.body.unit,
-      fullUnit: fullUnit(req.body.unit),
-      type: req.body.type,
+      name,
+      grade,
+      subject,
+      unit,
+      fullUnit: fullUnit(unit),
+      type,
       link,
-      description: req.body.description,
+      description,
       _user: req.user._id,
       created_at: Date.now(),
       files: ["TBD"],

@@ -9,6 +9,7 @@ import {
   Label,
   Segment,
   Select,
+  Checkbox,
   Header,
   Container,
 } from "semantic-ui-react";
@@ -18,6 +19,8 @@ import { connect } from "react-redux";
 import NotLoggedIn from "../NotLoggedIn";
 import unitFields from "../Resources/data/unitFields.js";
 import resourceTypes from "../Resources/data/resourceTypes";
+import gradeLevels from "../Resources/data/gradeLevels";
+import subjects from "../Resources/data/subjects";
 import Loader from "./Loader";
 import GoogleWrapper from "../../google/GoogleWrapper";
 
@@ -33,6 +36,9 @@ class UploadForm extends Component {
       type: "",
       unit: "",
       name: "",
+      subject: "",
+      grade: "",
+      hideLink: false,
     };
   }
   renderUnits() {
@@ -65,21 +71,38 @@ class UploadForm extends Component {
     }
   };
 
-  onSelectUnit = (e) => {
-    var plainName = e.currentTarget.getElementsByClassName("text")[0].innerText;
+  onSelectUnit = (e, data) => {
+    var plainName = data.value;
     let idx = unitFields
       .map(function (e) {
-        return e.name;
+        return e.key;
       })
       .indexOf(plainName);
-    this.setState({
-      unit: unitFields[idx].param,
-    });
+
+    console.log(idx);
+    if (idx > -1) {
+      this.setState({
+        unit: unitFields[idx].param,
+      });
+    }
   };
-  onSelectResourceType = (e) => {
-    var type = e.currentTarget.getElementsByClassName("text")[0].innerText;
+  onSelectResourceType = (e, data) => {
+    var type = data.value;
     this.setState({
       type,
+    });
+  };
+  onSelectGradeLevel = (e, data) => {
+    var grade = data.value;
+    console.log(e.currentTarget);
+    this.setState({
+      grade,
+    });
+  };
+  onSelectSubject = (e, data) => {
+    var subject = data.value;
+    this.setState({
+      subject,
     });
   };
   setFilesFromUppy = (action, file) => {
@@ -118,13 +141,37 @@ class UploadForm extends Component {
                     />
                   </div>
                 </div>
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Grade Level</Label>
+                  <Form.Select
+                    placeholder="Select Type"
+                    fluid
+                    name="grade"
+                    search
+                    selection
+                    options={gradeLevels}
+                    onChange={this.onSelectGradeLevel}
+                  />
+                </div>
+                <div style={{ paddingTop: "10px" }}>
+                  <Label>Subject</Label>
+                  <Form.Select
+                    placeholder="Select Type"
+                    fluid
+                    name="subject"
+                    search
+                    selection
+                    options={subjects}
+                    onChange={this.onSelectSubject}
+                  />
+                </div>
 
                 <div style={{ paddingTop: "10px" }}>
                   <Label>Unit</Label>
-                  <Select
+                  <Form.Select
                     placeholder="Select Type"
                     fluid
-                    selection
+                    search
                     options={unitFields}
                     onChange={this.onSelectUnit}
                   />
@@ -132,10 +179,11 @@ class UploadForm extends Component {
 
                 <div style={{ paddingTop: "10px" }}>
                   <Label>Type</Label>
-                  <Select
+                  <Form.Select
                     placeholder="Select Type"
+                    name="type"
                     fluid
-                    selection
+                    search
                     options={resourceTypes}
                     onChange={this.onSelectResourceType}
                   />
@@ -143,12 +191,23 @@ class UploadForm extends Component {
                 <div style={{ paddingTop: "10px" }}>
                   <Label>Link</Label>
                   <div>
-                    <Form.Input
-                      name="link"
-                      component="input"
-                      placeholder="http://"
-                      value={this.state.link}
-                      onChange={this.onChange}
+                    {!this.state.hideLink ? (
+                      <Form.Input
+                        name="link"
+                        component="input"
+                        placeholder="http://"
+                        value={this.state.link}
+                        onChange={this.onChange}
+                      />
+                    ) : null}
+                    <Checkbox
+                      label="Link not available"
+                      onClick={() =>
+                        this.setState({
+                          hideLink: !this.state.hideLink,
+                          link: !this.state.hideLink ? "N/A" : "https://www.",
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -224,7 +283,16 @@ class UploadForm extends Component {
     console.log(e);
     e.preventDefault();
 
-    const { description, name, files, unit, type, link } = this.state;
+    const {
+      description,
+      name,
+      grade,
+      subject,
+      files,
+      unit,
+      type,
+      link,
+    } = this.state;
 
     let formData = new FormData();
 
@@ -234,6 +302,8 @@ class UploadForm extends Component {
     }
     formData.append("files", files);
     formData.append("name", name);
+    formData.append("grade", grade);
+    formData.append("subject", subject);
     formData.append("unit", unit);
     formData.append("type", type);
     formData.append("link", link);
@@ -272,6 +342,7 @@ class UploadForm extends Component {
   };
 
   render() {
+    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

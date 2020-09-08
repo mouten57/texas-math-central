@@ -368,6 +368,15 @@ class IndividualResource extends Component {
           </p>
 
           <p>
+            <b>Grade Level: </b>
+            {resource.grade}
+          </p>
+
+          <p>
+            <b>Subject: </b>
+            {resource.subject}
+          </p>
+          <p>
             <b>Unit:</b> {resource.fullUnit}
           </p>
           <p>
