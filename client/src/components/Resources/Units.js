@@ -63,7 +63,7 @@ class Units extends Component {
             Get your <Link to="/upgrade">ALL-ACCESS PASS</Link> TODAY!{" "}
           </p>
         ) : null}
-        <Table sortable celled style={{ marginBottom: "10px" }}>
+        <Table sortable celled striped compact style={{ marginBottom: "10px" }}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell

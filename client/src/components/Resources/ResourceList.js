@@ -20,7 +20,19 @@ class ResourceList extends Component {
       resourceToDelete: null,
     };
   }
+
+  componentDidMount() {
+    console.log("resource list mount");
+    this.setState({
+      data: this.props.resources,
+      column: "voteTotal",
+      data: _.sortBy(this.props.resources, ["voteTotal"]).reverse(),
+      direction: "descending",
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.resources);
     this.setState({
       data: nextProps.resources,
       column: "voteTotal",
@@ -69,7 +81,13 @@ class ResourceList extends Component {
     const { open, column, data, direction } = this.state;
 
     return (
-      <Table style={{ marginBottom: "10px" }} unstackable sortable>
+      <Table
+        style={{ marginBottom: "10px" }}
+        unstackable
+        sortable
+        striped
+        compact
+      >
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
@@ -114,8 +132,8 @@ class ResourceList extends Component {
                   width={
                     resource._user == this.props.auth._id ||
                     this.props.auth?.role == "admin"
-                      ? 1
-                      : 2
+                      ? 5
+                      : 6
                   }
                 >
                   <Link

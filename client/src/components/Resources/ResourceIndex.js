@@ -24,6 +24,7 @@ class ResourceIndex extends Component {
     super();
     this.state = {
       resources: [],
+      loading: true,
     };
   }
   componentDidMount() {
@@ -34,6 +35,7 @@ class ResourceIndex extends Component {
         return Number(acc.value) + Number(curr.value);
       };
 
+      //get vote total for each resource
       for (let i in resources) {
         if (resources[i].votes.length == 1 && resources[i].votes.length) {
           var voteTotal = resources[i].votes[0].value;
@@ -46,6 +48,7 @@ class ResourceIndex extends Component {
       }
       this.setState({
         resources,
+        loading: false,
       });
     });
   }
@@ -92,7 +95,7 @@ class ResourceIndex extends Component {
           {UnitName}
         </Header>
         <div>
-          {this.props.auth && this.state.resources ? (
+          {this.props.auth && !this.state.loading ? (
             <ResourceList
               param={this.props.match.params.unit}
               resources={this.state.resources}
@@ -100,13 +103,9 @@ class ResourceIndex extends Component {
               fetchCart={this.props.fetchCart}
             />
           ) : this.props.auth ? (
-            <Segment>
-              <Dimmer active>
-                <Loader>Loading</Loader>
-              </Dimmer>
-
-              <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-            </Segment>
+            <Dimmer active inverted style={{ height: "60vh" }}>
+              <Loader size="massive">Loading</Loader>
+            </Dimmer>
           ) : (
             <NotLoggedIn />
           )}
