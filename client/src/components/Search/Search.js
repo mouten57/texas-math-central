@@ -34,7 +34,6 @@ export default class SearchExample extends Component {
   }
 
   handleResultSelect = (e, { result }) => {
-    console.log(result.subject);
     this.setState({ value: result.name });
   };
 
@@ -47,8 +46,6 @@ export default class SearchExample extends Component {
       const re = new RegExp(_.escapeRegExp(this.state.value), "i");
       const isMatch = (result) => re.test(result.name);
 
-      console.log(_.filter(this.props.resources, isMatch));
-
       this.setState({
         isLoading: false,
         results: _.filter(this.props.resources, isMatch),
@@ -57,7 +54,6 @@ export default class SearchExample extends Component {
   };
 
   render() {
-    console.log(this.state);
     const { isLoading, value, results } = this.state;
 
     return (

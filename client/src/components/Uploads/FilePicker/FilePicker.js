@@ -31,9 +31,7 @@ class UploadButton extends React.Component {
       this.props.setFilesFromUppy("remove", file);
     });
 
-    this.uppy.on("upload", (data) => {
-      console.log(data);
-    });
+    this.uppy.on("upload", (data) => {});
 
     this.uppy.on("complete", (result) => {
       setTimeout(() => this.setState({ modalOpen: false }), 1000);

@@ -5,7 +5,6 @@ const User = mongoose.model("User");
 
 module.exports = {
   async postcharge(_user, resource_ids, callback) {
-    console.log(resource_ids);
     //add purchased items to user
     let user = await User.findOneAndUpdate(
       { _id: _user },

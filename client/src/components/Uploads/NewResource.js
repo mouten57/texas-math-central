@@ -63,7 +63,6 @@ class UploadForm extends Component {
   onChange = (e) => {
     switch (e.target.name) {
       case "files":
-        console.log(e.target.files);
         this.setState({ files: e.target.files });
         break;
       default:
@@ -79,7 +78,6 @@ class UploadForm extends Component {
       })
       .indexOf(plainName);
 
-    console.log(idx);
     if (idx > -1) {
       this.setState({
         unit: unitFields[idx].param,
@@ -94,7 +92,7 @@ class UploadForm extends Component {
   };
   onSelectGradeLevel = (e, data) => {
     var grade = data.value;
-    console.log(e.currentTarget);
+
     this.setState({
       grade,
     });
@@ -280,7 +278,6 @@ class UploadForm extends Component {
   }
 
   onSubmit = (e) => {
-    console.log(e);
     e.preventDefault();
 
     const {
@@ -343,7 +340,6 @@ class UploadForm extends Component {
   };
 
   render() {
-    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

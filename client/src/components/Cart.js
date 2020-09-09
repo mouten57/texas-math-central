@@ -29,7 +29,6 @@ const AppMedia = createMedia({
 const mediaStyles = AppMedia.createMediaStyle();
 const { Media } = AppMedia;
 const Cart = (props) => {
-  console.log(props);
   const onRemoveItem = async (id) => {
     let result = await axios.post(`/api/cart/${id}/remove`);
     createNotification("remove_from_cart");

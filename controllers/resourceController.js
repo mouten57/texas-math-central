@@ -73,12 +73,10 @@ module.exports = {
       if (err) {
         res.send(err);
       } else {
-        console.log(resource._id);
         res.send(resource);
         //after sending initial, send files
         //start upload with aws
         for (let i = 0; i < files.length; i++) {
-          console.log(files[i].filename);
           const params = {
             Bucket: "texas-math-central",
             Key: files[i].filename,

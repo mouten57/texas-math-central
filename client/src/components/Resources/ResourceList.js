@@ -65,7 +65,7 @@ class ResourceList extends Component {
   };
 
   render() {
-    console.log(this.state);
+    const resources = [...this.props.resources];
     const { open, column, data, direction } = this.state;
 
     return (
@@ -118,7 +118,16 @@ class ResourceList extends Component {
                       : 2
                   }
                 >
-                  <Link to={`/units/${this.match(resource)}/${resource._id}`}>
+                  <Link
+                    to={{
+                      pathname: `/units/${this.match(resource)}/${
+                        resource._id
+                      }`,
+                      state: {
+                        unitResources: resources,
+                      },
+                    }}
+                  >
                     {resource.name}
                   </Link>
                 </Table.Cell>

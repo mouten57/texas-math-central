@@ -53,7 +53,7 @@ class ShowComment extends Component {
                 <span>Posted at {convertTimestamp(comment.created_at)}</span>
               </Comment.Metadata>
               <Comment.Text>{comment.body}</Comment.Text>
-              {comment._user._id == this.props.auth._id ||
+              {comment._user?._id == this.props.auth?._id ||
               this.props.auth?.role == "admin" ? (
                 <Comment.Action
                   className="custom_delete_action"

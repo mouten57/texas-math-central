@@ -28,13 +28,18 @@ module.exports = {
       callback(err);
     }
   },
-  getUnitResources(unit, callback) {
-    return Resource.find({ unit: unit }, "-files.file_data")
+  async getUnitResources(unit, callback) {
+    let resources = await Resource.find({ unit: unit }, "-files.file_data")
       .sort({ created_at: "desc" })
+      .populate("_user")
+      .populate("favorites")
       .populate("votes")
-      .then((resources) => {
-        callback(null, resources);
-      });
+      .populate({ path: "comments", populate: { path: "_user" } });
+    try {
+      callback(null, resources);
+    } catch (err) {
+      callback(err);
+    }
   },
   async addResource(newResource, callback) {
     let resource = await Resource.create(newResource);

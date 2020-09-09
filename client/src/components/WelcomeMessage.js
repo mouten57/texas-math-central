@@ -35,7 +35,6 @@ class WelcomeMessage extends Component {
   }
 
   render() {
-    console.log(this.props);
     return <div>{this.state.visible ? this.renderMessage() : <p />}</div>;
   }
 }

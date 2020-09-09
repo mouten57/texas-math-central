@@ -31,8 +31,6 @@ const CheckoutForm = (props) => {
       backPath = "/cart";
   }
 
-  console.log(products, resourceIDs);
-
   const stripe = useStripe();
   const elements = useElements();
 
@@ -57,7 +55,7 @@ const CheckoutForm = (props) => {
     const response = await axios.post("/api/stripe", {
       amount,
     });
-    console.log(response.data);
+
     let clientSecret = response.data.client_secret;
 
     // Call stripe.confirmCardPayment() with the client secret.

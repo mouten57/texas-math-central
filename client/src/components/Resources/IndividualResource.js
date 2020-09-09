@@ -51,36 +51,47 @@ class IndividualResource extends Component {
   }
 
   componentDidMount = () => {
+    let link_props = this.props.history.location?.state;
+    //set up socket
     this.props.socket.on(
       "updated-resource-post-upload",
       this.updateResourcePostUpload
     );
-    this.makeAxiosCalls();
-    if (this.props.history.location.state) {
+    //coming after a create?
+    if (link_props?.new_create_data && !this.state.post_create_complete) {
+      console.log("POST CREATE");
+      //then launch 'success'
       createNotification("success");
       //clear out state so notification doesn't keep going on componentDidMount
-      this.props.history.push({
-        state: null,
-      });
+      this.setState({ post_create_complete: true });
+      this.makeAxiosCalls();
+      //coming from unit resources
+    } else if (link_props?.unitResources) {
+      console.log("COMING FROM UNIT RESOURCES");
+      const this_resource = link_props.unitResources.find(
+        (el) => el._id == this.props.match.params.id
+      );
+      this.finishUpSetup(this_resource);
+    } else if (link_props?.profileResource) {
+      this.finishUpSetup(link_props.profileResource);
+    } else {
+      this.makeAxiosCalls();
     }
-    this.setState({
-      selectedFile: this.state.files ? this.state.files[0] : null,
-    });
   };
 
   componentDidUpdate = (prevProps, prevState) => {
     console.log("update");
+    // console.log(
+    //   prevState.resource,
+    //   "prevState",
+    //   prevState.currentUsersFavoriteId,
+    //   "state",
+    //   this.state.currentUsersFavoriteId
+    // );
     if (
       prevState.resource._id &&
       prevState.currentUsersFavoriteId != this.state.currentUsersFavoriteId
     ) {
-      console.log(
-        prevState.resource,
-        "prevState",
-        prevState.currentUsersFavoriteId,
-        "state",
-        this.state.currentUsersFavoriteId
-      );
       this.makeAxiosCalls();
     }
   };
@@ -93,33 +104,36 @@ class IndividualResource extends Component {
   }
 
   makeAxiosCalls = () => {
-    console.log("making axios calls");
     axios
       .get(
         `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}`
       )
       .then((res) => {
         const resource = res.data;
-        var currentUsersFavoriteId = resource.favorites.find((favorite) => {
-          return favorite._user == this.props.auth?._id;
-        })?._id;
-        if (currentUsersFavoriteId == undefined) currentUsersFavoriteId = "";
-        this.setState({ currentUsersFavoriteId });
-        // }
-
-        this.setState({
-          resource,
-          votes: resource.votes,
-          selectedFile: resource.files[0],
-          comments: resource.comments,
-          s3Link: resource.s3Link,
-          resource_name: resource.name,
-          resource_id: resource._id,
-        });
-        if (resource.votes.length > 0) {
-          this.getVoteTotal(resource.votes);
-        }
+        this.finishUpSetup(resource);
       });
+  };
+
+  finishUpSetup = (resource) => {
+    var currentUsersFavoriteId = resource.favorites.find((favorite) => {
+      return favorite._user == this.props.auth?._id;
+    })?._id;
+    if (currentUsersFavoriteId == undefined) currentUsersFavoriteId = "";
+
+    this.setState({
+      resource,
+      currentUsersFavoriteId,
+      selectedFile: this.state.files ? this.state.files[0] : null,
+      votes: resource.votes,
+      selectedFile: resource.files[0],
+      comments: resource.comments,
+      s3Link: resource.s3Link,
+      resource_name: resource.name,
+      resource_id: resource._id,
+    });
+    if (resource.votes.length > 0) {
+      this.getVoteTotal(resource.votes);
+    }
   };
 
   getFavoriteFor = (userId) => {
@@ -435,7 +449,7 @@ class IndividualResource extends Component {
           ) : null}
         </div>
 
-        {this.state.isLoading ? (
+        {!this.state.resource ? (
           <Loader active inline="centered" />
         ) : (
           <CommentsSection

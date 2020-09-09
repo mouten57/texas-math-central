@@ -10,7 +10,7 @@
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
     "start": "node index.js",
-    "server": "nodemon index.js",
+    "server": "nodemon index.js --delay 1500ms",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
