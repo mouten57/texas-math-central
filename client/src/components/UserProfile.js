@@ -89,7 +89,7 @@ class UserProfile extends Component {
   render() {
     console.log();
     return (
-      <Container style={{ marginBottom: "25px" }}>
+      <Container style={{ marginBottom: "40px" }}>
         {this.renderHeading()}
         {this.state.loading ? (
           <Dimmer active inverted style={{ height: "60vh" }}>

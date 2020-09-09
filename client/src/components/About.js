@@ -33,7 +33,7 @@ const About = () => {
 
         <h3 style={{ marginTop: "50px" }}>Find Resources</h3>
         <Divider />
-        <Container style={{ marginBottom: "25px" }}>
+        <Container style={{ marginBottom: "40px" }}>
           <Segment raised size="large" padded="very">
             <h2 style={{ textAlign: "center" }}>Find Resources</h2>
             Finding resources is as easy as heading over to our{" "}

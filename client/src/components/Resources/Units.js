@@ -92,7 +92,7 @@ class Units extends Component {
             ))}
           </Table.Body>
         </Table>
-        <p style={{ marginBottom: "25px" }}>
+        <p style={{ marginBottom: "40px" }}>
           Want to contribute something new?{" "}
           <a href="resources/new">
             <Icon name="add" color="black" />

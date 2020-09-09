@@ -4,10 +4,23 @@
 import { connect } from "react-redux";
 import React, { Component } from "react";
 import _ from "lodash";
-import { Table, Icon, Confirm } from "semantic-ui-react";
+import { Table, Icon, Confirm, Segment, Grid } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import unitFields from "./data/unitFields.js";
 import "./style/ResourceList.css";
+import { createMedia } from "@artsy/fresnel";
+
+const AppMedia = createMedia({
+  breakpoints: {
+    mobile: 320,
+    tablet: 768,
+    computer: 992,
+    largeScreen: 1200,
+    widescreen: 1920,
+  },
+});
+const mediaStyles = AppMedia.createMediaStyle();
+const { Media, MediaContextProvider } = AppMedia;
 
 class ResourceList extends Component {
   constructor(props) {
@@ -81,106 +94,217 @@ class ResourceList extends Component {
     const { open, column, data, direction } = this.state;
 
     return (
-      <Table
-        style={{ marginBottom: "10px" }}
-        unstackable
-        sortable
-        striped
-        compact
-      >
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell
-              sorted={column === "name" ? direction : null}
-              onClick={this.handleSort("name")}
+      <>
+        <style>{mediaStyles}</style>
+        <MediaContextProvider>
+          <Grid.Column as={Media} at="mobile">
+            <Table
+              style={{ marginBottom: "40px" }}
+              unstackable
+              sortable
+              striped
+              compact
+              fixed
             >
-              Name
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              textAlign="center"
-              sorted={column === "type" ? direction : null}
-              onClick={this.handleSort("type")}
-            >
-              Type
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              textAlign="center"
-              sorted={column === "voteTotal" ? direction : null}
-              onClick={this.handleSort("voteTotal")}
-            >
-              Votes
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              textAlign="center"
-              sorted={column === "created_at" ? direction : null}
-              onClick={this.handleSort("created_at")}
-            >
-              Date Added
-            </Table.HeaderCell>
-            <Table.HeaderCell> </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {this.state.data?.map((resource) => {
-            return (
-              <Table.Row
-                key={resource._id}
-                style={{ marginTop: "10px" }}
-                verticalAlign="middle"
-              >
-                <Table.Cell
-                  width={
-                    resource._user == this.props.auth._id ||
-                    this.props.auth?.role == "admin"
-                      ? 5
-                      : 6
-                  }
-                >
-                  <Link
-                    to={{
-                      pathname: `/units/${this.match(resource)}/${
-                        resource._id
-                      }`,
-                      state: {
-                        unitResources: resources,
-                      },
-                    }}
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell
+                    sorted={column === "name" ? direction : null}
+                    onClick={this.handleSort("name")}
                   >
-                    {resource.name}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell width={1} textAlign="center">
-                  {resource.type}
-                </Table.Cell>
-                <Table.Cell width={1} textAlign="center">
-                  {resource.voteTotal}
-                </Table.Cell>
-                <Table.Cell width={1} textAlign="center">
-                  {new Date(resource.created_at).toLocaleDateString()}
-                </Table.Cell>
-                <Table.Cell width={1} textAlign="center">
-                  {resource._user == this.props.auth._id ||
-                  this.props.auth?.role == "admin" ? (
-                    <Icon
-                      name="delete"
-                      className="custom_icon"
-                      onClick={() => this.show(resource._id)}
-                    />
-                  ) : null}
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-        <Confirm
-          open={open}
-          size="tiny"
-          cancelButton="Cancel"
-          confirmButton="Delete Resource"
-          onCancel={this.handleCancel}
-          onConfirm={this.handleConfirm}
-        />
-      </Table>
+                    Name
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "type" ? direction : null}
+                    onClick={this.handleSort("type")}
+                  >
+                    Type
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "voteTotal" ? direction : null}
+                    onClick={this.handleSort("voteTotal")}
+                  >
+                    Votes
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "created_at" ? direction : null}
+                    onClick={this.handleSort("created_at")}
+                  >
+                    Date Added
+                  </Table.HeaderCell>
+                  <Table.HeaderCell> </Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {this.state.data?.map((resource) => {
+                  return (
+                    <Table.Row
+                      key={resource._id}
+                      style={{ marginTop: "10px" }}
+                      verticalAlign="middle"
+                    >
+                      <Table.Cell
+                        width={
+                          resource._user == this.props.auth._id ||
+                          this.props.auth?.role == "admin"
+                            ? 5
+                            : 6
+                        }
+                      >
+                        <Link
+                          to={{
+                            pathname: `/units/${this.match(resource)}/${
+                              resource._id
+                            }`,
+                            state: {
+                              unitResources: resources,
+                            },
+                          }}
+                        >
+                          {resource.name}
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource.type}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource.voteTotal}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {new Date(resource.created_at).toLocaleDateString()}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource._user == this.props.auth._id ||
+                        this.props.auth?.role == "admin" ? (
+                          <Icon
+                            name="delete"
+                            className="custom_icon"
+                            onClick={() => this.show(resource._id)}
+                          />
+                        ) : null}
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+              <Confirm
+                open={open}
+                size="tiny"
+                cancelButton="Cancel"
+                confirmButton="Delete Resource"
+                onCancel={this.handleCancel}
+                onConfirm={this.handleConfirm}
+              />
+            </Table>
+          </Grid.Column>
+          {/* RENDER FOR TABLET OR GREATER */}
+          <Grid.Column as={Media} greaterThanOrEqual="tablet">
+            <Table
+              style={{ marginBottom: "10px" }}
+              unstackable
+              sortable
+              striped
+              compact
+            >
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell
+                    sorted={column === "name" ? direction : null}
+                    onClick={this.handleSort("name")}
+                  >
+                    Name
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "type" ? direction : null}
+                    onClick={this.handleSort("type")}
+                  >
+                    Type
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "voteTotal" ? direction : null}
+                    onClick={this.handleSort("voteTotal")}
+                  >
+                    Votes
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign="center"
+                    sorted={column === "created_at" ? direction : null}
+                    onClick={this.handleSort("created_at")}
+                  >
+                    Date Added
+                  </Table.HeaderCell>
+                  <Table.HeaderCell> </Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {this.state.data?.map((resource) => {
+                  return (
+                    <Table.Row
+                      key={resource._id}
+                      style={{ marginTop: "10px" }}
+                      verticalAlign="middle"
+                    >
+                      <Table.Cell
+                        width={
+                          resource._user == this.props.auth._id ||
+                          this.props.auth?.role == "admin"
+                            ? 5
+                            : 6
+                        }
+                      >
+                        <Link
+                          to={{
+                            pathname: `/units/${this.match(resource)}/${
+                              resource._id
+                            }`,
+                            state: {
+                              unitResources: resources,
+                            },
+                          }}
+                        >
+                          {resource.name}
+                        </Link>
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource.type}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource.voteTotal}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {new Date(resource.created_at).toLocaleDateString()}
+                      </Table.Cell>
+                      <Table.Cell width={1} textAlign="center">
+                        {resource._user == this.props.auth._id ||
+                        this.props.auth?.role == "admin" ? (
+                          <Icon
+                            name="delete"
+                            className="custom_icon"
+                            onClick={() => this.show(resource._id)}
+                          />
+                        ) : null}
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+              <Confirm
+                open={open}
+                size="tiny"
+                cancelButton="Cancel"
+                confirmButton="Delete Resource"
+                onCancel={this.handleCancel}
+                onConfirm={this.handleConfirm}
+              />
+            </Table>
+          </Grid.Column>
+        </MediaContextProvider>
+      </>
     );
   }
 }

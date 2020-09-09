@@ -122,7 +122,7 @@ class UploadForm extends Component {
         return <NotLoggedIn />;
       default:
         return (
-          <Container>
+          <Container style={{ marginBottom: "40px" }}>
             <Form style={{ marginBottom: "25px" }}>
               <Segment>
                 <Header>Create a New Resource!</Header>
