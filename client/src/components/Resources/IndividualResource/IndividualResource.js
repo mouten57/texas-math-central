@@ -53,6 +53,7 @@ class IndividualResource extends Component {
   }
 
   componentDidMount = () => {
+    const { history } = this.props;
     let link_props = this.props.history.location?.state;
     //set up socket
     this.props.socket.on(
@@ -67,9 +68,10 @@ class IndividualResource extends Component {
       //clear out state so notification doesn't keep going on componentDidMount
       this.setState({ post_create_complete: true });
       this.makeAxiosCalls();
+      //clear history
+      history.replace();
       //coming from unit resources
     } else if (link_props?.unitResources) {
-      const { history } = this.props;
       console.log("COMING FROM UNIT RESOURCES");
       const this_resource = link_props.unitResources.find(
         (el) => el._id == this.props.match.params.id
@@ -323,7 +325,9 @@ class IndividualResource extends Component {
                 : null}
               :{" "}
             </b>{" "}
-            {downloadLink(this.state)}
+            {downloadLink(this.state, (err, selectedFile) => {
+              this.setState({ selectedFile });
+            })}
           </div>
 
           {this.state.selectedFile ? (

@@ -8,10 +8,10 @@ import {
   Input,
   Label,
   Segment,
-  Select,
   Checkbox,
   Header,
   Container,
+  Select,
 } from "semantic-ui-react";
 import React, { Component } from "react";
 import axios from "axios";
@@ -23,6 +23,8 @@ import gradeLevels from "../Resources/data/gradeLevels";
 import subjects from "../Resources/data/subjects";
 import Loader from "./Loader";
 import GoogleWrapper from "../../google/GoogleWrapper";
+import SelectOption from "./SelectOption";
+import onSubmitHelper from "./submitNew";
 
 class UploadForm extends Component {
   constructor() {
@@ -41,24 +43,6 @@ class UploadForm extends Component {
       hideLink: false,
     };
   }
-  renderUnits() {
-    return _.map(unitFields, ({ name, param }) => {
-      return (
-        <option key={name} value={param} label={name} onChange={this.onChange}>
-          {name}
-        </option>
-      );
-    });
-  }
-  renderTypes() {
-    return resourceTypes.map((type) => {
-      return (
-        <option key={type} value={type} onChange={this.onChange}>
-          {type}
-        </option>
-      );
-    });
-  }
 
   onChange = (e) => {
     switch (e.target.name) {
@@ -70,39 +54,26 @@ class UploadForm extends Component {
     }
   };
 
-  onSelectUnit = (e, data) => {
-    var plainName = data.value;
-    let idx = unitFields
-      .map(function (e) {
-        return e.key;
-      })
-      .indexOf(plainName);
+  onSelect = (e, data, unit) => {
+    if (unit) {
+      var idx = unitFields
+        .map(function (e) {
+          return e.key;
+        })
+        .indexOf(data.value);
 
-    if (idx > -1) {
+      if (idx > -1) {
+        this.setState({
+          unit: unitFields[idx].param,
+        });
+      }
+    } else {
       this.setState({
-        unit: unitFields[idx].param,
+        [data.name]: data.value,
       });
     }
   };
-  onSelectResourceType = (e, data) => {
-    var type = data.value;
-    this.setState({
-      type,
-    });
-  };
-  onSelectGradeLevel = (e, data) => {
-    var grade = data.value;
 
-    this.setState({
-      grade,
-    });
-  };
-  onSelectSubject = (e, data) => {
-    var subject = data.value;
-    this.setState({
-      subject,
-    });
-  };
   setFilesFromUppy = (action, file) => {
     let files = [...this.state.files];
     action == "add"
@@ -139,53 +110,37 @@ class UploadForm extends Component {
                     />
                   </div>
                 </div>
-                <div style={{ paddingTop: "10px" }}>
-                  <Label>Grade Level</Label>
-                  <Form.Select
-                    placeholder="Select Type"
-                    fluid
-                    name="grade"
-                    search
-                    selection
-                    options={gradeLevels}
-                    onChange={this.onSelectGradeLevel}
-                  />
-                </div>
-                <div style={{ paddingTop: "10px" }}>
-                  <Label>Subject</Label>
-                  <Form.Select
-                    placeholder="Select Type"
-                    fluid
-                    name="subject"
-                    search
-                    selection
-                    options={subjects}
-                    onChange={this.onSelectSubject}
-                  />
-                </div>
 
-                <div style={{ paddingTop: "10px" }}>
-                  <Label>Unit</Label>
-                  <Form.Select
-                    placeholder="Select Type"
-                    fluid
-                    search
-                    options={unitFields}
-                    onChange={this.onSelectUnit}
-                  />
-                </div>
+                <SelectOption
+                  label="Grade Level"
+                  placeholder="Select Grade Level"
+                  name="grade"
+                  options={gradeLevels}
+                  onSelect={this.onSelect}
+                />
 
-                <div style={{ paddingTop: "10px" }}>
-                  <Label>Type</Label>
-                  <Form.Select
-                    placeholder="Select Type"
-                    name="type"
-                    fluid
-                    search
-                    options={resourceTypes}
-                    onChange={this.onSelectResourceType}
-                  />
-                </div>
+                <SelectOption
+                  label="Subject"
+                  placeholder="Select Subject"
+                  name="subject"
+                  options={subjects}
+                  onSelect={this.onSelect}
+                />
+                <SelectOption
+                  label="Unit"
+                  placeholder="Select Unit"
+                  name="unit"
+                  options={unitFields}
+                  onSelect={(e, data) => this.onSelect(e, data, "UNIT")}
+                />
+                <SelectOption
+                  label="Type"
+                  placeholder="Select Type"
+                  name="type"
+                  options={resourceTypes}
+                  onSelect={this.onSelect}
+                />
+
                 <div style={{ paddingTop: "10px" }}>
                   <Label>Link</Label>
                   <div>
@@ -276,70 +231,35 @@ class UploadForm extends Component {
         );
     }
   }
-
   onSubmit = (e) => {
-    e.preventDefault();
-
-    const {
-      description,
-      name,
-      grade,
-      subject,
-      files,
-      unit,
-      type,
-      link,
-    } = this.state;
-
-    let formData = new FormData();
-
-    formData.append("description", description);
-    for (const key of Object.keys(this.state.files)) {
-      formData.append("files", this.state.files[key]);
-    }
-    formData.append("files", files);
-    formData.append("name", name);
-    formData.append("grade", grade);
-    formData.append("subject", subject);
-    formData.append("unit", unit);
-    formData.append("type", type);
-    formData.append("link", link);
-    let values = [];
-    for (var value of formData.values()) {
-      values.push(value);
-    }
-    values.splice(1, 1);
-
-    if (values.includes("") === true) {
-      return alert(`                Please complete all fields. 
-
-                  (File upload is optional)`);
-    } else {
+    onSubmitHelper(e, this.state, (err, formData) => {
       this.setState({ loaderActive: true, submitDisabled: true });
-    }
+      axios
+        .post("/api/resources/create", formData)
+        .then((res) => {
+          //re-grab full list of resources at App.js
+          this.props.fetchResources();
+          axios
+            .get(`/api/resources/${res.data._id}/votes/upvote`)
+            .then((res) => {
+              this.setState({ loaderActive: false, submitDisabled: false });
+              this.props.history.push({
+                pathname: `/units/${this.state.unit}/${res.data.resource_id}`,
+                state: { new_create_data: res.data },
+              });
+            });
 
-    axios
-      .post("/api/resources/create", formData)
-      .then((res) => {
-        //re-grab full list of resources at App.js
-        this.props.fetchResources();
-        axios.get(`/api/resources/${res.data._id}/votes/upvote`).then((res) => {
-          this.setState({ loaderActive: false, submitDisabled: false });
-          this.props.history.push({
-            pathname: `/units/${unit}/${res.data.resource_id}`,
-            state: { new_create_data: res.data },
-          });
+          // access results...
+        })
+        .catch(function (error) {
+          console.log(">> ERROR FILE UPLOAD ", error);
+          alert(error.message);
         });
-
-        // access results...
-      })
-      .catch(function (error) {
-        console.log(">> ERROR FILE UPLOAD ", error);
-        alert(error.message);
-      });
+    });
   };
 
   render() {
+    console.log(this.state);
     return <div>{this.renderForm()}</div>;
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "semantic-ui-react";
 
-const downloadLink = (state) => {
+const downloadLink = (state, cb) => {
   switch (state.resource.files?.length) {
     case null:
       return "";
@@ -32,7 +32,7 @@ const downloadLink = (state) => {
               <li
                 key={i}
                 className="file_selector"
-                onClick={() => this.setState({ selectedFile: file })}
+                onClick={() => cb(null, file)}
               >
                 {file.originalname}
               </li>
