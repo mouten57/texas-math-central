@@ -9,7 +9,7 @@ import Header from "./Header";
 import About from "./About";
 import Units from "./Resources/Units.js";
 import ResourceIndex from "./Resources/ResourceIndex";
-import IndividualResource from "./Resources/IndividualResource";
+import IndividualResource from "./Resources/IndividualResource/IndividualResource";
 import UserProfile from "./UserProfile";
 import { Container } from "semantic-ui-react";
 

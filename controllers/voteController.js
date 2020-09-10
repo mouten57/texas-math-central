@@ -7,7 +7,7 @@ module.exports = {
         if (err) {
           console.log(err);
         }
-
+        console.log(vote);
         res.send(vote);
       });
     } else {

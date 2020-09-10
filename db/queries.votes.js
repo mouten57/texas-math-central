@@ -7,9 +7,11 @@ module.exports = {
   async createVote(req, val, callback) {
     let vote = await Vote.findOne({
       resource_id: req.params.resourceId,
-      _user: req.user.id,
+      _user: req.user._id,
     });
+
     if (vote) {
+      console.log(vote);
       //means this is an update
       vote.value = val;
       //I dont think we need to add values to resource and user if votes already exist
@@ -29,7 +31,7 @@ module.exports = {
       let vote = await Vote.create({
         value: val,
         resource_id: req.params.resourceId,
-        _user: req.user.id,
+        _user: req.user._id,
       });
       let resource = await Resource.findOne({ _id: vote.resource_id });
       let user = await User.findOne({ _id: vote._user });

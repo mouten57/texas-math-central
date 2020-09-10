@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
-import createNotification from "./Notification";
+import createNotification from "../Notification";
 import {
   Container,
   Loader,
@@ -9,14 +9,16 @@ import {
   Image,
   Popup,
 } from "semantic-ui-react";
+import downloadLink from "./downloadLink";
+import RenderCartOptions from "./RenderCartOptions";
 
 import axios from "axios";
 //import Voting from '../Voting';
 import { connect } from "react-redux";
-import CommentsSection from "../Comments/CommentsSection";
+import CommentsSection from "../../Comments/CommentsSection";
 import "react-notifications/lib/notifications.css";
-import "./style/IndividualResource.css";
-import img from "../../images/sample_doc.png";
+import "./IndividualResource.css";
+import img from "../../../images/sample_doc.png";
 
 class IndividualResource extends Component {
   constructor(props) {
@@ -67,11 +69,14 @@ class IndividualResource extends Component {
       this.makeAxiosCalls();
       //coming from unit resources
     } else if (link_props?.unitResources) {
+      const { history } = this.props;
       console.log("COMING FROM UNIT RESOURCES");
       const this_resource = link_props.unitResources.find(
         (el) => el._id == this.props.match.params.id
       );
       this.finishUpSetup(this_resource);
+      //clear out history
+      history.replace();
     } else if (link_props?.profileResource) {
       this.finishUpSetup(link_props.profileResource);
     } else {
@@ -120,6 +125,9 @@ class IndividualResource extends Component {
     })?._id;
     if (currentUsersFavoriteId == undefined) currentUsersFavoriteId = "";
 
+    //set if item is in cart
+    this.is_item_in_cart(resource._id);
+
     this.setState({
       resource,
       currentUsersFavoriteId,
@@ -129,6 +137,7 @@ class IndividualResource extends Component {
       comments: resource.comments,
       s3Link: resource.s3Link,
       resource_name: resource.name,
+
       resource_id: resource._id,
     });
     if (resource.votes.length > 0) {
@@ -142,57 +151,15 @@ class IndividualResource extends Component {
     });
     return result ? true : false;
   };
-  item_in_cart = (resource_id) => {
+  is_item_in_cart = (resource_id) => {
     if (this.props.cart) {
       let result = this.props.cart.products.find((product) => {
         return product.resource_id?._id == resource_id;
       });
-
-      return result ? true : false;
+      this.setState({ item_in_cart: result ? true : false });
     }
   };
 
-  downloadLink() {
-    switch (this.state.resource.files?.length) {
-      case null:
-        return "";
-        break;
-      case 0:
-        return "Download not available.";
-        break;
-      case 1:
-        //if index 0 of files is "TBD", that means we are still waiting for s3 upload to complete
-        if (this.state.resource.files[0] == "TBD") {
-          return (
-            <Loader active inline="centered">
-              Fetching a personal preview
-            </Loader>
-          );
-          break;
-        }
-
-      default:
-        return (
-          <ul style={{ listStyle: "none", marginTop: "5px" }}>
-            {this.state.resource.files?.map((file, i) => {
-              //use this if storing/downloading files directly from mongo db
-              //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
-              //use this with s3
-              // let link = file.s3Link;
-              return (
-                <li
-                  key={i}
-                  className="file_selector"
-                  onClick={() => this.setState({ selectedFile: file })}
-                >
-                  {file.originalname}
-                </li>
-              );
-            })}
-          </ul>
-        );
-    }
-  }
   getVoteTotal = (votes) => {
     let voteTotal = votes
       .map((v) => {
@@ -207,9 +174,9 @@ class IndividualResource extends Component {
     return voteTotal;
   };
 
-  onUpvote = (e) => {
+  onUpvoteDownvote = (action) => {
     axios
-      .get(`/api/resources/${this.state.resource_id}/votes/upvote`)
+      .get(`/api/resources/${this.state.resource_id}/votes/${action}`)
       .then(({ data }) => {
         let value = data.value;
         let votes = this.state.votes;
@@ -217,123 +184,54 @@ class IndividualResource extends Component {
         let objIndex = votes.findIndex(
           (obj) => obj._user == this.props.auth._id
         );
-        console.log(objIndex);
+
         if (objIndex > -1) {
+          console.log("-1");
+          votes[objIndex].value = action == "upvote" ? 1 : -1;
+        } else {
           console.log(objIndex);
-          votes[objIndex].value = 1;
-        } else {
           votes.push(data);
         }
         this.getVoteTotal(votes);
-        if (!this.state.upvoted) {
-          this.setState({
-            upvoted: true,
-            downvoted: false,
-          });
-        }
-      });
-  };
-  onDownvote = (e) => {
-    axios
-      .get(`/api/resources/${this.state.resource_id}/votes/downvote`)
-      .then(({ data }) => {
-        let value = data.value;
-        let votes = this.state.votes;
-        let objIndex = votes.findIndex(
-          (obj) => obj._user == this.props.auth._id
-        );
-        if (objIndex > -1) {
-          votes[objIndex].value = -1;
-        } else {
-          votes.push(data);
-        }
-        console.log(votes);
-        this.getVoteTotal(votes);
 
-        if (!this.state.downvoted) {
-          this.setState({
-            downvoted: true,
-            upvoted: false,
-          });
-        }
-      });
-  };
-
-  onAddToFavorites = () => {
-    createNotification("add_fav");
-    axios
-      .post(`/api/resources/${this.state.resource_id}/favorites/create`)
-      .then((res) => {
         this.setState({
-          currentUsersFavoriteId: res.data._id || "",
+          upvoted: action == "upvote" ? true : false,
+          downvoted: action == "upvote" ? false : true,
         });
       });
   };
-  onRemoveFromFavorites = () => {
-    createNotification("remove_fav");
+  onAddRemoveFavorite = (action) => {
+    let link =
+      action == "add"
+        ? "create"
+        : `${this.state.currentUsersFavoriteId}/destroy`;
+
+    createNotification(action == "add" ? "add_fav" : "remove_fav");
     axios
-      .post(
-        `/api/resources/${this.state.resource_id}/favorites/${this.state.currentUsersFavoriteId}/destroy`
-      )
-      .then((err, result) => {
-        this.setState({ currentUsersFavoriteId: "" });
+      .post(`/api/resources/${this.state.resource_id}/favorites/${link}`)
+      .then((res) => {
+        this.setState({
+          currentUsersFavoriteId: action == "add" ? res.data._id || "" : "",
+        });
       })
       .catch((err) => {
         throw err;
       });
   };
-  addToCart = (resourceId) => {
-    createNotification("add_to_cart");
+
+  onAddRemoveCart = (resourceId, action) => {
+    createNotification(action == "add" ? "add_to_cart" : "remove_from_cart");
     axios
-      .post(`/api/cart/${resourceId}/add`)
+      .post(`/api/cart/${resourceId}/${action}`)
       .then((response) => {
-        this.setState({ item_in_cart: true });
-        this.props.fetchCart();
-      })
-      .catch((err) => console.log(err));
-  };
-  removeFromCart = (resourceId) => {
-    createNotification("remove_from_cart");
-    axios
-      .post(`/api/cart/${resourceId}/remove`)
-      .then((response) => {
-        this.setState({ item_in_cart: false });
+        this.setState({ item_in_cart: action == "add" ? true : false });
         this.props.fetchCart();
       })
       .catch((err) => console.log(err));
   };
 
-  renderCartOptions = (resource) => {
-    if (resource && this.props.auth && resource._user) {
-      if (resource._user?._id == this.props.auth?._id) {
-        return <p>My resource</p>;
-      } else if (
-        this.props.auth.role == "admin" ||
-        this.props.auth.role == "all_access"
-      ) {
-        return <p>Premium User Access!</p>;
-      } else if (this.props.auth?.purchasedResources.includes(resource._id)) {
-        return <p>Purchased Item</p>;
-      } else {
-        return (
-          <p
-            className="add-to-cart"
-            onClick={
-              this.item_in_cart(resource._id)
-                ? () => this.removeFromCart(resource._id)
-                : () => this.addToCart(resource._id)
-            }
-          >
-            <b style={{ backgroundColor: "yellow" }}>
-              {this.item_in_cart(resource._id) ? "Remove from" : "Add to"} Cart
-            </b>
-          </p>
-        );
-      }
-    }
-  };
   render() {
-    //console.log("state is", this.state, "props are", this.props);
+    console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
     if (
       resource._user?._id == this.props.auth?._id ||
@@ -351,10 +249,10 @@ class IndividualResource extends Component {
             style={{ marginBottom: "10px" }}
             icon
             basic
-            onClick={
+            onClick={() =>
               this.state.currentUsersFavoriteId
-                ? this.onRemoveFromFavorites
-                : this.onAddToFavorites
+                ? this.onAddRemoveFavorite("remove")
+                : this.onAddRemoveFavorite("add")
             }
           >
             <Icon
@@ -366,14 +264,23 @@ class IndividualResource extends Component {
               }
             />
           </Button>
-          <Button onClick={(e) => this.onUpvote(e)}>&#9650;</Button>
+          <Button onClick={(e) => this.onUpvoteDownvote("upvote")}>
+            &#9650;
+          </Button>
           <Button basic>{this.state.voteTotal}</Button>
-          <Button onClick={(e) => this.onDownvote(e)}>&#9660;</Button>
+          <Button onClick={(e) => this.onUpvoteDownvote("downvote")}>
+            &#9660;
+          </Button>
         </Button.Group>
 
         <h2>"{resource.name}"</h2>
 
-        {this.renderCartOptions(resource)}
+        <RenderCartOptions
+          onAddRemoveCart={this.onAddRemoveCart}
+          resource={resource}
+          auth={this.props.auth}
+          state={this.state}
+        />
 
         <div>
           <p>
@@ -416,7 +323,7 @@ class IndividualResource extends Component {
                 : null}
               :{" "}
             </b>{" "}
-            {this.downloadLink()}
+            {downloadLink(this.state)}
           </div>
 
           {this.state.selectedFile ? (
