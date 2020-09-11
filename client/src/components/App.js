@@ -2,28 +2,29 @@ import React, { Component } from "react";
 import { NotificationContainer } from "react-notifications";
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
+import { Container } from "semantic-ui-react";
 import * as actions from "../actions";
+//stripe checkout
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+//socket
+import openSocket from "socket.io-client";
+//import components
 import Landing from "./Landing";
-
 import Header from "./Header";
 import About from "./About";
 import Units from "./Resources/Units.js";
 import ResourceIndex from "./Resources/ResourceIndex";
 import IndividualResource from "./Resources/IndividualResource/IndividualResource";
 import UserProfile from "./UserProfile";
-import { Container } from "semantic-ui-react";
-
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart";
 import Upgrade from "./UpgradeAllAccess";
-//stripe checkout
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./Checkout/CheckoutForm";
+import AdminPage from "./Admin/Admin";
+import NotAuthorized from "./NotAuthorized";
 
-//socket
-import openSocket from "socket.io-client";
 const keys = require("../components/SocketIO/SocketIO");
 const socket = openSocket(keys.socketPath);
 
@@ -141,6 +142,24 @@ class App extends Component {
                   />
                 </Elements>
               )}
+            />
+            <Route
+              exact
+              path="/admin"
+              render={(props) =>
+                this.props?.auth?.role == "admin" ? (
+                  <AdminPage
+                    auth={this.props.auth}
+                    cart={this.props.cart}
+                    resources={this.props.resources}
+                    fetchUser={this.props.fetchUser}
+                    fetchCart={this.props.fetchCart}
+                    {...props}
+                  />
+                ) : this.props.auth ? (
+                  <NotAuthorized {...props} />
+                ) : null
+              }
             />
           </div>
         </BrowserRouter>

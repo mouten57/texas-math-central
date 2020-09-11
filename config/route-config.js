@@ -13,5 +13,6 @@ module.exports = {
     require("../routes/favoriteRoutes")(app);
     require("../routes/cartRoutes")(app);
     require("../routes/billingRoutes")(app);
+    require("../routes/adminRoutes")(app);
   },
 };

@@ -20,11 +20,11 @@ export default function createNotification(type, error) {
       NotificationManager.success(
         "Thank you for your purchase!",
         "Success!",
-        2000
+        3000
       );
       break;
     case "purchase_failure":
-      NotificationManager.error("", error, 1500);
+      NotificationManager.error("", error, 5000);
       break;
 
     case "success":
