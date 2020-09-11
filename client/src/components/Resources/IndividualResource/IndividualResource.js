@@ -19,12 +19,15 @@ import CommentsSection from "../../Comments/CommentsSection";
 import "react-notifications/lib/notifications.css";
 import "./IndividualResource.css";
 import img from "../../../images/sample_doc.png";
+import EditResource from "../EditResource/EditResource";
+import Modal from "../../Modal";
 
 class IndividualResource extends Component {
   constructor(props) {
     super(props);
     this.state = {
       resource: {},
+      edit: false,
       s3Link: null,
       resource_name: null,
       resource_id: null,
@@ -232,6 +235,38 @@ class IndividualResource extends Component {
       .catch((err) => console.log(err));
   };
 
+  editItemHandler = (_id) => {
+    axios
+      .get(`/api/resources/${_id}/edit`)
+      .then((res) => {
+        this.setState({ editData: res.data, edit: true });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  onSubmitUpdate = (resource) => {
+    axios
+      .post(`/api/resources/${resource._id}/update`, resource)
+      .then((res) => {
+        this.setState({ resource: res.data, edit: false });
+      });
+  };
+
+  onDelete = () => {
+    const { unit, _id } = this.state.resource;
+    axios
+      .post(`/api/units/${unit}/${_id}/delete`)
+      .then((res) => {
+        console.log(res.data);
+        this.props.history.push({
+          pathname: `/units/${unit}`,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     console.log("state is", this.state, "props are", this.props);
     const { resource } = this.state;
@@ -246,10 +281,11 @@ class IndividualResource extends Component {
 
     return (
       <Container>
-        <Button.Group vertical size="small" floated="right">
+        <Button.Group vertical icon size="small" floated="right">
           <Button
             style={{ marginBottom: "10px" }}
             icon
+            compact
             basic
             onClick={() =>
               this.state.currentUsersFavoriteId
@@ -266,6 +302,25 @@ class IndividualResource extends Component {
               }
             />
           </Button>
+          <Button
+            basic
+            icon
+            style={{ marginBottom: "10px" }}
+            onClick={() => this.editItemHandler(this.state.resource._id)}
+          >
+            <Icon size="large" name="edit" />
+          </Button>
+          <Button basic icon onClick={this.onDelete}>
+            <Icon size="large" name="trash alternate outline" />
+          </Button>
+        </Button.Group>
+        <Button.Group
+          vertical
+          icon
+          size="small"
+          floated="right"
+          style={{ marginTop: "15px" }}
+        >
           <Button onClick={(e) => this.onUpvoteDownvote("upvote")}>
             &#9650;
           </Button>
@@ -275,7 +330,7 @@ class IndividualResource extends Component {
           </Button>
         </Button.Group>
 
-        <h2>"{resource.name}"</h2>
+        <h2>"{resource.name}" </h2>
 
         <RenderCartOptions
           onAddRemoveCart={this.onAddRemoveCart}
@@ -368,6 +423,20 @@ class IndividualResource extends Component {
             comments={this.state.comments}
           />
         )}
+        {this.state.edit ? (
+          <Modal open={this.state.edit} header="Edit">
+            <EditResource
+              editData={this.state.editData}
+              editResource={this.state.edit}
+              updateResource={this.onSubmitUpdate}
+              cancelEdit={(e) =>
+                this.setState({
+                  edit: !this.state.edit,
+                })
+              }
+            />
+          </Modal>
+        ) : null}
       </Container>
     );
   }

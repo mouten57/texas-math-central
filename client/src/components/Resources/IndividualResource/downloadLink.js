@@ -5,10 +5,10 @@ const downloadLink = (state, cb) => {
   switch (state.resource.files?.length) {
     case null:
       return "";
-      break;
+
     case 0:
       return "Download not available.";
-      break;
+
     case 1:
       //if index 0 of files is "TBD", that means we are still waiting for s3 upload to complete
       if (state.resource.files[0] == "TBD") {
@@ -17,7 +17,6 @@ const downloadLink = (state, cb) => {
             Fetching a personal preview
           </Loader>
         );
-        break;
       }
 
     default:

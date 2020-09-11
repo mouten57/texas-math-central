@@ -11,6 +11,7 @@ var convertapi = require("convertapi")(keys.convertapi_KEY);
 const path = require("path");
 const { settings } = require("cluster");
 const filetype_settings = require("../helpers/filetype_settings");
+const { update } = require("lodash");
 
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
@@ -157,6 +158,29 @@ module.exports = {
         );
       }
     });
+  },
+  async edit(req, res, next) {
+    resourceQueries.getResource(req.params.resourceId, (err, resource) => {
+      try {
+        res.send(resource);
+      } catch (err) {
+        res.send(err);
+      }
+    });
+  },
+  async update(req, res, next) {
+    console.log(req.body);
+    resourceQueries.updateResource(
+      req.params.resourceId,
+      req.body,
+      (err, resource) => {
+        try {
+          res.send(resource);
+        } catch (err) {
+          res.send(err);
+        }
+      }
+    );
   },
   destroy(req, res, next) {
     resourceQueries.destroyResource(req, (err, result) => {

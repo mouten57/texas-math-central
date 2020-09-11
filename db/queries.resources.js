@@ -53,6 +53,31 @@ module.exports = {
       callback(err);
     }
   },
+  async getResource(_id, callback) {
+    const resource = await Resource.findOne({ _id })
+      .populate("_user")
+      .populate("favorites")
+      .populate("votes")
+      .populate({ path: "comments", populate: { path: "_user" } });
+    try {
+      callback(null, resource);
+      // }
+    } catch (err) {
+      callback(err);
+    }
+  },
+  async updateResource(_id, updatedResource, callback) {
+    //console.log(updatedResource);
+    const resource = await Resource.findOneAndUpdate({ _id }, updatedResource, {
+      new: true,
+    });
+    // console.log(resource);
+    try {
+      callback(null, resource);
+    } catch (err) {
+      callback(err);
+    }
+  },
   async updateResourceWithFiles(_id, files, callback) {
     let resource = await Resource.findOneAndUpdate(
       { _id },
@@ -70,42 +95,7 @@ module.exports = {
       callback(err);
     }
   },
-  async getResource(_id, callback) {
-    //if files exist, loop through files to see if previewLink on each is populated
-    // if not, i need to check the FilePreview, using the resource.files[index].previewID
-    //can use this:
-    // previews.retrieve(resource.files[0].previewID, function (err, result) {
-    //  console.log(result);
-    // });
-    //I need to download the file locally, upload it to aws, and then set a new field called 'previewLink' for each file
-    //if file.mimetype is not image, we need to fetch the data, if it is image, we can just set the previewLink to "Not needed for image"
 
-    //probably should do all of this in the queries file so I can save changes
-    //probably should move aws stuff from controller in here too
-
-    const resource = await Resource.findOne({ _id }, "-files.file_data")
-      .populate("_user")
-      .populate("favorites")
-      .populate("votes")
-      .populate({ path: "comments", populate: { path: "_user" } });
-    try {
-      // if (resource.files.length > 0) {
-      //   // let files = resource.files;
-      //   // for (let i in files) {
-      //   //   // previews.retrieve(resource.files[0].previewID, function (err, result) {
-      //   //   //  console.log(result);
-      //   //   // });
-      //   //   let previewLink = files[i].previewLink;
-      //   //   console.log(files[i]);
-      //   //}
-      //   callback(null, resource);
-      // } else {
-      callback(null, resource);
-      // }
-    } catch (err) {
-      callback(err);
-    }
-  },
   async downloadResource(_id, callback) {
     const resource = await Resource.findOne({ _id });
     try {
