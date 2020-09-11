@@ -6,7 +6,9 @@ const RenderCartOptions = (props) => {
   if (resource && auth && resource._user) {
     if (resource._user?._id == auth?._id) {
       return <p>My resource</p>;
-    } else if (auth.role == "admin" || auth.role == "all_access") {
+    } else if (auth.role == "admin") {
+      return <p>Admin Access!</p>;
+    } else if (auth.role == "all_access") {
       return <p>Premium User Access!</p>;
     } else if (auth?.purchasedResources.includes(resource._id)) {
       return <p>Purchased Item</p>;

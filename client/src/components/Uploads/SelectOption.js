@@ -7,8 +7,8 @@ const SelectOption = (props) => {
     <div style={{ paddingTop: "10px" }}>
       <Label>{label}</Label>
       <Form.Select
-        value="K"
-        placeholder={value}
+        value={value}
+        placeholder={placeholder}
         fluid
         name={name}
         search

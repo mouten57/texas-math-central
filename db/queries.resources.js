@@ -70,7 +70,11 @@ module.exports = {
     //console.log(updatedResource);
     const resource = await Resource.findOneAndUpdate({ _id }, updatedResource, {
       new: true,
-    });
+    })
+      .populate("_user")
+      .populate("favorites")
+      .populate("votes")
+      .populate({ path: "comments", populate: { path: "_user" } });
     // console.log(resource);
     try {
       callback(null, resource);

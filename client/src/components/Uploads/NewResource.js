@@ -85,6 +85,17 @@ class UploadForm extends Component {
     console.log(`the user selected ${googleId}`);
     window.temp_props = undefined;
   };
+  transform = (unit) => {
+    if (unit) {
+      let idx = unitFields
+        .map(function (e) {
+          return e.param;
+        })
+        .indexOf(unit);
+
+      return unitFields[idx].key;
+    }
+  };
   renderForm() {
     switch (this.props.auth) {
       case null:
@@ -115,6 +126,7 @@ class UploadForm extends Component {
                   label="Grade Level"
                   placeholder="Select Grade Level"
                   name="grade"
+                  value={this.state.grade}
                   options={gradeLevels}
                   onSelect={this.onSelect}
                 />
@@ -123,6 +135,7 @@ class UploadForm extends Component {
                   label="Subject"
                   placeholder="Select Subject"
                   name="subject"
+                  value={this.state.subject}
                   options={subjects}
                   onSelect={this.onSelect}
                 />
@@ -130,6 +143,7 @@ class UploadForm extends Component {
                   label="Unit"
                   placeholder="Select Unit"
                   name="unit"
+                  value={this.transform(this.state.unit)}
                   options={unitFields}
                   onSelect={(e, data) => this.onSelect(e, data, "UNIT")}
                 />
@@ -137,6 +151,7 @@ class UploadForm extends Component {
                   label="Type"
                   placeholder="Select Type"
                   name="type"
+                  value={this.state.type}
                   options={resourceTypes}
                   onSelect={this.onSelect}
                 />

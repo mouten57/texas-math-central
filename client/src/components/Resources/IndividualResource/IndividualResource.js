@@ -7,7 +7,7 @@ import {
   Button,
   Icon,
   Image,
-  Popup,
+  Confirm,
 } from "semantic-ui-react";
 import downloadLink from "./downloadLink";
 import RenderCartOptions from "./RenderCartOptions";
@@ -27,6 +27,7 @@ class IndividualResource extends Component {
     super(props);
     this.state = {
       resource: {},
+      confirmOpen: false,
       edit: false,
       s3Link: null,
       resource_name: null,
@@ -125,6 +126,9 @@ class IndividualResource extends Component {
   };
 
   finishUpSetup = (resource) => {
+    if (resource == "") {
+      return this.props.history.push(`/units`);
+    }
     var currentUsersFavoriteId = resource.favorites.find((favorite) => {
       return favorite._user == this.props.auth?._id;
     })?._id;
@@ -252,12 +256,15 @@ class IndividualResource extends Component {
       });
   };
 
-  onDelete = () => {
+  show = (resource) => this.setState({ confirmOpen: true });
+
+  handleConfirmDelete = () => {
     const { unit, _id } = this.state.resource;
     axios
       .post(`/api/units/${unit}/${_id}/delete`)
       .then((res) => {
-        console.log(res.data);
+        this.setState({ confirmOpen: false });
+        this.props.fetchCart();
         this.props.history.push({
           pathname: `/units/${unit}`,
         });
@@ -266,54 +273,65 @@ class IndividualResource extends Component {
         console.log(err);
       });
   };
+  handleCancelDelete = () => this.setState({ confirmOpen: false });
 
   render() {
-    console.log("state is", this.state, "props are", this.props);
-    const { resource } = this.state;
-    if (
-      resource._user?._id == this.props.auth?._id ||
-      this.props.auth?.purchasedResources.includes(resource._id) ||
-      this.props.auth?.role == "admin" ||
-      this.props.auth?.role == "all_access"
-    ) {
-      var authorized = true;
+    //console.log("state is", this.state, "props are", this.props);
+    const { resource, confirmOpen } = this.state;
+    if (this.props.auth) {
+      if (
+        this.props.auth?.role == "all_access" ||
+        this.props.auth?.purchasedResources.includes(resource._id) ||
+        resource._user?._id == this.props.auth?._id ||
+        this.props.auth?.role == "admin"
+      ) {
+        var authorized_to_view = true;
+      }
+      if (
+        resource._user?._id == this.props.auth?._id ||
+        this.props.auth?.role == "admin"
+      ) {
+        var authorized_to_delete = true;
+      }
     }
 
     return (
       <Container>
-        <Button.Group vertical icon size="small" floated="right">
-          <Button
-            style={{ marginBottom: "10px" }}
-            icon
-            compact
-            basic
-            onClick={() =>
-              this.state.currentUsersFavoriteId
-                ? this.onAddRemoveFavorite("remove")
-                : this.onAddRemoveFavorite("add")
-            }
-          >
-            <Icon
-              size="large"
-              name={
-                this.getFavoriteFor(this.props?.auth?._id)
-                  ? "star"
-                  : "star outline"
+        {authorized_to_delete ? (
+          <Button.Group vertical icon size="small" floated="right">
+            <Button
+              style={{ marginBottom: "10px" }}
+              icon
+              compact
+              basic
+              onClick={() =>
+                this.state.currentUsersFavoriteId
+                  ? this.onAddRemoveFavorite("remove")
+                  : this.onAddRemoveFavorite("add")
               }
-            />
-          </Button>
-          <Button
-            basic
-            icon
-            style={{ marginBottom: "10px" }}
-            onClick={() => this.editItemHandler(this.state.resource._id)}
-          >
-            <Icon size="large" name="edit" />
-          </Button>
-          <Button basic icon onClick={this.onDelete}>
-            <Icon size="large" name="trash alternate outline" />
-          </Button>
-        </Button.Group>
+            >
+              <Icon
+                size="large"
+                name={
+                  this.getFavoriteFor(this.props?.auth?._id)
+                    ? "star"
+                    : "star outline"
+                }
+              />
+            </Button>
+            <Button
+              basic
+              icon
+              style={{ marginBottom: "10px" }}
+              onClick={() => this.editItemHandler(this.state.resource._id)}
+            >
+              <Icon size="large" name="edit" />
+            </Button>
+            <Button basic icon onClick={this.show}>
+              <Icon size="large" name="trash alternate outline" />
+            </Button>
+          </Button.Group>
+        ) : null}
         <Button.Group
           vertical
           icon
@@ -321,6 +339,29 @@ class IndividualResource extends Component {
           floated="right"
           style={{ marginTop: "15px" }}
         >
+          {this.props.auth && !authorized_to_delete ? (
+            <Button
+              style={{ marginBottom: "10px" }}
+              icon
+              compact
+              basic
+              onClick={() =>
+                this.state.currentUsersFavoriteId
+                  ? this.onAddRemoveFavorite("remove")
+                  : this.onAddRemoveFavorite("add")
+              }
+            >
+              {" "}
+              <Icon
+                size="large"
+                name={
+                  this.getFavoriteFor(this.props?.auth?._id)
+                    ? "star"
+                    : "star outline"
+                }
+              />
+            </Button>
+          ) : null}
           <Button onClick={(e) => this.onUpvoteDownvote("upvote")}>
             &#9650;
           </Button>
@@ -393,7 +434,11 @@ class IndividualResource extends Component {
                   {` (${this.state.selectedFile.originalname})`}
                 </b>
 
-                <a href={authorized ? this.state.selectedFile.s3Link : null}>
+                <a
+                  href={
+                    authorized_to_view ? this.state.selectedFile.s3Link : null
+                  }
+                >
                   <Image
                     src={
                       //use s3 direct link as src if file type is image
@@ -437,6 +482,14 @@ class IndividualResource extends Component {
             />
           </Modal>
         ) : null}
+        <Confirm
+          open={confirmOpen}
+          size="tiny"
+          cancelButton="Cancel"
+          confirmButton="Delete Resource"
+          onCancel={this.handleCancelDelete}
+          onConfirm={this.handleConfirmDelete}
+        />
       </Container>
     );
   }

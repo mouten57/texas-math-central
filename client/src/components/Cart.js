@@ -49,6 +49,7 @@ const Cart = (props) => {
     }
   };
   const renderForm = () => {
+    console.log(props.cart);
     switch (props.auth) {
       case null:
         return null;

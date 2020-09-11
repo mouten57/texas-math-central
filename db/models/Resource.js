@@ -26,13 +26,13 @@ const resourceSchema = new Schema({
 // });
 
 resourceSchema.pre("deleteOne", { document: true }, async function (next) {
-  this.model("User").updateOne(
+  this.model("User").updateMany(
     {},
     { $pull: { resources: this._id } },
     { multi: true },
     next
   );
-  this.model("Cart").updateOne(
+  this.model("Cart").updateMany(
     {},
     { $pull: { products: { resource_id: this._id } } },
     { multi: true },
