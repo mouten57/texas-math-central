@@ -9,10 +9,10 @@ var { s3 } = awsConfig;
 var convertapi = require("convertapi")(keys.convertapi_KEY);
 // var im = require("imagemagick");
 const path = require("path");
-const { settings } = require("cluster");
+const watermark = require("jimp-watermark");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
-
+const create_image_watermark = require("../middlewares/create_image_watermark");
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
     if (unitFields[i].param == unit) {
@@ -86,53 +86,58 @@ module.exports = {
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
-          let file_ext = path.extname(files[i].filename).substring(1);
+          let file_ext = path.extname(files[i].filename);
           let file_path = `./uploads/${files[i].filename}`;
+          var watermark_filepath = files[i].path.replace(
+            file_ext,
+            `_watermark${file_ext}`
+          );
 
-          async function convert_to_pdf_and_watermark() {
-            try {
-              var file_to_pdf = file_path;
+          let image_types = ".jpg,.jpeg,.png,.bmp,.gif";
 
-              //if file is NOT PDF, convert it to PDF
-              if (file_ext != "pdf") {
-                let result = await convertapi.convert(
-                  "pdf",
-                  filetype_settings(file_path, file_ext),
-                  file_ext
+          if (!image_types.includes(file_ext)) {
+            async function convert_to_pdf_and_watermark() {
+              try {
+                var file_to_pdf = file_path;
+
+                //if file is NOT PDF, convert it to PDF
+                if (file_ext != ".pdf") {
+                  let result = await convertapi.convert(
+                    "pdf",
+                    filetype_settings(file_path, file_ext),
+                    file_ext.substring(1)
+                  );
+                  //over-write original file declaration
+                  var file_to_pdf = await result.file.save(
+                    `./uploads/${files[i].filename}.pdf`
+                  );
+                }
+                file_to_pdf = fs.readFileSync(file_to_pdf);
+
+                var watermarked_pdf = await create_watermark(
+                  file_to_pdf,
+                  files[i]
                 );
-                //over-write original file declaration
-                var file_to_pdf = await result.file.save(
-                  `./uploads/${files[i].filename}.pdf`
-                );
+
+                fs.writeFileSync(watermark_filepath, watermarked_pdf);
+              } catch (err) {
+                throw err;
               }
-
-              var watermarked_pdf = await create_watermark(
-                fs.readFileSync(file_to_pdf)
-              );
-              fs.writeFileSync(
-                `./uploads/${files[i].filename}_watermark.pdf`,
-                watermarked_pdf
-              );
-            } catch (err) {
-              throw err;
             }
+
+            // await result of async operation
+            await convert_to_pdf_and_watermark();
+
+            //save watermarked PDF/IMG to s3, other pdf is discarded
+            var s3PDFData = await s3
+              .upload({
+                Bucket: "texas-math-central",
+                Key: watermark_filepath,
+                Body: fs.readFileSync(watermark_filepath),
+              })
+              .promise();
+            files[i].previewLink = s3PDFData.Location;
           }
-
-          // await result of async operation
-          await convert_to_pdf_and_watermark();
-
-          //save watermarked PDF to s3, other pdf is discarded
-          let s3PDFData = await s3
-            .upload({
-              Bucket: "texas-math-central",
-              Key: `${files[i].filename}.jpg`,
-              Body: fs.readFileSync(
-                `./uploads/${files[i].filename}_watermark.pdf`
-              ),
-            })
-            .promise();
-          files[i].previewLink = s3PDFData.Location;
-          // }
 
           //save original file to s3
           let s3Data = await s3.upload(params).promise();

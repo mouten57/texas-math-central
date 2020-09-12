@@ -48,6 +48,8 @@
     "fs": "0.0.1-security",
     "googleapis": "^59.0.0",
     "imagemagick": "^0.1.3",
+    "jimp": "^0.16.1",
+    "jimp-watermark": "^1.1.0",
     "lodash": "^4.17.20",
     "minipass": "2.7.0",
     "mongoose": "^5.10.1",

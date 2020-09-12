@@ -1,15 +1,20 @@
 module.exports = function (path, type) {
   switch (type) {
-    case "jpg":
-    case "jpeg":
-    case "png":
-    case "gif":
+    case ".jpg":
+    case ".jpeg":
+    case ".png":
+    case ".gif":
       return {
         File: path,
+        EnableOcr: "true",
+        AutoRotate: "true",
+        AutoStraighten: "true",
+        PdfVersion: "1.2",
+        PdfTitle: "PdfFromImage",
       };
       break;
-    case "doc":
-    case "docx":
+    case ".doc":
+    case ".docx":
       return {
         File: path,
         PageRange: "1",
@@ -19,24 +24,24 @@ module.exports = function (path, type) {
         PdfResolution: "10",
       };
       break;
-    case "xls":
-    case "xlsx":
+    case ".xls":
+    case ".xlsx":
       return {
         File: path,
         WorksheetIndex: "1",
         AutoFit: "true",
         ClearPrintArea: "true",
-        Scale: "10",
-        ConvertMetadata: "false",
-        ConvertTags: "false",
-        EmbedFonts: "false",
-        SubsetFonts: "false",
+        Scale: "50",
+        ConvertMetadata: "true",
+        ConvertTags: "true",
+        EmbedFonts: "true",
+        SubsetFonts: "true",
         SubsetFontsThreshold: "50",
-        PdfResolution: "10",
+        PdfResolution: "100",
       };
       break;
-    case "ppt":
-    case "pptx":
+    case ".ppt":
+    case ".pptx":
       return {
         File: path,
         ConvertMetadata: "false",

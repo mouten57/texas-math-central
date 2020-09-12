@@ -8,7 +8,9 @@ module.exports = function () {
     console.log("deleting files", files);
 
     for (const file of files) {
-      if (!file.includes("Connect")) {
+      if (
+        !(file.includes("Connect") || file.includes("original_watermark.png"))
+      ) {
         fs.unlink(path.join(directory, file), (err) => {
           if (err) throw err;
         });

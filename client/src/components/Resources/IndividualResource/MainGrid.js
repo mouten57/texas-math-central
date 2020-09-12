@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, Image } from "semantic-ui-react";
 import RenderCartOptions from "./RenderCartOptions";
 import downloadLink from "./downloadLink";
+
 import img from "../../../images/sample_doc.png";
 
 const MainGrid = (props) => {
@@ -16,7 +17,8 @@ const MainGrid = (props) => {
     iframeheight,
     iframewidth,
   } = props;
-
+  const selectedFile = state?.selectedFile;
+  const mimetype = selectedFile?.mimetype;
   return (
     <Grid compact>
       <Grid.Column width={leftColWidth}>
@@ -84,15 +86,23 @@ const MainGrid = (props) => {
                   {` (${state.selectedFile.originalname})`}
                 </a>
               </b>
-              <iframe
-                src={`https://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
-                style={{
-                  marginTop: "10px",
-                  height: iframeheight,
-                  width: iframewidth,
-                }}
-                frameborder="0"
-              />
+              {mimetype.includes("image") ? (
+                <Image
+                  src={selectedFile.s3Link}
+                  size="large"
+                  style={{ margin: "0 auto" }}
+                />
+              ) : (
+                <iframe
+                  src={`https://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
+                  style={{
+                    marginTop: "10px",
+                    height: iframeheight,
+                    width: iframewidth,
+                  }}
+                  frameborder="0"
+                />
+              )}
             </p>
           )
         ) : null}

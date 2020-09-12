@@ -31,14 +31,14 @@ module.exports = {
         color: rgb(0.95, 0.1, 0.1),
         rotate: degrees(-35),
       });
-      pages[i].drawText("This is just a preview!", {
-        x: 45,
-        y: height / 2 + 150,
-        size: 60,
-        font: helveticaFont,
-        color: rgb(0.95, 0.1, 0.1),
-        rotate: degrees(-35),
-      });
+      // pages[i].drawText("This is just a preview!", {
+      //   x: 45,
+      //   y: height / 2 + 150,
+      //   size: 60,
+      //   font: helveticaFont,
+      //   color: rgb(0.95, 0.1, 0.1),
+      //   rotate: degrees(-35),
+      // });
       pages[i].drawText("This is just a preview!", {
         x: 15,
         y: height / 2,
