@@ -13,13 +13,6 @@ const watermark = require("jimp-watermark");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
 const create_image_watermark = require("../middlewares/create_image_watermark");
-const fullUnit = (unit) => {
-  for (let i = 0; i < unitFields.length; i++) {
-    if (unitFields[i].param == unit) {
-      return unitFields[i].name;
-    }
-  }
-};
 
 module.exports = {
   index(req, res, next) {
@@ -56,13 +49,22 @@ module.exports = {
       newResource;
 
     // var files_plus_data = [...files];
-    const { name, grade, subject, unit, type, link, description } = req.body;
+    const {
+      name,
+      grade,
+      subject,
+      unit,
+      type,
+      link,
+      description,
+      fullUnit,
+    } = req.body;
     var newResource = {
       name,
       grade,
       subject,
       unit,
-      fullUnit: fullUnit(unit),
+      fullUnit,
       type,
       link,
       description,

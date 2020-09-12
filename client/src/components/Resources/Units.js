@@ -12,11 +12,33 @@ import Search from "../Search/Search";
 class Units extends Component {
   state = {
     column: null,
-    data: unitFields,
+    data: [],
     direction: null,
     units: [],
+    subject: "math",
   };
 
+  componentDidMount() {
+    const subject =
+      new URLSearchParams(this.props.location.search).get("subject") ||
+      this.state.subject;
+
+    this.setState({
+      subject,
+      data: unitFields[subject],
+    });
+  }
+  componentDidUpdate(prevProps, prevState) {
+    const subject =
+      new URLSearchParams(this.props.location.search).get("subject") ||
+      this.state.subject;
+    if (prevState.subject != subject) {
+      this.setState({
+        subject,
+        data: unitFields[subject],
+      });
+    }
+  }
   handleSort = (clickedColumn) => () => {
     const { column, data, direction } = this.state;
 
@@ -36,7 +58,8 @@ class Units extends Component {
   };
 
   render() {
-    const { column, data, direction } = this.state;
+    console.log(this.state);
+    const { column, data, direction, subject } = this.state;
     const { auth } = this.props;
     return (
       <Container>
@@ -45,7 +68,9 @@ class Units extends Component {
             <Link to="/">Home</Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
-          <Breadcrumb.Section active>Resources</Breadcrumb.Section>
+          <Breadcrumb.Section active>
+            Resources ({subject.charAt(0).toUpperCase() + subject.slice(1)})
+          </Breadcrumb.Section>
         </Breadcrumb>
         <div
           style={{
@@ -86,7 +111,15 @@ class Units extends Component {
                 <Table.Cell width={5}>{key}</Table.Cell>
                 <Table.Cell width={11}>
                   {" "}
-                  <Link to={`/units/${param}`}> {description} </Link>
+                  <Link
+                    to={{
+                      pathname: `/units/${param}`,
+                      state: { subject },
+                    }}
+                  >
+                    {" "}
+                    {description}{" "}
+                  </Link>
                 </Table.Cell>
               </Table.Row>
             ))}

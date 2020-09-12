@@ -37,6 +37,7 @@ class UploadForm extends Component {
       link: "https://www.",
       type: "",
       unit: "",
+      fullUnit: "",
       name: "",
       subject: "",
       grade: "",
@@ -55,8 +56,9 @@ class UploadForm extends Component {
   };
 
   onSelect = (e, data, unit) => {
+    const subject = this.state.subject.toLowerCase();
     if (unit) {
-      var idx = unitFields
+      var idx = unitFields[subject]
         .map(function (e) {
           return e.key;
         })
@@ -64,9 +66,10 @@ class UploadForm extends Component {
 
       if (idx > -1) {
         this.setState({
-          unit: unitFields[idx].param,
+          unit: unitFields[subject][idx].param,
         });
       }
+      this.setState({ fullUnit: data.value });
     } else {
       this.setState({
         [data.name]: data.value,
@@ -86,17 +89,20 @@ class UploadForm extends Component {
     window.temp_props = undefined;
   };
   transform = (unit) => {
+    const subj = this.state.subject.toLowerCase();
     if (unit) {
-      let idx = unitFields
+      let idx = unitFields[subj]
         .map(function (e) {
           return e.param;
         })
         .indexOf(unit);
-
-      return unitFields[idx].key;
+      if (idx > -1) {
+        return unitFields[subj][idx].key;
+      }
     }
   };
   renderForm() {
+    const { subject } = this.state;
     switch (this.props.auth) {
       case null:
         return;
@@ -144,7 +150,7 @@ class UploadForm extends Component {
                   placeholder="Select Unit"
                   name="unit"
                   value={this.transform(this.state.unit)}
-                  options={unitFields}
+                  options={unitFields[subject.toLowerCase()]}
                   onSelect={(e, data) => this.onSelect(e, data, "UNIT")}
                 />
                 <SelectOption

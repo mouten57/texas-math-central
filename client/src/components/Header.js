@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Menu, Icon } from "semantic-ui-react";
+import { Menu, Icon, Dropdown } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 class Nav extends Component {
@@ -42,13 +42,26 @@ class Nav extends Component {
           active={activeItem === "about"}
           onClick={this.handleItemClick}
         />
-        <Menu.Item
+        <Dropdown item icon="folder open">
+          <Dropdown.Menu>
+            <Dropdown.Item as={Link} to="/units?subject=math">
+              Math
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/units?subject=science">
+              Science
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/units?subject=other">
+              Other
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        {/* <Menu.Item
           as={Link}
           to="/units"
-          icon="folder open"
+          
           active={activeItem === "resources"}
           onClick={this.handleItemClick}
-        />
+        /> */}
         {this.props.auth ? (
           <Menu.Item
             as={Link}

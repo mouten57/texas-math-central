@@ -1,7 +1,17 @@
 const onSubmit = (e, state, callback) => {
   e.preventDefault();
 
-  const { description, name, grade, subject, files, unit, type, link } = state;
+  const {
+    description,
+    name,
+    grade,
+    subject,
+    files,
+    unit,
+    fullUnit,
+    type,
+    link,
+  } = state;
 
   let formData = new FormData();
 
@@ -14,6 +24,7 @@ const onSubmit = (e, state, callback) => {
   formData.append("grade", grade);
   formData.append("subject", subject);
   formData.append("unit", unit);
+  formData.append("fullUnit", fullUnit);
   formData.append("type", type);
   formData.append("link", link);
   let values = [];

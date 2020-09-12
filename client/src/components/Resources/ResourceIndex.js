@@ -4,15 +4,7 @@
 
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import {
-  Header,
-  Breadcrumb,
-  Container,
-  Loader,
-  Segment,
-  Dimmer,
-  Image,
-} from "semantic-ui-react";
+import { Header, Breadcrumb, Loader, Dimmer } from "semantic-ui-react";
 import ResourceList from "./ResourceList";
 import unitFields from "./data/unitFields.js";
 import axios from "axios";
@@ -54,10 +46,12 @@ class ResourceIndex extends Component {
   }
 
   getUnitName() {
+    const route_state = this.props?.location?.state;
+    let { subject } = route_state;
     const paramName = this.props.match.params.unit;
-    for (let i = 0; i < unitFields.length; i++) {
-      if (unitFields[i].param === paramName) {
-        return unitFields[i].key;
+    for (let i = 0; i < unitFields[subject].length; i++) {
+      if (unitFields[subject][i].param === paramName) {
+        return unitFields[subject][i].key;
       }
     }
   }
