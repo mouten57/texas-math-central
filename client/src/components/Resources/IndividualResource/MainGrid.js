@@ -85,7 +85,7 @@ const MainGrid = (props) => {
                 </a>
               </b>
               <iframe
-                src={`http://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
+                src={`https://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
                 style={{
                   marginTop: "10px",
                   height: iframeheight,
