@@ -313,54 +313,9 @@ class IndividualResource extends Component {
       <>
         <style>{mediaStyles}</style>
         <MediaContextProvider>
-          <Container>
-            {authorized_to_delete ? (
-              <Button.Group vertical icon size="small" floated="right">
-                <Button
-                  style={{ marginBottom: "10px" }}
-                  icon
-                  compact
-                  basic
-                  onClick={() =>
-                    this.state.currentUsersFavoriteId
-                      ? this.onAddRemoveFavorite("remove")
-                      : this.onAddRemoveFavorite("add")
-                  }
-                >
-                  <Icon
-                    size="large"
-                    name={
-                      this.getFavoriteFor(this.props?.auth?._id)
-                        ? "star"
-                        : "star outline"
-                    }
-                  />
-                </Button>
-                <Button
-                  basic
-                  icon
-                  style={{ marginBottom: "10px" }}
-                  onClick={() => this.editItemHandler(this.state.resource._id)}
-                >
-                  <Icon size="large" name="edit" />
-                </Button>
-                <Button basic icon onClick={this.show}>
-                  <Icon size="large" name="trash alternate outline" />
-                </Button>
-              </Button.Group>
-            ) : null}
-
-            <RightButtons
-              auth={this.props.auth}
-              onAddRemoveFavorite={this.onAddRemoveFavorite}
-              authorized_to_delete={authorized_to_delete}
-              currentUsersFavoriteId={this.state.currentUsersFavoriteId}
-              getFavoriteFor={this.getFavoriteFor}
-              voteTotal={this.state.voteTotal}
-              onUpvoteDownvote={this.onUpvoteDownvote}
-            />
+          <Grid>
             {/* Grid on phone */}
-            <Grid.Column as={Media} at="mobile">
+            <Grid.Column as={Media} at="mobile" width={10}>
               <MainGrid
                 leftColWidth={16}
                 rightColWidth={16}
@@ -376,8 +331,9 @@ class IndividualResource extends Component {
                 state={this.state}
               />
             </Grid.Column>
+
             {/* Grid on tablet and up */}
-            <Grid.Column as={Media} greaterThanOrEqual="tablet">
+            <Grid.Column as={Media} greaterThanOrEqual="tablet" width={14}>
               <MainGrid
                 leftColWidth={5}
                 rightColWidth={11}
@@ -391,6 +347,105 @@ class IndividualResource extends Component {
                 onAddRemoveCart={this.onAddRemoveCart}
                 auth={this.props.auth}
                 state={this.state}
+              />
+            </Grid.Column>
+
+            {/* Buttons on phone */}
+            <Grid.Column width={6} as={Media} at="mobile">
+              {authorized_to_delete ? (
+                <Button.Group vertical icon size="small" floated="right">
+                  <Button
+                    style={{ marginBottom: "10px" }}
+                    icon
+                    compact
+                    basic
+                    onClick={() =>
+                      this.state.currentUsersFavoriteId
+                        ? this.onAddRemoveFavorite("remove")
+                        : this.onAddRemoveFavorite("add")
+                    }
+                  >
+                    <Icon
+                      size="large"
+                      name={
+                        this.getFavoriteFor(this.props?.auth?._id)
+                          ? "star"
+                          : "star outline"
+                      }
+                    />
+                  </Button>
+                  <Button
+                    basic
+                    icon
+                    style={{ marginBottom: "10px" }}
+                    onClick={() =>
+                      this.editItemHandler(this.state.resource._id)
+                    }
+                  >
+                    <Icon size="large" name="edit" />
+                  </Button>
+                  <Button basic icon onClick={this.show}>
+                    <Icon size="large" name="trash alternate outline" />
+                  </Button>
+                </Button.Group>
+              ) : null}
+              <RightButtons
+                auth={this.props.auth}
+                onAddRemoveFavorite={this.onAddRemoveFavorite}
+                authorized_to_delete={authorized_to_delete}
+                currentUsersFavoriteId={this.state.currentUsersFavoriteId}
+                getFavoriteFor={this.getFavoriteFor}
+                voteTotal={this.state.voteTotal}
+                onUpvoteDownvote={this.onUpvoteDownvote}
+              />
+            </Grid.Column>
+            {/* Buttons on tablet and up */}
+            <Grid.Column width={2} as={Media} greaterThanOrEqual="tablet">
+              {authorized_to_delete ? (
+                <Button.Group vertical icon size="small" floated="right">
+                  <Button
+                    style={{ marginBottom: "10px" }}
+                    icon
+                    compact
+                    basic
+                    onClick={() =>
+                      this.state.currentUsersFavoriteId
+                        ? this.onAddRemoveFavorite("remove")
+                        : this.onAddRemoveFavorite("add")
+                    }
+                  >
+                    <Icon
+                      size="large"
+                      name={
+                        this.getFavoriteFor(this.props?.auth?._id)
+                          ? "star"
+                          : "star outline"
+                      }
+                    />
+                  </Button>
+                  <Button
+                    basic
+                    icon
+                    style={{ marginBottom: "10px" }}
+                    onClick={() =>
+                      this.editItemHandler(this.state.resource._id)
+                    }
+                  >
+                    <Icon size="large" name="edit" />
+                  </Button>
+                  <Button basic icon onClick={this.show}>
+                    <Icon size="large" name="trash alternate outline" />
+                  </Button>
+                </Button.Group>
+              ) : null}
+              <RightButtons
+                auth={this.props.auth}
+                onAddRemoveFavorite={this.onAddRemoveFavorite}
+                authorized_to_delete={authorized_to_delete}
+                currentUsersFavoriteId={this.state.currentUsersFavoriteId}
+                getFavoriteFor={this.getFavoriteFor}
+                voteTotal={this.state.voteTotal}
+                onUpvoteDownvote={this.onUpvoteDownvote}
               />
             </Grid.Column>
 
@@ -424,7 +479,7 @@ class IndividualResource extends Component {
               onCancel={this.handleCancelDelete}
               onConfirm={this.handleConfirmDelete}
             />
-          </Container>
+          </Grid>
         </MediaContextProvider>
       </>
     );
