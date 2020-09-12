@@ -11,7 +11,7 @@ var convertapi = require("convertapi")(keys.convertapi_KEY);
 const path = require("path");
 const { settings } = require("cluster");
 const filetype_settings = require("../helpers/filetype_settings");
-const { update } = require("lodash");
+const { create_watermark } = require("../middlewares/create_watermark");
 
 const fullUnit = (unit) => {
   for (let i = 0; i < unitFields.length; i++) {
@@ -85,56 +85,54 @@ module.exports = {
           };
 
           //only kick off conversion process if NOT an image
-          if (!files[i].mimetype.includes("image")) {
-            let file_ext = path.extname(files[i].filename).substring(1);
-            let file_path = `./uploads/${files[i].filename}`;
+          // if (!files[i].mimetype.includes("image")) {
+          let file_ext = path.extname(files[i].filename).substring(1);
+          let file_path = `./uploads/${files[i].filename}`;
 
-            async function convertImage() {
-              try {
-                var file_to_thumbnail = file_path;
+          async function convert_to_pdf_and_watermark() {
+            try {
+              var file_to_pdf = file_path;
 
-                if (file_ext != "pdf") {
-                  let result = await convertapi.convert(
-                    "pdf",
-                    filetype_settings(file_path, file_ext),
-                    file_ext
-                  );
-                  //over-write original file declaration
-                  var file_to_thumbnail = await result.file.save(
-                    `./uploads/${files[i].filename}.pdf`
-                  );
-                }
-
+              //if file is NOT PDF, convert it to PDF
+              if (file_ext != "pdf") {
                 let result = await convertapi.convert(
-                  "thumbnail",
-                  {
-                    File: file_to_thumbnail,
-                    PageRange: "1",
-                    ImageResolution: "72",
-                  },
-                  "pdf"
+                  "pdf",
+                  filetype_settings(file_path, file_ext),
+                  file_ext
                 );
-                let image_file = await result.file.save(
-                  `./uploads/${files[i].filename}.jpg`
+                //over-write original file declaration
+                var file_to_pdf = await result.file.save(
+                  `./uploads/${files[i].filename}.pdf`
                 );
-              } catch (err) {
-                throw err;
               }
+
+              var watermarked_pdf = await create_watermark(
+                fs.readFileSync(file_to_pdf)
+              );
+              fs.writeFileSync(
+                `./uploads/${files[i].filename}_watermark.pdf`,
+                watermarked_pdf
+              );
+            } catch (err) {
+              throw err;
             }
-
-            // await result of async operation
-            await convertImage();
-
-            //save to s3
-            let s3Data = await s3
-              .upload({
-                Bucket: "texas-math-central",
-                Key: `${files[i].filename}.jpg`,
-                Body: fs.readFileSync(`./uploads/${files[i].filename}.jpg`),
-              })
-              .promise();
-            files[i].previewLink = s3Data.Location;
           }
+
+          // await result of async operation
+          await convert_to_pdf_and_watermark();
+
+          //save watermarked PDF to s3, other pdf is discarded
+          let s3PDFData = await s3
+            .upload({
+              Bucket: "texas-math-central",
+              Key: `${files[i].filename}.jpg`,
+              Body: fs.readFileSync(
+                `./uploads/${files[i].filename}_watermark.pdf`
+              ),
+            })
+            .promise();
+          files[i].previewLink = s3PDFData.Location;
+          // }
 
           //save original file to s3
           let s3Data = await s3.upload(params).promise();
@@ -200,7 +198,7 @@ module.exports = {
         const found = resource.files.find(
           (obj) => obj.filename == req.params.filename
         );
-
+        console.log(found);
         fs.writeFileSync(
           `./uploads/${found.originalname}`,
           found.file_data.buffer

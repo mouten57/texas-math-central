@@ -1,26 +1,40 @@
 import React, { Component } from "react";
-import { NotificationManager } from "react-notifications";
+import { createMedia } from "@artsy/fresnel";
 import createNotification from "../Notification";
 import {
   Container,
   Loader,
   Button,
   Icon,
+  Grid,
   Image,
   Confirm,
 } from "semantic-ui-react";
-import downloadLink from "./downloadLink";
-import RenderCartOptions from "./RenderCartOptions";
 
+import MainGrid from "./MainGrid";
+import RightButtons from "./RightButtons";
 import axios from "axios";
 //import Voting from '../Voting';
 import { connect } from "react-redux";
 import CommentsSection from "../../Comments/CommentsSection";
 import "react-notifications/lib/notifications.css";
 import "./IndividualResource.css";
-import img from "../../../images/sample_doc.png";
+
 import EditResource from "../EditResource/EditResource";
 import Modal from "../../Modal";
+
+const AppMedia = createMedia({
+  breakpoints: {
+    mobile: 320,
+    tablet: 768,
+    computer: 992,
+    largeScreen: 1200,
+    widescreen: 1920,
+  },
+});
+
+const mediaStyles = AppMedia.createMediaStyle();
+const { Media, MediaContextProvider } = AppMedia;
 
 class IndividualResource extends Component {
   constructor(props) {
@@ -296,201 +310,123 @@ class IndividualResource extends Component {
     }
 
     return (
-      <Container>
-        {authorized_to_delete ? (
-          <Button.Group vertical icon size="small" floated="right">
-            <Button
-              style={{ marginBottom: "10px" }}
-              icon
-              compact
-              basic
-              onClick={() =>
-                this.state.currentUsersFavoriteId
-                  ? this.onAddRemoveFavorite("remove")
-                  : this.onAddRemoveFavorite("add")
-              }
-            >
-              <Icon
-                size="large"
-                name={
-                  this.getFavoriteFor(this.props?.auth?._id)
-                    ? "star"
-                    : "star outline"
-                }
-              />
-            </Button>
-            <Button
-              basic
-              icon
-              style={{ marginBottom: "10px" }}
-              onClick={() => this.editItemHandler(this.state.resource._id)}
-            >
-              <Icon size="large" name="edit" />
-            </Button>
-            <Button basic icon onClick={this.show}>
-              <Icon size="large" name="trash alternate outline" />
-            </Button>
-          </Button.Group>
-        ) : null}
-        <Button.Group
-          vertical
-          icon
-          size="small"
-          floated="right"
-          style={{ marginTop: "15px" }}
-        >
-          {this.props.auth && !authorized_to_delete ? (
-            <Button
-              style={{ marginBottom: "10px" }}
-              icon
-              compact
-              basic
-              onClick={() =>
-                this.state.currentUsersFavoriteId
-                  ? this.onAddRemoveFavorite("remove")
-                  : this.onAddRemoveFavorite("add")
-              }
-            >
-              {" "}
-              <Icon
-                size="large"
-                name={
-                  this.getFavoriteFor(this.props?.auth?._id)
-                    ? "star"
-                    : "star outline"
-                }
-              />
-            </Button>
-          ) : null}
-          <Button onClick={(e) => this.onUpvoteDownvote("upvote")}>
-            &#9650;
-          </Button>
-          <Button basic>{this.state.voteTotal}</Button>
-          <Button onClick={(e) => this.onUpvoteDownvote("downvote")}>
-            &#9660;
-          </Button>
-        </Button.Group>
-
-        <h2>"{resource.name}" </h2>
-
-        <RenderCartOptions
-          onAddRemoveCart={this.onAddRemoveCart}
-          resource={resource}
-          auth={this.props.auth}
-          state={this.state}
-        />
-
-        <div>
-          <p>
-            <b>Name: </b>
-            {resource.name}
-          </p>
-
-          <p>
-            <b>Grade Level: </b>
-            {resource.grade}
-          </p>
-
-          <p>
-            <b>Subject: </b>
-            {resource.subject}
-          </p>
-          <p>
-            <b>Unit:</b> {resource.fullUnit}
-          </p>
-          <p>
-            <b>Type:</b> {resource.type}
-          </p>
-          <p>
-            <b>Link: </b>{" "}
-            <a href={resource.link} target="_blank" rel="noopener noreferrer">
-              {resource.link}
-            </a>
-          </p>
-          <p>
-            {" "}
-            <b>Uploader:</b> {resource._user ? resource._user.name : null}{" "}
-          </p>
-          <div>
-            <b>
-              Files{" "}
-              {this.state.resource.files?.length > 0
-                ? this.state.resource.files[0] == "TBD"
-                  ? null
-                  : " (click to preview)"
-                : null}
-              :{" "}
-            </b>{" "}
-            {downloadLink(this.state, (err, selectedFile) => {
-              this.setState({ selectedFile });
-            })}
-          </div>
-
-          {this.state.selectedFile ? (
-            this.state.selectedFile == "TBD" ? null : (
-              <p>
-                <b>
-                  Preview
-                  {` (${this.state.selectedFile.originalname})`}
-                </b>
-
-                <a
-                  href={
-                    authorized_to_view ? this.state.selectedFile.s3Link : null
+      <>
+        <style>{mediaStyles}</style>
+        <MediaContextProvider>
+          <Container>
+            {authorized_to_delete ? (
+              <Button.Group vertical icon size="small" floated="right">
+                <Button
+                  style={{ marginBottom: "10px" }}
+                  icon
+                  compact
+                  basic
+                  onClick={() =>
+                    this.state.currentUsersFavoriteId
+                      ? this.onAddRemoveFavorite("remove")
+                      : this.onAddRemoveFavorite("add")
                   }
                 >
-                  <Image
-                    src={
-                      //use s3 direct link as src if file type is image
-                      this.state.selectedFile?.mimetype?.includes("image")
-                        ? this.state.selectedFile.s3Link
-                        : //else use the previewLink of the file
-                        this.state.selectedFile.previewLink
-                        ? this.state.selectedFile.previewLink
-                        : //else use placeholder image
-                          img
+                  <Icon
+                    size="large"
+                    name={
+                      this.getFavoriteFor(this.props?.auth?._id)
+                        ? "star"
+                        : "star outline"
                     }
-                    bordered
-                    size="huge"
-                    centered
                   />
-                </a>
-              </p>
-            )
-          ) : null}
-        </div>
+                </Button>
+                <Button
+                  basic
+                  icon
+                  style={{ marginBottom: "10px" }}
+                  onClick={() => this.editItemHandler(this.state.resource._id)}
+                >
+                  <Icon size="large" name="edit" />
+                </Button>
+                <Button basic icon onClick={this.show}>
+                  <Icon size="large" name="trash alternate outline" />
+                </Button>
+              </Button.Group>
+            ) : null}
 
-        {!this.state.resource ? (
-          <Loader active inline="centered" />
-        ) : (
-          <CommentsSection
-            resourceId={this.props.match.params.id}
-            comments={this.state.comments}
-          />
-        )}
-        {this.state.edit ? (
-          <Modal open={this.state.edit} header="Edit">
-            <EditResource
-              editData={this.state.editData}
-              editResource={this.state.edit}
-              updateResource={this.onSubmitUpdate}
-              cancelEdit={(e) =>
-                this.setState({
-                  edit: !this.state.edit,
-                })
-              }
+            <RightButtons
+              auth={this.props.auth}
+              onAddRemoveFavorite={this.onAddRemoveFavorite}
+              authorized_to_delete={authorized_to_delete}
+              currentUsersFavoriteId={this.state.currentUsersFavoriteId}
+              getFavoriteFor={this.getFavoriteFor}
+              voteTotal={this.state.voteTotal}
+              onUpvoteDownvote={this.onUpvoteDownvote}
             />
-          </Modal>
-        ) : null}
-        <Confirm
-          open={confirmOpen}
-          size="tiny"
-          cancelButton="Cancel"
-          confirmButton="Delete Resource"
-          onCancel={this.handleCancelDelete}
-          onConfirm={this.handleConfirmDelete}
-        />
-      </Container>
+            {/* Grid on phone */}
+            <Grid.Column as={Media} at="mobile">
+              <MainGrid
+                leftColWidth={16}
+                rightColWidth={16}
+                iframeheight="300px"
+                iframewidth="100%"
+                resource={resource}
+                setSelectedFile={(selectedFile) =>
+                  this.setState({ selectedFile })
+                }
+                authorized_to_view={authorized_to_view}
+                onAddRemoveCart={this.onAddRemoveCart}
+                auth={this.props.auth}
+                state={this.state}
+              />
+            </Grid.Column>
+            {/* Grid on tablet and up */}
+            <Grid.Column as={Media} greaterThanOrEqual="tablet">
+              <MainGrid
+                leftColWidth={5}
+                rightColWidth={11}
+                iframeheight="400px"
+                iframewidth="100%"
+                resource={resource}
+                setSelectedFile={(selectedFile) =>
+                  this.setState({ selectedFile })
+                }
+                authorized_to_view={authorized_to_view}
+                onAddRemoveCart={this.onAddRemoveCart}
+                auth={this.props.auth}
+                state={this.state}
+              />
+            </Grid.Column>
+
+            {!this.state.resource ? (
+              <Loader active inline="centered" />
+            ) : (
+              <CommentsSection
+                resourceId={this.props.match.params.id}
+                comments={this.state.comments}
+              />
+            )}
+            {this.state.edit ? (
+              <Modal open={this.state.edit} header="Edit">
+                <EditResource
+                  editData={this.state.editData}
+                  editResource={this.state.edit}
+                  updateResource={this.onSubmitUpdate}
+                  cancelEdit={(e) =>
+                    this.setState({
+                      edit: !this.state.edit,
+                    })
+                  }
+                />
+              </Modal>
+            ) : null}
+            <Confirm
+              open={confirmOpen}
+              size="tiny"
+              cancelButton="Cancel"
+              confirmButton="Delete Resource"
+              onCancel={this.handleCancelDelete}
+              onConfirm={this.handleConfirmDelete}
+            />
+          </Container>
+        </MediaContextProvider>
+      </>
     );
   }
 }

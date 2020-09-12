@@ -1,5 +1,13 @@
 module.exports = function (path, type) {
   switch (type) {
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "gif":
+      return {
+        File: path,
+      };
+      break;
     case "doc":
     case "docx":
       return {

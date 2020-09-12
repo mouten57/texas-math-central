@@ -21,7 +21,7 @@ const downloadLink = (state, cb) => {
 
     default:
       return (
-        <ul style={{ listStyle: "none", marginTop: "5px" }}>
+        <ul style={{ listStyle: "none", marginTop: "5px", paddingLeft: 0 }}>
           {state.resource.files?.map((file, i) => {
             //use this if storing/downloading files directly from mongo db
             //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
