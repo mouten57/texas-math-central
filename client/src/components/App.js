@@ -24,6 +24,8 @@ import Upgrade from "./UpgradeAllAccess";
 import CheckoutForm from "./Checkout/CheckoutForm";
 import AdminPage from "./Admin/Admin";
 import NotAuthorized from "./NotAuthorized";
+import LoginPage from "./Login/Login";
+import SignUpPage from "./SignUp/SignUp";
 
 const keys = require("../components/SocketIO/SocketIO");
 const socket = openSocket(keys.socketPath);
@@ -141,6 +143,34 @@ class App extends Component {
                     {...props}
                   />
                 </Elements>
+              )}
+            />
+            <Route
+              exact
+              path="/login"
+              render={(props) => (
+                <LoginPage
+                  auth={this.props.auth}
+                  cart={this.props.cart}
+                  resources={this.props.resources}
+                  fetchUser={this.props.fetchUser}
+                  fetchCart={this.props.fetchCart}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={(props) => (
+                <SignUpPage
+                  auth={this.props.auth}
+                  cart={this.props.cart}
+                  resources={this.props.resources}
+                  fetchUser={this.props.fetchUser}
+                  fetchCart={this.props.fetchCart}
+                  {...props}
+                />
               )}
             />
             <Route

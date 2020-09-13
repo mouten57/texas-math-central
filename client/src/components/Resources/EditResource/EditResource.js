@@ -20,12 +20,6 @@ class EditItemForm extends Component {
     super(props);
     this.state = props.editData;
   }
-  //   componentDidMount() {
-  //     let resource = this.props.editData;
-  //     this.setState({
-  //       resource,
-  //     });
-  //   }
 
   onChange = (e) => {
     switch (e.target.name) {

@@ -15,7 +15,7 @@ class Nav extends Component {
         return;
       case false:
         return (
-          <Menu.Item as="a" icon="google" href="/auth/google">
+          <Menu.Item as={Link} icon="google" to="/login">
             Login
           </Menu.Item>
         );
