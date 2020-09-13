@@ -38,8 +38,9 @@ class EditItemForm extends Component {
   };
 
   onSelect = (e, data, unit) => {
+    const subject = this.state.subject.toLowerCase();
     if (unit) {
-      var idx = unitFields
+      var idx = unitFields[subject]
         .map(function (e) {
           return e.key;
         })
@@ -47,9 +48,10 @@ class EditItemForm extends Component {
 
       if (idx > -1) {
         this.setState({
-          unit: unitFields[idx].param,
+          unit: unitFields[subject][idx].param,
         });
       }
+      this.setState({ fullUnit: data.value });
     } else {
       this.setState({
         [data.name]: data.value,
@@ -58,13 +60,17 @@ class EditItemForm extends Component {
   };
 
   transform = (unit) => {
-    let idx = unitFields
-      .map(function (e) {
-        return e.param;
-      })
-      .indexOf(unit);
-
-    return unitFields[idx].key;
+    const subj = this.state.subject.toLowerCase();
+    if (unit) {
+      let idx = unitFields[subj]
+        .map(function (e) {
+          return e.param;
+        })
+        .indexOf(unit);
+      if (idx > -1) {
+        return unitFields[subj][idx].key;
+      }
+    }
   };
 
   render() {
@@ -110,7 +116,7 @@ class EditItemForm extends Component {
             placeholder="Select Unit"
             name="unit"
             value={this.transform(unit)}
-            options={unitFields}
+            options={unitFields[subject.toLowerCase()]}
             onSelect={(e, data) => this.onSelect(e, data, "UNIT")}
           />
           <SelectOption
