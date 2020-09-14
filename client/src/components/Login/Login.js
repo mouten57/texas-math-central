@@ -68,7 +68,7 @@ const Login = (props) => {
               onChange={handleInputChange}
             ></Form.Input>
 
-            <Button.Group fluid>
+            <Button.Group fluid widths={4}>
               <Button color="instagram" type="submit">
                 Sign In
               </Button>
