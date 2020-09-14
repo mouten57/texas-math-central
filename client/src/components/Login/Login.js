@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Grid,
@@ -10,26 +10,34 @@ import {
   Button,
   Icon,
 } from "semantic-ui-react";
+import axios from "axios";
+import createNotification from "../Resources/Notification";
 
-const renderContent = () => {
-  switch (this.props.auth) {
-    case null:
-      return;
-    case false:
-      return (
-        <Menu.Item as="a" icon="google" href="/auth/google">
-          Login
-        </Menu.Item>
-      );
-    default:
-      return <Menu.Item as="a" icon="sign-out" href="/api/logout" />;
-  }
-};
-const onSubmit = () => {
-  console.log("test");
+const initialState = {
+  email: "",
+  password: "",
 };
 
 const Login = (props) => {
+  const [user, updateUser] = useState(initialState);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    updateUser({ ...user, [name]: value });
+  };
+  const onSubmit = () => {
+    axios
+      .post("/api/sign_in", user)
+      .then((res) => {
+        props.fetchUser();
+        props.history.push({ pathname: "/" });
+      })
+      .catch((err) => {
+        createNotification("login_error");
+        setTimeout(() => updateUser({ password: "" }), 1500);
+        console.log(err);
+      });
+  };
+  const { email, password } = user;
   return (
     <Grid>
       <Grid.Column>
@@ -40,9 +48,25 @@ const Login = (props) => {
         >
           <Header>Login</Header>
           <Form onSubmit={onSubmit}>
-            <Form.Input placeholder="Email address" fluid required></Form.Input>
+            <Form.Input
+              placeholder="Email address"
+              name="email"
+              value={email}
+              type="email"
+              fluid
+              required
+              onChange={handleInputChange}
+            ></Form.Input>
 
-            <Form.Input placeholder="Password" fluid required></Form.Input>
+            <Form.Input
+              placeholder="Password"
+              name="password"
+              value={password}
+              type="password"
+              fluid
+              required
+              onChange={handleInputChange}
+            ></Form.Input>
 
             <Button.Group fluid>
               <Button color="instagram" type="submit">

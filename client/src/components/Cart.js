@@ -49,7 +49,9 @@ const Cart = (props) => {
     }
   };
   const renderForm = () => {
-    console.log(props.cart);
+    const prods = props.cart?.products;
+    const number_of_goods = prods ? prods.length : 0;
+
     switch (props.auth) {
       case null:
         return null;
@@ -67,8 +69,7 @@ const Cart = (props) => {
                     Shopping Cart
                   </Header>
                   <Header as="h4" textAlign="center" style={{ marginTop: "0" }}>
-                    {props.cart?.products?.length} Items - $
-                    {props.cart?.products?.length}
+                    {number_of_goods} Items - ${number_of_goods}
                   </Header>
                 </Grid.Column>
                 <Grid.Column width={5}>
@@ -96,8 +97,7 @@ const Cart = (props) => {
                 >
                   <Header>Shopping Cart</Header>
                   <Header as="h4" style={{ marginTop: "0" }}>
-                    {props.cart?.products?.length} Items - $
-                    {props.cart?.products?.length}
+                    {number_of_goods} Items - ${number_of_goods}
                   </Header>
                 </Grid.Column>
                 <Grid.Column width={4}>
@@ -105,7 +105,7 @@ const Cart = (props) => {
                     labelPosition="arrow circle right"
                     as={Link}
                     to="/checkout"
-                    disabled={!props.cart?.products?.length > 0}
+                    disabled={!number_of_goods > 0}
                   >
                     Checkout
                     <Icon

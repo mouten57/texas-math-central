@@ -7,10 +7,10 @@ module.exports = (app) => {
     [
       body("firstname")
         .isLength({ min: 2 })
-        .withMessage("must be at least 2 chars long"),
+        .withMessage("must be at least 2 characters long"),
       body("lastname")
         .isLength({ min: 2 })
-        .withMessage("must be at least 2 chars long"),
+        .withMessage("must be at least 2 characters long"),
       body("email").isEmail().withMessage("must be an email"),
       body("password")
         .isLength({ min: 5 })
@@ -23,6 +23,22 @@ module.exports = (app) => {
       }),
     ],
     userController.create
+  );
+  app.post(
+    "/api/sign_in",
+    [
+      body("email").isEmail().withMessage("must be an email"),
+      body("password")
+        .isLength({ min: 5 })
+        .withMessage("must be at least 5 chars long"),
+      body("password_confirm").custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("does not match password");
+        }
+        return true;
+      }),
+    ],
+    userController.signIn
   );
   app.get("/api/profile", userController.show);
 };

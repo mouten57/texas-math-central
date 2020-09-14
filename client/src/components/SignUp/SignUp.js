@@ -27,7 +27,7 @@ const SignUpForm = (props) => {
         setTimeout(() => {
           props.fetchUser();
           props.history.push({
-            pathname: `/profile`,
+            pathname: `/`,
           });
         }, 1000);
       })

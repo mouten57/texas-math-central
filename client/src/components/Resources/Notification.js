@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
-export default function createNotification(type, error) {
+export default function createNotification(type, error, custom_message) {
   switch (type) {
     case "add_fav":
       NotificationManager.success("", "Added to favorites!", 1500);
@@ -36,6 +36,10 @@ export default function createNotification(type, error) {
         "Close after 3000ms",
         3000
       );
+      break;
+
+    case "login_error":
+      NotificationManager.error("Invalid email or password", "", 1500);
       break;
     case "error":
       NotificationManager.error("Error message", "Click me!", 5000, () => {

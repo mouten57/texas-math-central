@@ -27,6 +27,15 @@ module.exports = {
       }
     });
   },
+  signIn(req, res, next) {
+    passport.authenticate("local")(req, res, function () {
+      if (!req.user) {
+        res.status(400).send({ msg: err });
+      } else {
+        res.send(req.user);
+      }
+    });
+  },
   show(req, res, next) {
     userQueries.getUser(req.user, (err, user) => {
       if (err) {

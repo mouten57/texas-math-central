@@ -11,7 +11,10 @@ class WelcomeMessage extends Component {
   }
   handleDismiss = () => {
     this.setState({ visible: false });
-    sessionStorage.setItem("userLogin", Date.now());
+    sessionStorage.setItem(
+      "userLogin",
+      `${this.state.user.email}-${Date.now()}`
+    );
   };
   componentWillReceiveProps(nextProps) {
     this.setState({ user: nextProps.user });
@@ -19,11 +22,14 @@ class WelcomeMessage extends Component {
 
   renderMessage() {
     let already_seen = sessionStorage.getItem("userLogin");
+    console.log(already_seen);
 
-    if (!this.props.user || already_seen) {
+    if (!this.props.user || already_seen.includes(this.props.user?.email)) {
       return null;
     } else {
-      let content = `Welcome back, ${this.state.user.nickname}.`;
+      let content = `Welcome back, ${
+        this.state.user.nickname || this.state.user.firstname
+      }.`;
 
       return (
         <Message
