@@ -71,6 +71,7 @@ class ResourceIndex extends Component {
   };
 
   render() {
+    console.log(this.state, this.props);
     const UnitName = this.getUnitName();
     return (
       <div>
@@ -80,7 +81,13 @@ class ResourceIndex extends Component {
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
           <Breadcrumb.Section>
-            <Link to="/units">Resources</Link>
+            <Link
+              to={`/units?subject=${
+                this.props?.location?.state.subject || "math"
+              }`}
+            >
+              Resources
+            </Link>
           </Breadcrumb.Section>
           <Breadcrumb.Divider />
           <Breadcrumb.Section active>{UnitName}</Breadcrumb.Section>
