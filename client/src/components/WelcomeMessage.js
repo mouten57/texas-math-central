@@ -24,7 +24,7 @@ class WelcomeMessage extends Component {
     let already_seen = sessionStorage.getItem("userLogin");
     console.log(already_seen);
 
-    if (!this.props.user || already_seen.includes(this.props.user?.email)) {
+    if (!this.props.user || already_seen?.includes(this.props.user?.email)) {
       return null;
     } else {
       let content = `Welcome back, ${
