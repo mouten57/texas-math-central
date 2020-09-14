@@ -1,7 +1,9 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const keys = require("./keys/keys");
+const authHelper = require("../auth/helpers");
 
 //one arguments means we are fetching something from mongoose
 const User = mongoose.model("User");
@@ -33,6 +35,7 @@ passport.use(
     //here is our chance to get user info and create new user in our database
     async (accessToken, refreshToken, profile, done) => {
       //query returns a promise!
+
       const existingUser = await User.findOne({ googleId: profile.id });
 
       if (existingUser) {
@@ -49,10 +52,25 @@ passport.use(
         googleId: profile.id,
         name: profile.displayName,
         nickname: profile.name.givenName,
+        email: profile.emails[0].value,
+        locale: profile._json.locale,
         image: profile.photos[0].value,
         token: accessToken,
       }).save();
       done(null, user);
     }
   )
+);
+
+passport.use(
+  new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
+    User.findOne({ email }).then((user) => {
+      if (!user || !authHelper.comparePass(password, user.password)) {
+        return done(null, false, {
+          message: "Invalid email or password",
+        });
+      }
+      return done(null, user);
+    });
+  })
 );

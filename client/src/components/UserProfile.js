@@ -44,25 +44,25 @@ class UserProfile extends Component {
       case false:
         return <NotLoggedIn />;
       default:
+        const { nickname, firstname, role, image } = this.props.auth;
         return (
           <Segment color="blue">
             <Header as="h1" textAlign="center">
-              <Image size="massive" circular src={this.props.auth.image} />
+              <Image size="massive" circular src={image} />
               <p>
-                {this.props.auth.nickname}'s Profile{" "}
-                {this.props.auth.role == "admin"
+                {nickname || firstname}'s Profile{" "}
+                {role == "admin"
                   ? "(admin)"
-                  : this.props.auth.role == "all_access"
+                  : role == "all_access"
                   ? "(ALL ACCESS!)"
                   : null}
               </p>
             </Header>
-            {this.props.auth.role != "admin" &&
-            this.props.auth.role != "all_access" ? (
+            {role != "admin" && role != "all_access" ? (
               <p>
                 Feel like getting <Link to="/upgrade">all access</Link>?
               </p>
-            ) : this.props.auth.role == "all_access" ? (
+            ) : role == "all_access" ? (
               <p style={{ textAlign: "center" }}>
                 Congrats! You can now download any resource by viewing them
                 through the <Link to="/units">Units</Link> page.

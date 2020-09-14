@@ -4,8 +4,13 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
   googleId: String,
   role: { type: String, default: "standard" },
+  firstname: String,
+  lastname: String,
+  password: String,
   name: String,
   nickname: String,
+  email: { type: String, unique: true, required: true, dropDups: true },
+  locale: String,
   image: String,
   token: String,
   resources: [{ type: Schema.Types.ObjectId, ref: "Resource" }],

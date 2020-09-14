@@ -1,5 +1,4 @@
 const bodyParser = require("body-parser");
-const flash = require("express-flash");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const path = require("path");
@@ -30,7 +29,6 @@ module.exports = {
         keys: [keys.cookieKey],
       })
     );
-    app.use(flash());
     app.use(passport.initialize());
     app.use(passport.session());
     app.use((req, res, next) => {
