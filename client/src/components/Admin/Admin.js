@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Modal, Image, Header, Button } from "semantic-ui-react";
 import axios from "axios";
+import AdminModal from "./Modal";
 
 class AdminPage extends Component {
   constructor(props) {
@@ -8,11 +9,11 @@ class AdminPage extends Component {
     this.state = {
       resources: this.props.resources || [],
       users: [],
-      userModalOpen: false,
+      modalOpen: false,
     };
   }
   setOpen = (bool) => {
-    this.setState({ userModalOpen: bool });
+    this.setState({ modalOpen: bool });
   };
   componentDidMount() {
     axios
@@ -37,127 +38,60 @@ class AdminPage extends Component {
     return comparison;
   }
 
-  renderModal = (user) => {
+  renderModal = (data, user_or_resource) => {
     this.setState({
-      userModalOpen: true,
-      modal: user,
+      modalOpen: true,
+      user_or_resource,
+      data,
     });
   };
   render() {
-    const { users, modal } = this.state;
+    console.log(this.state);
+    const { users, data, user_or_resource } = this.state;
     const { resources } = this.props;
-
-    console.log(users, resources);
 
     return (
       <div>
         <h1>Welcome to the admin page.</h1>
         <Grid>
-          <Grid.Column width={4}>
+          <Grid.Column width={8}>
             <h3>Resources</h3>
             <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
               {resources?.sort(this.compare).map((resource) => {
                 return (
-                  <li key={resource._id}>
-                    <a href={`/units/${resource.unit}/${resource._id}`}>
+                  <a key={resource._id}>
+                    {" "}
+                    <li onClick={() => this.renderModal(resource, "resource")}>
                       {resource.name}
-                    </a>
-                  </li>
+                    </li>
+                  </a>
                 );
               })}
             </ul>
           </Grid.Column>
-          <Grid.Column width={4}>
+          <Grid.Column width={8}>
             <h3>Users</h3>
 
             <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
               {users?.sort(this.compare).map((user) => {
-                console.log(user);
                 return (
                   <>
-                    <li onClick={() => this.renderModal(user)}>{user.name}</li>
+                    <a>
+                      {" "}
+                      <li onClick={() => this.renderModal(user, "user")}>
+                        {user.name}
+                      </li>
+                    </a>
                   </>
                 );
               })}
             </ul>
-            <Modal
-              onClose={() => this.setOpen(false)}
-              onOpen={() => this.setOpen(true)}
-              open={this.state.userModalOpen}
-            >
-              <Modal.Header>{modal?.name}</Modal.Header>
-              <Modal.Content image>
-                <Image size="medium" src={modal?.image} wrapped />
-                <Modal.Description>
-                  <Header>Role: {modal?.role}</Header>
-                  <p>User Token: {modal?.token}</p>
-                  <div>
-                    <h5>Resources:</h5>
-                    <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-                      {modal?.resources.length > 0
-                        ? modal.resources.map((resource) => {
-                            return (
-                              <li key={resource._id}>
-                                <a
-                                  href={`/units/${resource.unit}/${resource._id}`}
-                                >
-                                  {resource.name}
-                                </a>
-                              </li>
-                            );
-                          })
-                        : "None"}
-                    </ul>
-
-                    <h5>Comments:</h5>
-                    <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-                      {modal?.comments.length > 0
-                        ? modal.comments.map((comment) => {
-                            return (
-                              <li key={comment._id}>
-                                "{comment.body}" on{" "}
-                                <a
-                                  href={`/units/${comment.resource_id.unit}/${comment.resource_id._id}`}
-                                >
-                                  {comment.resource_id.name}
-                                </a>
-                              </li>
-                            );
-                          })
-                        : "None"}
-                    </ul>
-                    <h5>Purchased Resources:</h5>
-                    <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-                      {modal?.purchasedResources.length > 0
-                        ? modal.purchasedResources.map((resource) => {
-                            return (
-                              <li key={resource._id}>
-                                <a
-                                  href={`/units/${resource.unit}/${resource._id}`}
-                                >
-                                  {resource.name}
-                                </a>
-                              </li>
-                            );
-                          })
-                        : "None"}
-                    </ul>
-                  </div>
-                </Modal.Description>
-              </Modal.Content>
-              <Modal.Actions>
-                <Button color="black" onClick={() => this.setOpen(false)}>
-                  Nope
-                </Button>
-                <Button
-                  content="Yep, that's me"
-                  labelPosition="right"
-                  icon="checkmark"
-                  onClick={() => this.setOpen(false)}
-                  positive
-                />
-              </Modal.Actions>
-            </Modal>
+            <AdminModal
+              setOpen={this.setOpen}
+              user_or_resource={user_or_resource}
+              open={this.state.modalOpen}
+              data={data}
+            />
           </Grid.Column>
         </Grid>
       </div>
