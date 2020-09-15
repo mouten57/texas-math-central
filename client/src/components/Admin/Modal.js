@@ -11,8 +11,13 @@ const AdminModal = (props) => {
           <Image size="medium" src={data?.image} wrapped />
           <Modal.Description>
             <Header>Role: {data?.role}</Header>
-            <p style={{ maxWidth: "500px", overflow: "hidden" }}>
-              User Token: {data?.token}
+            {data?.token ? (
+              <p style={{ maxWidth: "500px", overflow: "hidden" }}>
+                <b>User Token</b>: {data?.token}
+              </p>
+            ) : null}
+            <p>
+              <b>Email</b>: {data?.email}
             </p>
             <div>
               <h5>Resources:</h5>
