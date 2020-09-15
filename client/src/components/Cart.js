@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+
 import { Link } from "react-router-dom";
 import { createMedia } from "@artsy/fresnel";
 import createNotification from "./Resources/Notification";
@@ -7,6 +8,7 @@ import NotLoggedIn from "./NotLoggedIn";
 import {
   Grid,
   Image,
+  Label,
   Container,
   Header,
   Button,
@@ -35,15 +37,18 @@ const Cart = (props) => {
     props.fetchCart();
   };
 
-  const renderImage = (product) => {
+  const renderImage = (first_file) => {
     if (
-      product.resource_id.files[0] &&
-      product.resource_id.files[0].mimetype?.includes("image") &&
-      product.resource_id.files[0].s3Link
+      first_file &&
+      first_file.mimetype?.includes("image") &&
+      first_file.s3Link
     ) {
-      return product.resource_id.files[0].s3Link;
-    } else if (product.resource_id.files[0]?.previewLink) {
-      return product.resource_id.files[0]?.previewLink;
+      return first_file.s3Link;
+    } else if (
+      first_file?.previewLink &&
+      first_file.mimetype?.includes("image")
+    ) {
+      return first_file?.previewLink;
     } else {
       return img;
     }
@@ -119,22 +124,48 @@ const Cart = (props) => {
 
             <Grid columns={2} centered="true">
               {props.cart?.products?.map((product) => {
+                var first_file = product.resource_id.files[0];
                 if (product.resource_id) {
                   return (
                     <Grid.Column key={product._id}>
                       <Popup
                         trigger={
-                          <Image
-                            size="big"
-                            bordered
-                            label={{
-                              color: "black",
-                              content: product.name,
-                              icon: "hotel",
-                              ribbon: true,
-                            }}
-                            src={renderImage(product)}
-                          />
+                          first_file?.mimetype?.includes("image") ? (
+                            <Grid.Column>
+                              <Label ribbon={true}>{product.name}</Label>
+                              <Image
+                                size="big"
+                                bordered
+                                // label={{
+                                //   color: "black",
+                                //   content: product.name,
+                                //   icon: "hotel",
+                                //   ribbon: true,
+                                // }}
+                                src={renderImage(first_file)}
+                              />
+                            </Grid.Column>
+                          ) : first_file?.previewLink ? (
+                            <Grid.Column>
+                              <Label ribbon={true}>{product.name}</Label>
+                              <iframe
+                                style={{ width: "100%", height: "100%" }}
+                                src={`https://docs.google.com/gview?url=${first_file?.previewLink}&embedded=true`}
+                              />
+                            </Grid.Column>
+                          ) : (
+                            <Image
+                              size="big"
+                              bordered
+                              label={{
+                                color: "black",
+                                content: product.name,
+                                icon: "hotel",
+                                ribbon: true,
+                              }}
+                              src={img}
+                            />
+                          )
                         }
                         content={
                           <Button.Group>

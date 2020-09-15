@@ -175,7 +175,7 @@ class IndividualResource extends Component {
     return result ? true : false;
   };
   is_item_in_cart = (resource_id) => {
-    if (this.props.cart) {
+    if (this.props.cart?.products?.length) {
       let result = this.props.cart.products.find((product) => {
         return product.resource_id?._id == resource_id;
       });
@@ -319,8 +319,8 @@ class IndividualResource extends Component {
               <MainGrid
                 leftColWidth={16}
                 rightColWidth={16}
-                iframeheight="300px"
-                iframewidth="100%"
+                iframeheight="400px"
+                iframewidth="85vw"
                 resource={resource}
                 setSelectedFile={(selectedFile) =>
                   this.setState({ selectedFile })

@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "semantic-ui-react";
 
 const RenderCartOptions = (props) => {
   console.log(props);
@@ -15,7 +16,6 @@ const RenderCartOptions = (props) => {
     } else {
       return (
         <p
-          className="add-to-cart"
           onClick={() =>
             props.onAddRemoveCart(
               resource._id,
@@ -23,9 +23,9 @@ const RenderCartOptions = (props) => {
             )
           }
         >
-          <b style={{ backgroundColor: "yellow" }}>
+          <Button color={state.item_in_cart ? "teal" : "blue"} size="tiny">
             {state.item_in_cart ? "Remove from" : "Add to"} Cart
-          </b>
+          </Button>
         </p>
       );
     }
