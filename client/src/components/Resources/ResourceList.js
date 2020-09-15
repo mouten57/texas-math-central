@@ -64,10 +64,13 @@ class ResourceList extends Component {
     });
   };
   handleCancel = () => this.setState({ result: "cancelled", open: false });
+
   match(resource) {
-    for (let i = 0; i < unitFields.length; i++) {
-      if (resource.unit === unitFields[i].param) {
-        return unitFields[i].param;
+    //need to add subject
+    let sub = resource.subject.toLowerCase();
+    for (let i = 0; i < unitFields[sub].length; i++) {
+      if (resource.unit === unitFields[sub][i].param) {
+        return unitFields[sub][i].param;
       }
     }
   }

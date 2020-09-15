@@ -32,6 +32,7 @@ const downloadLink = (state, cb) => {
                 key={i}
                 className="file_selector"
                 onClick={() => cb(null, file)}
+                style={{ paddingTop: "10px" }}
               >
                 {file.originalname}
               </li>

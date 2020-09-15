@@ -45,15 +45,19 @@ export default class SearchExample extends Component {
 
       const re = new RegExp(_.escapeRegExp(this.state.value), "i");
       const isMatch = (result) => re.test(result.name);
-
+      const filtered_resources = this.props.resources.filter(
+        (resource) => resource?.subject?.toLowerCase() == this.props.subject
+      );
+      console.log(filtered_resources);
       this.setState({
         isLoading: false,
-        results: _.filter(this.props.resources, isMatch),
+        results: _.filter(filtered_resources, isMatch),
       });
     }, 300);
   };
 
   render() {
+    console.log(this.props);
     const { isLoading, value, results } = this.state;
 
     return (

@@ -81,7 +81,10 @@ class Units extends Component {
           }}
         >
           <h2 style={{ display: "inline", margin: 0 }}>UNITS</h2>
-          <Search resources={this.props.resources} />
+          <Search
+            resources={this.props.resources}
+            subject={this.state.subject}
+          />
         </div>
         {auth && auth?.role != "admin" && auth?.role != "all_access" ? (
           <p style={{ marginBottom: "25px" }}>

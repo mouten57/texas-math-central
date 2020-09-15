@@ -47,7 +47,11 @@ class ResourceIndex extends Component {
 
   getUnitName() {
     const route_state = this.props?.location?.state;
-    let { subject } = route_state;
+    if (route_state) {
+      var { subject } = route_state;
+    } else {
+      var subject = "math";
+    }
     const paramName = this.props.match.params.unit;
     for (let i = 0; i < unitFields[subject].length; i++) {
       if (unitFields[subject][i].param === paramName) {
@@ -83,7 +87,7 @@ class ResourceIndex extends Component {
           <Breadcrumb.Section>
             <Link
               to={`/units?subject=${
-                this.props?.location?.state.subject || "math"
+                this.props?.location?.state?.subject || "math"
               }`}
             >
               Resources

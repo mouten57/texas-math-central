@@ -65,7 +65,7 @@ const Cart = (props) => {
         break;
       default:
         return (
-          <Container>
+          <Container style={{ marginBottom: "40px" }}>
             <style>{mediaStyles}</style>
             <Grid columns={12} centered as={Media} at="mobile">
               <Grid.Row>
@@ -146,10 +146,10 @@ const Cart = (props) => {
                               />
                             </Grid.Column>
                           ) : first_file?.previewLink ? (
-                            <Grid.Column>
+                            <Grid.Column style={{ height: "100%" }}>
                               <Label ribbon={true}>{product.name}</Label>
                               <iframe
-                                style={{ width: "100%", height: "100%" }}
+                                style={{ width: "100%", height: "95%" }}
                                 src={`https://docs.google.com/gview?url=${first_file?.previewLink}&embedded=true`}
                               />
                             </Grid.Column>
