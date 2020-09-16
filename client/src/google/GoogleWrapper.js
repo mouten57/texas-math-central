@@ -36,21 +36,21 @@ class GoogleWrapper extends Component {
     );
   };
 
-  onPickerApiLoad = (props) => {
+  onPickerApiLoad = () => {
     pickerApiLoaded = true;
-    this.createPicker(props);
+    this.createPicker();
   };
 
   handleAuthResult = (authResult, props) => {
     console.log("authResult:", authResult);
     if (authResult && !authResult.error) {
       oauthToken = authResult.access_token;
-      this.createPicker(props);
+      this.createPicker();
     }
   };
 
   // Create and render a Picker object for searching images.
-  createPicker = (props) => {
+  createPicker = () => {
     if (pickerApiLoaded && oauthToken) {
       var view = new window.google.picker.View(
         window.google.picker.ViewId.DOCS
@@ -74,9 +74,12 @@ class GoogleWrapper extends Component {
   };
   // A simple callback implementation.
   pickerCallback = (data) => {
-    console.log(data);
+    console.log(data.docs);
     if (data.action == window.google.picker.Action.PICKED) {
       var fileId = data.docs[0].id;
+      //here or in googleCallback is where I need to download files
+      //need to be able to show on UI which files were selected
+      //probably need to send IDs to server to interpret and provide names and prep download
       this.props.googleCallback(fileId);
       alert("The user selected: " + fileId);
     }
@@ -88,10 +91,3 @@ class GoogleWrapper extends Component {
   }
 }
 export default GoogleWrapper;
-// const googleWrapper = (props) => {
-//   return (
-//     <Button onClick={() => loadPicker(props)} style={{ marginTop: "15px" }}>
-//       Upload From Google Drive
-//     </Button>
-//   );
-// };

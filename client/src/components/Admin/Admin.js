@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Modal, Image, Header, Button } from "semantic-ui-react";
 import axios from "axios";
 import AdminModal from "./Modal";
+import "./Admin.css";
 
 class AdminPage extends Component {
   constructor(props) {
@@ -59,12 +60,9 @@ class AdminPage extends Component {
             <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
               {resources?.sort(this.compare).map((resource) => {
                 return (
-                  <a key={resource._id}>
-                    {" "}
-                    <li onClick={() => this.renderModal(resource, "resource")}>
-                      {resource.name}
-                    </li>
-                  </a>
+                  <li onClick={() => this.renderModal(resource, "resource")}>
+                    {resource.name}
+                  </li>
                 );
               })}
             </ul>
@@ -75,14 +73,9 @@ class AdminPage extends Component {
             <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
               {users?.sort(this.compare).map((user) => {
                 return (
-                  <>
-                    <a>
-                      {" "}
-                      <li onClick={() => this.renderModal(user, "user")}>
-                        {user.name}
-                      </li>
-                    </a>
-                  </>
+                  <li onClick={() => this.renderModal(user, "user")}>
+                    {user.name}
+                  </li>
                 );
               })}
             </ul>
