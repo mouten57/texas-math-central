@@ -47,7 +47,7 @@ class AdminPage extends Component {
     });
   };
   render() {
-    console.log(this.state);
+    //console.log(this.state);
     const { users, data, user_or_resource } = this.state;
     const { resources } = this.props;
 

@@ -28,7 +28,6 @@ module.exports = {
     );
 
     try {
-      console.log(user);
       callback(null, user);
     } catch (err) {
       callback(err);
@@ -44,7 +43,6 @@ module.exports = {
     );
 
     try {
-      console.log(user);
       callback(null, user);
     } catch (err) {
       callback(err);

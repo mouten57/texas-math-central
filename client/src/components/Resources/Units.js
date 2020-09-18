@@ -58,7 +58,7 @@ class Units extends Component {
   };
 
   render() {
-    console.log(this.state);
+    //console.log(this.state);
     const { column, data, direction, subject } = this.state;
     const { auth } = this.props;
     return (

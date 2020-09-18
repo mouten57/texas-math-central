@@ -87,7 +87,6 @@ class UserProfile extends Component {
   }
 
   render() {
-    console.log();
     return (
       <Container style={{ marginBottom: "40px" }}>
         {this.renderHeading()}

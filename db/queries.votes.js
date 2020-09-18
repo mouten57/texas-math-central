@@ -11,7 +11,6 @@ module.exports = {
     });
 
     if (vote) {
-      console.log(vote);
       //means this is an update
       vote.value = val;
       //I dont think we need to add values to resource and user if votes already exist

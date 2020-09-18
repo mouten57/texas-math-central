@@ -51,7 +51,7 @@ module.exports = {
     }
   },
   finish: function (req, res, next) {
-    console.log("in finish");
+    "in finish");
     let code = req.query.code;
     const { googleClientID, googleClientSecret, drive_redirect_uris } = keys;
     const url = "https://oauth2.googleapis.com/token";
@@ -62,7 +62,6 @@ module.exports = {
       redirect_uri: drive_redirect_uris[0],
       grant_type: "authorization_code",
     };
-    console.log(code);
 
     //with the code I can do this:
     axios({

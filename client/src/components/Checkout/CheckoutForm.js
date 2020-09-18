@@ -73,7 +73,7 @@ const CheckoutForm = (props) => {
       setOpen(false);
       createNotification("purchase_failure", result.error.message);
       // Show error to your customer (e.g., insufficient funds)
-      console.log(result.error.message);
+      // console.log(result.error.message);
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === "succeeded") {

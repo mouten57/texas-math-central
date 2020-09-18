@@ -2,7 +2,6 @@ import React from "react";
 import { Button } from "semantic-ui-react";
 
 const RenderCartOptions = (props) => {
-  console.log(props);
   const { resource, auth, state } = props;
   if (resource && auth && resource._user) {
     if (resource._user?._id == auth?._id) {

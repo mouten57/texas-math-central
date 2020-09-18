@@ -23,11 +23,9 @@ class UploadButton extends React.Component {
       });
 
     this.uppy.on("file-added", (file) => {
-      console.log(file);
       this.props.setFilesFromUppy("add", file);
     });
     this.uppy.on("file-removed", (file, reason) => {
-      console.log("Removed file", file);
       this.props.setFilesFromUppy("remove", file);
     });
 

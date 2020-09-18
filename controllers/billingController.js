@@ -4,7 +4,6 @@ const stripe = require("stripe")(keys.stripeSecretKey);
 
 module.exports = {
   async charge(req, res) {
-    console.log(typeof req.body.amount);
     const { amount } = req.body;
     const intent = await stripe.paymentIntents.create({
       //amount is in pennies

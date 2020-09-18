@@ -13,7 +13,7 @@ class WelcomeMessage extends Component {
     this.setState({ visible: false });
     sessionStorage.setItem(
       "userLogin",
-      `${this.state.user.email}-${Date.now()}`
+      `${this.props?.user?.email}-${Date.now()}`
     );
   };
   componentWillReceiveProps(nextProps) {
@@ -42,6 +42,7 @@ class WelcomeMessage extends Component {
   }
 
   render() {
+    //console.log(this.state);
     return <div>{this.state.visible ? this.renderMessage() : <p />}</div>;
   }
 }

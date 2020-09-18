@@ -5,9 +5,9 @@ module.exports = {
     if (req.user) {
       voteQueries.createVote(req, 1, (err, vote) => {
         if (err) {
-          console.log(err);
+          res.send(err);
         }
-        console.log(vote);
+
         res.send(vote);
       });
     } else {
@@ -18,7 +18,7 @@ module.exports = {
     if (req.user) {
       voteQueries.createVote(req, -1, (err, vote) => {
         if (err) {
-          console.log(err);
+          res.send(err);
         }
         res.send(vote);
       });

@@ -124,7 +124,7 @@ module.exports = {
               function (error) {
                 if (error) reject(error);
                 let convertOtherArgs = [tempPDF + "[0]", output];
-                console.log(convertOtherArgs);
+
                 if (options.width > 0 && options.height > 0) {
                   if (options.keepAspect) {
                     convertOtherArgs.splice(
@@ -163,7 +163,7 @@ module.exports = {
                   );
                   convertOtherArgs.splice(0, 0, "-flatten");
                 }
-                console.log(convertOtherArgs);
+
                 //   "-flatten",
                 //     "-background",
                 //     "#fff",

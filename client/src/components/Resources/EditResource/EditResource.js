@@ -68,7 +68,7 @@ class EditItemForm extends Component {
   };
 
   render() {
-    console.log(this.state);
+    //console.log(this.state);
     const { name, grade, subject, unit, type, link, description } =
       this.state || false;
     return (

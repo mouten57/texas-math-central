@@ -80,7 +80,6 @@ class IndividualResource extends Component {
     );
     //coming after a create?
     if (link_props?.new_create_data && !this.state.post_create_complete) {
-      console.log("POST CREATE");
       //then launch 'success'
       createNotification("success");
       //clear out state so notification doesn't keep going on componentDidMount
@@ -90,7 +89,6 @@ class IndividualResource extends Component {
       history.replace();
       //coming from unit resources
     } else if (link_props?.unitResources) {
-      console.log("COMING FROM UNIT RESOURCES");
       const this_resource = link_props.unitResources.find(
         (el) => el._id == this.props.match.params.id
       );
@@ -105,7 +103,6 @@ class IndividualResource extends Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log("update");
     // console.log(
     //   prevState.resource,
     //   "prevState",
@@ -209,10 +206,8 @@ class IndividualResource extends Component {
         );
 
         if (objIndex > -1) {
-          console.log("-1");
           votes[objIndex].value = action == "upvote" ? 1 : -1;
         } else {
-          console.log(objIndex);
           votes.push(data);
         }
         this.getVoteTotal(votes);

@@ -85,7 +85,7 @@ const AdminModal = (props) => {
     );
   };
   const renderResourceModal = (data) => {
-    console.log(data);
+    //console.log(data);
     if (data) {
       var {
         files,
@@ -106,7 +106,7 @@ const AdminModal = (props) => {
     const myFunc = (acc, curr) => {
       return Number(acc.value) + Number(curr.value);
     };
-    console.log(votes?.reduce(myFunc));
+    //console.log(votes?.reduce(myFunc));
     return (
       <>
         <Modal.Content image style={{ marginRight: "15px" }}>

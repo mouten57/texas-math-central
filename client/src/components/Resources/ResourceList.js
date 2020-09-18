@@ -35,7 +35,7 @@ class ResourceList extends Component {
   }
 
   componentDidMount() {
-    console.log("resource list mount");
+    //console.log("resource list mount");
     this.setState({
       data: this.props.resources,
       column: "voteTotal",
@@ -45,7 +45,7 @@ class ResourceList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.resources);
+    //console.log(nextProps.resources);
     this.setState({
       data: nextProps.resources,
       column: "voteTotal",

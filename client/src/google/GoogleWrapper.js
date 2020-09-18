@@ -42,7 +42,6 @@ class GoogleWrapper extends Component {
   };
 
   handleAuthResult = (authResult, props) => {
-    console.log("authResult:", authResult);
     if (authResult && !authResult.error) {
       oauthToken = authResult.access_token;
       this.createPicker();
@@ -74,7 +73,6 @@ class GoogleWrapper extends Component {
   };
   // A simple callback implementation.
   pickerCallback = (data) => {
-    console.log(data.docs);
     if (data.action == window.google.picker.Action.PICKED) {
       var fileId = data.docs[0].id;
       //here or in googleCallback is where I need to download files
@@ -86,7 +84,6 @@ class GoogleWrapper extends Component {
   };
 
   render() {
-    console.log(this.props);
     return <Button onClick={this.loadPicker}>Add from Drive</Button>;
   }
 }

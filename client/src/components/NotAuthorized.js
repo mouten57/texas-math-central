@@ -4,7 +4,7 @@ import { Message, Container, Button, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 const NotAuthorized = (props) => {
-  console.log(props);
+  //console.log(props);
   return (
     <Container>
       <Message

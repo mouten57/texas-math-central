@@ -75,7 +75,7 @@ class ResourceIndex extends Component {
   };
 
   render() {
-    console.log(this.state, this.props);
+    //console.log(this.state, this.props);
     const UnitName = this.getUnitName();
     return (
       <div>

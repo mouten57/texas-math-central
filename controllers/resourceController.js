@@ -174,7 +174,6 @@ module.exports = {
     });
   },
   async update(req, res, next) {
-    console.log(req.body);
     resourceQueries.updateResource(
       req.params.resourceId,
       req.body,
@@ -205,7 +204,6 @@ module.exports = {
         const found = resource.files.find(
           (obj) => obj.filename == req.params.filename
         );
-        console.log(found);
         fs.writeFileSync(
           `./uploads/${found.originalname}`,
           found.file_data.buffer

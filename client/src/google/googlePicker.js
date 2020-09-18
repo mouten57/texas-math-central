@@ -39,7 +39,6 @@ function onPickerApiLoad(props) {
 }
 
 function handleAuthResult(authResult, props) {
-  console.log("authResult:", authResult);
   if (authResult && !authResult.error) {
     oauthToken = authResult.access_token;
     createPicker(props);
@@ -70,7 +69,6 @@ function createPicker(props) {
 
 // A simple callback implementation.
 function pickerCallback(data) {
-  console.log(data);
   if (data.action == window.google.picker.Action.PICKED) {
     var fileId = data.docs[0].id;
     window.temp_props.googleCallback(fileId);

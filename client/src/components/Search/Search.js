@@ -48,7 +48,7 @@ export default class SearchExample extends Component {
       const filtered_resources = this.props.resources.filter(
         (resource) => resource?.subject?.toLowerCase() == this.props.subject
       );
-      console.log(filtered_resources);
+
       this.setState({
         isLoading: false,
         results: _.filter(filtered_resources, isMatch),
@@ -57,7 +57,6 @@ export default class SearchExample extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { isLoading, value, results } = this.state;
 
     return (
