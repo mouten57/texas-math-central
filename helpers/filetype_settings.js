@@ -17,7 +17,7 @@ module.exports = function (path, type) {
     case ".docx":
       return {
         File: path,
-        PageRange: "1",
+        PageRange: "1-3",
         ConvertMetadata: "false",
         EmbedFonts: "false",
         SubsetFonts: "false",
