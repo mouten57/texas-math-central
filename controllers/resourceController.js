@@ -44,7 +44,7 @@ module.exports = {
     });
   },
 
-  async create(req, res, next) {
+  create(req, res, next) {
     var files = req.files || [],
       newResource;
 
@@ -150,7 +150,7 @@ module.exports = {
         resourceQueries.updateResourceWithFiles(
           resource._id,
           files,
-          async (err, update) => {
+          (err, update) => {
             try {
               req.app.io.emit("updated-resource-post-upload", update);
 

@@ -38,7 +38,7 @@ const onSubmit = (e, state, callback) => {
 
                   (File upload is optional)`);
   } else {
-    callback(null, formData);
+    return callback(null, formData);
   }
 };
 

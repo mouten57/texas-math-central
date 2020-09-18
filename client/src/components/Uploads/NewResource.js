@@ -258,6 +258,8 @@ class UploadForm extends Component {
       axios
         .post("/api/resources/create", formData)
         .then((res) => {
+          console.log(res.data);
+          console.log(res.data._id);
           axios
             .get(`/api/resources/${res.data._id}/votes/upvote`)
             .then((res) => {
