@@ -7,7 +7,7 @@ module.exports = (app) => {
       scope: [
         "profile",
         "email",
-        "https://www.googleapis.com/auth/drive.readonly",
+        // "https://www.googleapis.com/auth/drive.readonly",
       ],
     })
   );
