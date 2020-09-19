@@ -1,4 +1,5 @@
 export default [
+  { key: "Anchor Chart", text: "Anchor Chart", value: "Anchor Chart" },
   { key: "Assessment", text: "Assessment", value: "Assessment" },
   { key: "Exit Ticket", text: "Exit Ticket", value: "Exit Ticket" },
   {
