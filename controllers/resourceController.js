@@ -88,7 +88,7 @@ module.exports = {
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
-          let file_ext = path.extname(files[i].filename);
+          let file_ext = path.extname(files[i].filename).toLowerCase();
           let file_path = `./uploads/${files[i].filename}`;
           var watermark_filepath = files[i].path.replace(
             file_ext,
