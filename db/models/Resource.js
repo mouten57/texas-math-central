@@ -7,6 +7,7 @@ const resourceSchema = new Schema({
   grade: String,
   unit: String,
   fullUnit: String,
+  free: { type: Boolean, default: false },
   type: String,
   link: String,
   description: String,

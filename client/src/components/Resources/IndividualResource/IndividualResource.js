@@ -157,7 +157,7 @@ class IndividualResource extends Component {
       comments: resource.comments,
       s3Link: resource.s3Link,
       resource_name: resource.name,
-
+      free: resource.free,
       resource_id: resource._id,
     });
     if (resource.votes.length > 0) {
@@ -292,7 +292,8 @@ class IndividualResource extends Component {
         this.props.auth?.role == "all_access" ||
         this.props.auth?.purchasedResources.includes(resource._id) ||
         resource._user?._id == this.props.auth?._id ||
-        this.props.auth?.role == "admin"
+        this.props.auth?.role == "admin" ||
+        this.state.free
       ) {
         var authorized_to_view = true;
       }

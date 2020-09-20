@@ -51,15 +51,21 @@ const MainGrid = (props) => {
         <p>
           <b>Type:</b> {resource.type}
         </p>
-        <p>
-          <b>Link: </b>{" "}
-          <a href={resource.link} target="_blank" rel="noopener noreferrer">
-            {resource.link}
-          </a>
-        </p>
+        {resource.link == "N/A" ? null : (
+          <p>
+            <b>Link: </b>{" "}
+            <a href={resource.link} target="_blank" rel="noopener noreferrer">
+              {resource.link}
+            </a>
+          </p>
+        )}
         <p>
           {" "}
           <b>Uploader:</b> {resource._user ? resource._user.name : null}{" "}
+        </p>
+        <p>
+          {" "}
+          <b>Description:</b> {resource?.description}{" "}
         </p>
         <div>
           <b>

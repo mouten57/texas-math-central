@@ -37,7 +37,13 @@ export default [
     text: "Station Activity",
     value: "Station Activity",
   },
+  {
+    key: "Study Guide",
+    text: "Study Guide",
+    value: "Study Guide",
+  },
   { key: "Video", text: "Video", value: "Video" },
   { key: "Webquests", text: "Webquests", value: "Webquests" },
+  { key: "Whole Group", text: "Whole Group", value: "Whole Group" },
   { key: "Worksheet", text: "Worksheet", value: "Worksheet" },
 ];

@@ -11,6 +11,7 @@ const onSubmit = (e, state, callback) => {
     fullUnit,
     type,
     link,
+    free,
   } = state;
 
   let formData = new FormData();
@@ -20,6 +21,7 @@ const onSubmit = (e, state, callback) => {
     formData.append("files", state.files[key]);
   }
   formData.append("files", files);
+  formData.append("free", free.toString());
   formData.append("name", name);
   formData.append("grade", grade);
   formData.append("subject", subject);
@@ -31,7 +33,9 @@ const onSubmit = (e, state, callback) => {
   for (var value of formData.values()) {
     values.push(value);
   }
+  console.log(values);
   values.splice(1, 1);
+  console.log(values);
 
   if (values.includes("") === true) {
     return alert(`                Please complete all fields. 

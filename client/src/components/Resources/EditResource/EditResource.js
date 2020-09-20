@@ -69,7 +69,7 @@ class EditItemForm extends Component {
 
   render() {
     //console.log(this.state);
-    const { name, grade, subject, unit, type, link, description } =
+    const { name, grade, subject, unit, type, link, description, free } =
       this.state || false;
     return (
       <Form style={{ marginBottom: "25px" }}>
@@ -156,6 +156,20 @@ class EditItemForm extends Component {
                 placeholder="Something noteworthy..."
                 value={description}
                 onChange={this.onChange}
+              />
+            </div>
+          </div>
+          <div style={{ paddingTop: "10px" }}>
+            <Label>Price</Label>
+            <div>
+              <Checkbox
+                label="Is this a free resource?"
+                checked={free}
+                onClick={() =>
+                  this.setState({
+                    free: !this.state.free,
+                  })
+                }
               />
             </div>
           </div>

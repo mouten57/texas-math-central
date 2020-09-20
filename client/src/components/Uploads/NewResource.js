@@ -34,14 +34,15 @@ class UploadForm extends Component {
       submitDisabled: false,
       description: "",
       files: [],
-      link: "https://www.",
+      link: "N/A",
       type: "",
       unit: "",
       fullUnit: "",
       name: "",
       subject: "",
       grade: "",
-      hideLink: false,
+      hideLink: true,
+      free: false,
     };
   }
 
@@ -176,6 +177,7 @@ class UploadForm extends Component {
                     ) : null}
                     <Checkbox
                       label="Link not available"
+                      checked={this.state.hideLink}
                       onClick={() =>
                         this.setState({
                           hideLink: !this.state.hideLink,
@@ -197,6 +199,21 @@ class UploadForm extends Component {
                       value={this.state.description}
                       onChange={this.onChange}
                     />
+                  </div>
+
+                  <div style={{ paddingTop: "10px" }}>
+                    <Label>Price</Label>
+                    <div>
+                      <Checkbox
+                        label="Is this a free resource?"
+                        checked={this.state.free}
+                        onClick={() =>
+                          this.setState({
+                            free: !this.state.free,
+                          })
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
               </Segment>

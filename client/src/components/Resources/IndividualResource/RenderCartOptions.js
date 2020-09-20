@@ -12,6 +12,8 @@ const RenderCartOptions = (props) => {
       return <p>Premium User Access!</p>;
     } else if (auth?.purchasedResources.includes(resource._id)) {
       return <p>Purchased Item</p>;
+    } else if (state?.free) {
+      return <p>FREE Item!</p>;
     } else {
       return (
         <p

@@ -58,11 +58,13 @@ module.exports = {
       link,
       description,
       fullUnit,
+      free,
     } = req.body;
     var newResource = {
       name,
       grade,
       subject,
+      free: free == "true",
       unit,
       fullUnit,
       type,
