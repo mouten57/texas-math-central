@@ -22,7 +22,7 @@ const MainGrid = (props) => {
   return (
     <Grid compact>
       <Grid.Column width={leftColWidth}>
-        <h2>"{resource.name}" </h2>
+        <h2>{resource.name}</h2>
 
         <RenderCartOptions
           onAddRemoveCart={onAddRemoveCart}

@@ -11,6 +11,7 @@ const CartSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "Resource",
       },
+      dateAdded: { type: Date, default: Date.now() },
       quantity: Number,
       name: String,
       price: Number,

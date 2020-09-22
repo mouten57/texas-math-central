@@ -20,6 +20,7 @@ import UserProfile from "./UserProfile";
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart";
+import CartTable from "./CartTable";
 import Upgrade from "./UpgradeAllAccess";
 import CheckoutForm from "./Checkout/CheckoutForm";
 import AdminPage from "./Admin/Admin";
@@ -117,7 +118,7 @@ class App extends Component {
               exact
               path="/cart"
               render={(props) => (
-                <Cart
+                <CartTable
                   {...props}
                   auth={this.props.auth}
                   cart={this.props.cart}
