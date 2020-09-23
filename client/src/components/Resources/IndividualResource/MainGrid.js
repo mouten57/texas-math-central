@@ -95,7 +95,7 @@ const MainGrid = (props) => {
               {mimetype.includes("image") ? (
                 <Image src={selectedFile.s3Link} size="large" />
               ) : (
-                <embed
+                <iframe
                   src={`https://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
                   style={{
                     marginTop: "10px",

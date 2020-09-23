@@ -111,7 +111,7 @@ const AdminModal = (props) => {
       <>
         <Modal.Content image style={{ marginRight: "15px" }}>
           {files?.length ? (
-            <embed
+            <iframe
               src={`https://docs.google.com/gview?url=${files[0].previewLink}&embedded=true`}
               style={{ height: "300px" }}
               wrapped
