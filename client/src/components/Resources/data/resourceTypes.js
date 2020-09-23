@@ -10,11 +10,6 @@ export default [
   { key: "Game", text: "Game", value: "Game" },
   { key: "Google Doc", text: "Google Doc", value: "Google Doc" },
   {
-    key: "Google Drive Folder",
-    text: "Google Drive Folder",
-    value: "Google Drive Folder",
-  },
-  {
     key: "Informal Assessment",
     text: "Informal Assessment",
     value: "Informal Assessment",
@@ -24,7 +19,7 @@ export default [
     text: "Interactive Notebook",
     value: "Interactive Notebook",
   },
-
+  { key: "Lesson", text: "Lesson", value: "Lesson" },
   { key: "Menu", text: "Menu", value: "Menu" },
   { key: "Other", text: "Other", value: "Other" },
   { key: "PDF", text: "PDF", value: "PDF" },
@@ -32,6 +27,7 @@ export default [
   { key: "PPT", text: "PPT", value: "PPT" },
   { key: "Project", text: "Project", value: "Project" },
   { key: "Random", text: "Random", value: "Random" },
+  { key: "Rubric", text: "Rubric", value: "Rubric" },
   {
     key: "Station Activity",
     text: "Station Activity",
