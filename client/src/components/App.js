@@ -19,8 +19,8 @@ import IndividualResource from "./Resources/IndividualResource/IndividualResourc
 import UserProfile from "./UserProfile";
 import NewResource from "./Uploads/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
-import Cart from "./Cart";
-import CartTable from "./CartTable";
+import Cart from "./Cart/Cart";
+import CartTable from "./Cart/CartTable";
 import Upgrade from "./UpgradeAllAccess";
 import CheckoutForm from "./Checkout/CheckoutForm";
 import AdminPage from "./Admin/Admin";

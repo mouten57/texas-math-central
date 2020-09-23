@@ -3,21 +3,21 @@ import axios from "axios";
 
 import { Link } from "react-router-dom";
 import { createMedia } from "@artsy/fresnel";
-import createNotification from "./Resources/Notification";
-import NotLoggedIn from "./NotLoggedIn";
+import createNotification from "../Resources/Notification";
+import NotLoggedIn from "../NotLoggedIn";
+// import PopupContent from "./PopupContent";
 import {
   Grid,
   Image,
-  Label,
   Container,
   Header,
   Button,
   Icon,
   Popup,
-  Segment,
+  Table,
 } from "semantic-ui-react";
 import { connect } from "react-redux";
-import img from "../images/no-image-available.jpg";
+import img from "../../images/no-image-available.jpg";
 
 const AppMedia = createMedia({
   breakpoints: {
@@ -122,78 +122,42 @@ const Cart = (props) => {
               </Grid.Row>
             </Grid>
 
-            <Grid columns={2} centered="true">
-              {props.cart?.products?.map((product) => {
-                var first_file = product.resource_id.files[0];
-                if (product.resource_id) {
+            <Table striped selectable unstackable compact size="small">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Grade</Table.HeaderCell>
+                  <Table.HeaderCell>Subject</Table.HeaderCell>
+                  <Table.HeaderCell>Description</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+
+              <Table.Body>
+                {props.cart?.products?.map((product) => {
+                  const { name, grade, subject, description, unit, _id } =
+                    product.resource_id || false;
                   return (
-                    <Grid.Column key={product._id}>
-                      <Popup
-                        trigger={
-                          first_file?.mimetype?.includes("image") ? (
-                            <Grid.Column>
-                              <Label ribbon={true}>{product.name}</Label>
-                              <Image
-                                size="big"
-                                bordered
-                                // label={{
-                                //   color: "black",
-                                //   content: product.name,
-                                //   icon: "hotel",
-                                //   ribbon: true,
-                                // }}
-                                src={renderImage(first_file)}
-                              />
-                            </Grid.Column>
-                          ) : first_file?.previewLink ? (
-                            <Grid.Column style={{ height: "100%" }}>
-                              <Label ribbon={true}>{product.name}</Label>
-                              <iframe
-                                style={{ width: "100%", height: "95%" }}
-                                src={`https://docs.google.com/gview?url=${first_file?.previewLink}&embedded=true`}
-                              />
-                            </Grid.Column>
-                          ) : (
-                            <Image
-                              size="big"
-                              bordered
-                              label={{
-                                color: "black",
-                                content: product.name,
-                                icon: "hotel",
-                                ribbon: true,
-                              }}
-                              src={img}
-                            />
-                          )
-                        }
-                        content={
-                          <Button.Group>
-                            <Button
-                              color="grey"
-                              content="View"
-                              as="a"
-                              href={`/units/${product.resource_id.unit}/${product.resource_id._id}`}
-                            />
-                            <Button
-                              color="red"
-                              as="a"
-                              onClick={() =>
-                                onRemoveItem(product.resource_id._id)
-                              }
-                            >
-                              Remove
-                            </Button>
-                          </Button.Group>
-                        }
-                        on="click"
-                        position="top left"
-                      />
-                    </Grid.Column>
+                    <Table.Row key={product._id}>
+                      <Table.Cell>{name}</Table.Cell>
+                      <Table.Cell>{grade}</Table.Cell>
+                      <Table.Cell>{subject}</Table.Cell>
+                      <Table.Cell>{description}</Table.Cell>
+                      <Table.Cell>
+                        <Button.Group basic size="mini" compact floated="right">
+                          <Button icon as="a" href={`/units/${unit}/${_id}`}>
+                            <Icon name="eye" color="blue"></Icon>
+                          </Button>
+                          <Button icon onClick={() => onRemoveItem(_id)}>
+                            <Icon name="delete" color="red"></Icon>
+                          </Button>
+                        </Button.Group>
+                      </Table.Cell>
+                    </Table.Row>
                   );
-                }
-              })}
-            </Grid>
+                })}
+              </Table.Body>
+            </Table>
           </Container>
         );
     }
