@@ -13,11 +13,9 @@ import {
   Header,
   Button,
   Icon,
-  Popup,
   Table,
 } from "semantic-ui-react";
 import { connect } from "react-redux";
-import img from "../../images/no-image-available.jpg";
 
 const AppMedia = createMedia({
   breakpoints: {
@@ -32,27 +30,11 @@ const mediaStyles = AppMedia.createMediaStyle();
 const { Media } = AppMedia;
 const Cart = (props) => {
   const onRemoveItem = async (id) => {
-    let result = await axios.post(`/api/cart/${id}/remove`);
+    await axios.post(`/api/cart/${id}/remove`);
     createNotification("remove_from_cart");
     props.fetchCart();
   };
 
-  const renderImage = (first_file) => {
-    if (
-      first_file &&
-      first_file.mimetype?.includes("image") &&
-      first_file.s3Link
-    ) {
-      return first_file.s3Link;
-    } else if (
-      first_file?.previewLink &&
-      first_file.mimetype?.includes("image")
-    ) {
-      return first_file?.previewLink;
-    } else {
-      return img;
-    }
-  };
   const renderForm = () => {
     const prods = props.cart?.products;
     const number_of_goods = prods ? prods.length : 0;
@@ -79,6 +61,10 @@ const Cart = (props) => {
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Button
+                    color="blue"
+                    size="tiny"
+                    compact
+                    icon
                     labelPosition="arrow circle right"
                     as={Link}
                     to="/checkout"
@@ -107,7 +93,8 @@ const Cart = (props) => {
                 </Grid.Column>
                 <Grid.Column width={4}>
                   <Button
-                    labelPosition="arrow circle right"
+                    color="blue"
+                    icon
                     as={Link}
                     to="/checkout"
                     disabled={!number_of_goods > 0}
