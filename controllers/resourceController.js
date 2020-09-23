@@ -96,6 +96,10 @@ module.exports = {
             file_ext,
             `_watermark${file_ext}`
           );
+          var watermark_pdf_filepath = files[i].path.replace(
+            file_ext,
+            `_watermark${file_ext}.pdf`
+          );
 
           let image_types = ".jpg,.jpeg,.png,.bmp,.gif";
 
@@ -123,7 +127,7 @@ module.exports = {
                   files[i]
                 );
 
-                fs.writeFileSync(watermark_filepath, watermarked_pdf);
+                fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
               } catch (err) {
                 throw err;
               }
@@ -136,8 +140,8 @@ module.exports = {
             var s3PDFData = await s3
               .upload({
                 Bucket: "texas-math-central",
-                Key: watermark_filepath,
-                Body: fs.readFileSync(watermark_filepath),
+                Key: watermark_pdf_filepath,
+                Body: fs.readFileSync(watermark_pdf_filepath),
               })
               .promise();
             files[i].previewLink = s3PDFData.Location;
