@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Menu, Icon, Dropdown } from "semantic-ui-react";
+import { Menu, Icon, Dropdown, Popup } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 class Nav extends Component {
@@ -34,15 +34,22 @@ class Nav extends Component {
         <Menu.Item as={Link} to="/">
           <Icon name="home" />
         </Menu.Item>
-
-        <Menu.Item
-          as={Link}
-          to="/about"
-          icon="question"
-          active={activeItem === "about"}
-          onClick={this.handleItemClick}
+        <Popup
+          basic
+          position="bottom right"
+          content="Learn more about TMC"
+          trigger={
+            <Menu.Item
+              as={Link}
+              to="/about"
+              icon="question"
+              active={activeItem === "about"}
+              onClick={this.handleItemClick}
+            />
+          }
         />
-        <Dropdown item icon="folder open">
+
+        <Dropdown item icon="folder open" simple>
           <Dropdown.Menu>
             <Dropdown.Item as={Link} to="/units?subject=math">
               Math
@@ -55,6 +62,7 @@ class Nav extends Component {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+
         {/* <Menu.Item
           as={Link}
           to="/units"
@@ -63,19 +71,36 @@ class Nav extends Component {
           onClick={this.handleItemClick}
         /> */}
         {this.props.auth ? (
-          <Menu.Item
-            as={Link}
-            to="/profile"
-            icon="id card"
-            active={activeItem === "profile"}
-            onClick={this.handleItemClick}
+          <Popup
+            basic
+            position="bottom left"
+            content="View your profile"
+            trigger={
+              <Menu.Item
+                as={Link}
+                to="/profile"
+                icon="id card"
+                active={activeItem === "profile"}
+                onClick={this.handleItemClick}
+              />
+            }
           />
         ) : (
           <p />
         )}
         <Menu.Menu position="right">
-          <Menu.Item as={Link} to="/resources/new" icon="add" />
-          <Menu.Item as={Link} to="/cart" icon="cart" />
+          <Popup
+            basic
+            position="bottom left"
+            content="Add a new resource"
+            trigger={<Menu.Item as={Link} to="/resources/new" icon="add" />}
+          />
+          <Popup
+            basic
+            position="bottom left"
+            content="View your cart"
+            trigger={<Menu.Item as={Link} to="/cart" icon="cart" />}
+          />
           {this.renderContent()}
         </Menu.Menu>
       </Menu>
