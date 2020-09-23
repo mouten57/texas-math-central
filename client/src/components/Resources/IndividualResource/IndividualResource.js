@@ -313,6 +313,7 @@ class IndividualResource extends Component {
             {/* Grid on phone */}
             <Grid.Column as={Media} at="mobile" width={10}>
               <MainGrid
+                selectedFile={this.state.selectedFile}
                 leftColWidth={16}
                 rightColWidth={16}
                 iframeheight="400px"
@@ -331,6 +332,7 @@ class IndividualResource extends Component {
             {/* Grid on tablet and up */}
             <Grid.Column as={Media} greaterThanOrEqual="tablet" width={14}>
               <MainGrid
+                selectedFile={this.state.selectedFile}
                 leftColWidth={5}
                 rightColWidth={11}
                 iframeheight="400px"

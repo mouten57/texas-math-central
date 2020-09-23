@@ -1,12 +1,13 @@
 import React from "react";
 import { Grid, Image } from "semantic-ui-react";
 import RenderCartOptions from "./RenderCartOptions";
-import downloadLink from "./downloadLink";
+import DownloadLink from "./downloadLink";
 
 import img from "../../../images/sample_doc.png";
 
 const MainGrid = (props) => {
   const {
+    selectedFile,
     resource,
     onAddRemoveCart,
     auth,
@@ -17,7 +18,7 @@ const MainGrid = (props) => {
     iframeheight,
     iframewidth,
   } = props;
-  const selectedFile = state?.selectedFile;
+
   const mimetype = selectedFile?.mimetype;
   return (
     <Grid compact>
@@ -77,9 +78,11 @@ const MainGrid = (props) => {
               : null}
             :{" "}
           </b>{" "}
-          {downloadLink(state, (err, selectedFile) => {
-            props.setSelectedFile(selectedFile);
-          })}
+          <DownloadLink
+            files={state.resource.files}
+            selectedFile={selectedFile}
+            cb={(err, selectedFile) => props.setSelectedFile(selectedFile)}
+          />
         </div>
       </Grid.Column>
       <Grid.Column width={rightColWidth}>

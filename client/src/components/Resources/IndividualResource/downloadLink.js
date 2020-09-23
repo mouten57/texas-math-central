@@ -1,8 +1,9 @@
 import React from "react";
 import { Loader } from "semantic-ui-react";
 
-const downloadLink = (state, cb) => {
-  switch (state.resource.files?.length) {
+const downloadLink = (props) => {
+  const { files, cb } = props;
+  switch (files?.length) {
     case null:
       return "";
 
@@ -11,7 +12,7 @@ const downloadLink = (state, cb) => {
 
     case 1:
       //if index 0 of files is "TBD", that means we are still waiting for s3 upload to complete
-      if (state.resource.files[0] == "TBD") {
+      if (files[0] == "TBD") {
         return (
           <Loader active inline="centered">
             Fetching a personal preview
@@ -22,7 +23,7 @@ const downloadLink = (state, cb) => {
     default:
       return (
         <ul style={{ listStyle: "none", marginTop: "5px", paddingLeft: 0 }}>
-          {state.resource.files?.map((file, i) => {
+          {files?.map((file, i) => {
             //use this if storing/downloading files directly from mongo db
             //let link = `/api/units/${this.props.match.params.unit}/${this.props.match.params.id}/download/${file.filename}`;
             //use this with s3
@@ -32,7 +33,9 @@ const downloadLink = (state, cb) => {
                 key={i}
                 className="file_selector"
                 onClick={() => cb(null, file)}
-                style={{ paddingTop: "10px" }}
+                style={{
+                  paddingTop: "10px",
+                }}
               >
                 {file.originalname}
               </li>
