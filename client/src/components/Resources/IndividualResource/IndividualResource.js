@@ -458,6 +458,7 @@ class IndividualResource extends Component {
             {this.state.edit ? (
               <Modal open={this.state.edit} header="Edit">
                 <EditResource
+                  role={this.props.auth.role}
                   editData={this.state.editData}
                   editResource={this.state.edit}
                   updateResource={this.onSubmitUpdate}

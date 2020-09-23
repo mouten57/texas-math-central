@@ -16,15 +16,16 @@ const About = () => {
         <h2>About</h2>
         <Divider />
         <p>
-          TMC was created with one goal in mind: to get all the best math
-          resources in one location. This site is specific to Texas 5th Grade
-          math teachers, with plans to expand in the near future. If you are a
-          5th grade math teacher, you're in the right place.
+          TMC was created with one goal in mind: to get all the best
+          math/science resources in one location. This site is specific to Texas
+          5th Grade math & science teachers, with plans to expand in the near
+          future. If you are a 5th grade math/sci teacher, you're in the right
+          place.
         </p>
         <p>
-          My name is Matt Outen and I have taught 5th grade for the last 6
-          years. If you need help with anything on the site, or have
-          suggestions, please feel free to{" "}
+          My name is Matt Outen and I taught 5th grade for 6 years. If you need
+          help with anything on the site, or have suggestions, please feel free
+          to{" "}
           <a href="mailto:texasmathcentral@gmail.com" target="_top">
             contact me
           </a>
@@ -43,11 +44,11 @@ const About = () => {
             that made more sense to me as a teacher.
           </Segment>
           <Segment raised size="large" padded="very">
-            <h2 style={{ textAlign: "center" }}>Add Your Own Resources</h2>
+            <h2 style={{ textAlign: "center" }}>Donate Your Own Resources</h2>
             Have something awesome that you want to share? Go to our{" "}
             <a href="resources/new">add resource form</a> and share away! We
-            have the capabilities of adding pictures, docs, pdfs, or just plain
-            old links!
+            have the capabilities of adding pictures, docs, ppts, pdfs, or just
+            plain old links!
           </Segment>
           <Segment raised size="large" padded="very">
             <h2 style={{ textAlign: "center" }}>
@@ -55,8 +56,8 @@ const About = () => {
             </h2>
             What's better than knowing the best way to use a resource? Add
             comments, reply to others, or leave suggestions using our comment
-            form! Here's an example:{" "}
-            <a href="units/boy/5c11b93b63265f23141bbabf">Sample Resource</a>
+            form! Here's an example:
+            <a href="units/boy/5f67b07733ffd100178fffc4">Sample Resource</a>
           </Segment>
         </Container>
       </Container>

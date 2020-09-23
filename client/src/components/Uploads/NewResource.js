@@ -200,21 +200,22 @@ class UploadForm extends Component {
                       onChange={this.onChange}
                     />
                   </div>
-
-                  <div style={{ paddingTop: "10px" }}>
-                    <Label>Price</Label>
-                    <div>
-                      <Checkbox
-                        label="Is this a free resource?"
-                        checked={this.state.free}
-                        onClick={() =>
-                          this.setState({
-                            free: !this.state.free,
-                          })
-                        }
-                      />
+                  {this.props.auth.role == "admin" ? (
+                    <div style={{ paddingTop: "10px" }}>
+                      <Label>Price</Label>
+                      <div>
+                        <Checkbox
+                          label="Is this a free resource?"
+                          checked={this.state.free}
+                          onClick={() =>
+                            this.setState({
+                              free: !this.state.free,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
                 </div>
               </Segment>
             </Form>

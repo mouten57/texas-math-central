@@ -128,12 +128,12 @@ class Units extends Component {
             ))}
           </Table.Body>
         </Table>
-        <p style={{ marginBottom: "40px" }}>
-          Want to contribute something new?{" "}
+        <h4 style={{ marginBottom: "40px" }}>
+          Want to donate your own resources?{" "}
           <a href="resources/new">
-            <Icon name="add" color="black" />
+            <Icon name="add" color="black" size="large" color="blue" />
           </a>
-        </p>
+        </h4>
       </Container>
     );
   }
