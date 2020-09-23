@@ -25,7 +25,7 @@ const About = () => {
           My name is Matt Outen and I have taught 5th grade for the last 6
           years. If you need help with anything on the site, or have
           suggestions, please feel free to{" "}
-          <a href="mailto:texasmathcentral@gmail.com" target="blank">
+          <a href="mailto:texasmathcentral@gmail.com" target="_top">
             contact me
           </a>
           .

@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import convertTimestamp from "../../helpers/convertTimestamp";
 import { NotificationManager } from "react-notifications";
 import "./style/ShowComments.css";
+const defaultImage =
+  "https://react.semantic-ui.com/images/avatar/small/matt.jpg";
 
 class ShowComment extends Component {
   constructor(props) {
@@ -44,11 +46,12 @@ class ShowComment extends Component {
   renderContent = () => {
     if (this.props.comments) {
       return this.props.comments.map((comment) => {
+        const { image, nickname, name } = comment._user;
         return (
           <Comment key={comment._id}>
-            <Comment.Avatar as="a" src={comment._user.image} />
+            <Comment.Avatar as="a" src={image || defaultImage} />
             <Comment.Content>
-              <Comment.Author as="a">{comment._user.nickname}</Comment.Author>
+              <Comment.Author as="a">{nickname || name}</Comment.Author>
               <Comment.Metadata>
                 <span>Posted at {convertTimestamp(comment.created_at)}</span>
               </Comment.Metadata>

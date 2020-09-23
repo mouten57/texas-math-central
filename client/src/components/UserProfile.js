@@ -87,6 +87,7 @@ class UserProfile extends Component {
   }
 
   render() {
+    console.log(this.state, this.props);
     return (
       <Container style={{ marginBottom: "40px" }}>
         {this.renderHeading()}
@@ -125,9 +126,12 @@ class UserProfile extends Component {
             </Header>
             <div>
               {this.state.comments?.map((comment) => {
+                const { _id, name, unit } = comment.resource_id || false;
                 return (
                   <p key={comment._id}>
-                    {comment.body} on {convertTimestamp(comment.created_at)}
+                    "<b>{comment.body}</b>" on{" "}
+                    {convertTimestamp(comment.created_at)} at{" "}
+                    <a href={`/units/${unit}/${_id}`}>{name}</a>
                   </p>
                 );
               })}
