@@ -7,7 +7,7 @@ const IconForResourceList = (props) => {
     <Icon
       size="tiny"
       name={direction == "ascending" ? "arrow up" : "arrow down"}
-      style={{ float: "right", marginTop: "8px" }}
+      style={{ float: "right", marginTop: "6px", marginRight: "5px" }}
     />
   ) : null;
 };

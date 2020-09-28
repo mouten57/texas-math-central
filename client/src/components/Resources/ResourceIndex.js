@@ -5,7 +5,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Header, Breadcrumb, Loader, Dimmer } from "semantic-ui-react";
-import ResourceList from "./ResourceList";
+import ResourceList from "./ResourceList/ResourceList";
 import unitFields from "./data/unitFields.js";
 import axios from "axios";
 import NotLoggedIn from "../NotLoggedIn";
@@ -58,7 +58,7 @@ class ResourceIndex extends Component {
           return el._id !== resourceId;
         });
         this.setState({ resources: updated_resources });
-        callback(null, res.data);
+        callback(null, updated_resources);
       })
       .catch((err) => {
         callback(err);
