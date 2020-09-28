@@ -25,13 +25,19 @@ module.exports = {
     });
   },
   getUnitResources(req, res, next) {
-    resourceQueries.getUnitResources(req.params.unit, (err, resources) => {
-      if (err) {
-        res.status(422).send(err);
-      } else {
-        res.send(resources);
+    console.log(req.query);
+
+    resourceQueries.getUnitResources(
+      req.params.unit,
+      req.query,
+      (err, resources) => {
+        if (err) {
+          res.status(422).send(err);
+        } else {
+          res.send(resources);
+        }
       }
-    });
+    );
   },
 
   show(req, res, next) {

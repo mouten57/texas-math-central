@@ -4,11 +4,22 @@
 import { connect } from "react-redux";
 import React, { Component } from "react";
 import _ from "lodash";
-import { Table, Icon, Confirm, Segment, Grid } from "semantic-ui-react";
+import {
+  Table,
+  Icon,
+  Confirm,
+  Popup,
+  Grid,
+  Input,
+  Button,
+} from "semantic-ui-react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import unitFields from "./data/unitFields.js";
 import "./style/ResourceList.css";
 import { createMedia } from "@artsy/fresnel";
+import IconForResourceList from "./IconForResourceList";
+import getVoteTotal from "./getVoteTotal";
 
 const AppMedia = createMedia({
   breakpoints: {
@@ -27,21 +38,16 @@ class ResourceList extends Component {
     super(props);
     this.state = {
       open: false,
-      column: null,
-      data: this.props.resources,
+      column: "voteTotal",
+      unit: props.unit,
+      data: _.sortBy(props.resources, ["voteTotal"]).reverse(),
       direction: "descending",
       resourceToDelete: null,
+      nameSearchVal: "",
+      typeSearchVal: "",
+      namePopupOpen: false,
+      typePopupOpen: false,
     };
-  }
-
-  componentDidMount() {
-    //console.log("resource list mount");
-    this.setState({
-      data: this.props.resources,
-      column: "voteTotal",
-      data: _.sortBy(this.props.resources, ["voteTotal"]).reverse(),
-      direction: "descending",
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -92,9 +98,40 @@ class ResourceList extends Component {
     });
   };
 
+  handlePopup = (popuptype, val) => {
+    this.setState({ [popuptype]: val == "open" });
+    if (val == "close") {
+      axios
+        .get(`/api/units/${this.state.unit}`, {
+          params: {
+            name: this.state.nameSearchVal.toLowerCase(),
+            type: this.state.typeSearchVal.toLowerCase(),
+          },
+        })
+        .then((res) => {
+          let data = res.data;
+          data = getVoteTotal(res.data);
+          this.setState({ data });
+        });
+    }
+  };
+
+  onChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
   render() {
     const resources = [...this.props.resources];
-    const { open, column, data, direction } = this.state;
+    console.log(this.state);
+    const {
+      open,
+      column,
+      nameSearchVal,
+      typeSearchVal,
+      direction,
+      namePopupOpen,
+      typePopupOpen,
+    } = this.state;
 
     return (
       <>
@@ -208,7 +245,7 @@ class ResourceList extends Component {
             <Table
               style={{ marginBottom: "10px" }}
               unstackable
-              sortable
+              // sortable
               striped
               compact
             >
@@ -216,30 +253,196 @@ class ResourceList extends Component {
                 <Table.Row>
                   <Table.HeaderCell
                     sorted={column === "name" ? direction : null}
-                    onClick={this.handleSort("name")}
                   >
-                    Name
+                    <IconForResourceList
+                      selected={column == "name"}
+                      direction={direction}
+                    />
+                    <p
+                      className="headerLabel"
+                      onClick={this.handleSort("name")}
+                      style={{ padding: 0, margin: 0 }}
+                    >
+                      Name
+                    </p>
+                    <div
+                      style={{
+                        width: "100%",
+                        minHeight: "1.5em",
+                        borderBottom: "1px solid black",
+                      }}
+                    >
+                      <Popup
+                        wide="very"
+                        open={namePopupOpen}
+                        position="bottom right"
+                        onOpen={() => this.handlePopup("namePopupOpen", "open")}
+                        trigger={
+                          <div
+                            style={{
+                              width: "100%",
+                              height: "1.5em",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignContent: "flex-end",
+                            }}
+                          >
+                            <span>{nameSearchVal}</span>
+                            {nameSearchVal.length > 0 ? (
+                              <Icon
+                                name="delete"
+                                size="small"
+                                style={{ float: "right" }}
+                                onClick={() =>
+                                  setTimeout(() => {
+                                    this.setState({
+                                      namePopupOpen: false,
+                                      nameSearchVal: "",
+                                      data: resources,
+                                    });
+                                  }, 0)
+                                }
+                              />
+                            ) : null}
+                          </div>
+                        }
+                        content={
+                          <>
+                            <Input
+                              style={{
+                                appearance: "none",
+                                width: "70%",
+                                display: "inline-block",
+                              }}
+                              name="nameSearchVal"
+                              value={nameSearchVal}
+                              onChange={this.onChange}
+                            />
+
+                            <Button
+                              color="green"
+                              size="tiny"
+                              onClick={() =>
+                                this.handlePopup("namePopupOpen", "close")
+                              }
+                              style={{
+                                display: "inline-block",
+                                marginLeft: "10px",
+                              }}
+                            >
+                              Ok
+                            </Button>
+                          </>
+                        }
+                        on={["click"]}
+                      />
+                    </div>
                   </Table.HeaderCell>
                   <Table.HeaderCell
-                    textAlign="center"
+                    // textAlign="center"
                     sorted={column === "type" ? direction : null}
-                    onClick={this.handleSort("type")}
                   >
-                    Type
+                    <IconForResourceList
+                      selected={column == "type"}
+                      direction={direction}
+                    />
+                    <p
+                      className="headerLabel"
+                      onClick={this.handleSort("type")}
+                      style={{ padding: 0, margin: 0 }}
+                    >
+                      Type
+                    </p>
+
+                    <Popup
+                      wide="very"
+                      open={typePopupOpen}
+                      onOpen={() => this.handlePopup("typePopupOpen", "open")}
+                      position="bottom right"
+                      trigger={
+                        <div
+                          style={{
+                            width: "100%",
+                            minHeight: "1.5em",
+                            borderBottom: "1px solid black",
+                          }}
+                        >
+                          {typeSearchVal}
+                        </div>
+                      }
+                      content={
+                        <>
+                          <Input
+                            style={{
+                              appearance: "none",
+                              width: "70%",
+                              display: "inline-block",
+                            }}
+                            name="typeSearchVal"
+                            value={typeSearchVal}
+                            onChange={this.onChange}
+                          />
+                          <Button
+                            color="green"
+                            size="tiny"
+                            onClick={() =>
+                              this.handlePopup("typePopupOpen", "close")
+                            }
+                            style={{
+                              display: "inline-block",
+                              marginLeft: "10px",
+                            }}
+                          >
+                            Ok
+                          </Button>
+                        </>
+                      }
+                      on={["click"]}
+                    />
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     textAlign="center"
                     sorted={column === "voteTotal" ? direction : null}
-                    onClick={this.handleSort("voteTotal")}
                   >
-                    Votes
+                    <IconForResourceList
+                      selected={column == "voteTotal"}
+                      direction={direction}
+                    />
+                    <p
+                      className="headerLabel"
+                      onClick={this.handleSort("voteTotal")}
+                      style={{ padding: 0, margin: 0 }}
+                    >
+                      Votes
+                    </p>
+                    <div
+                      style={{
+                        width: "100%",
+                        minHeight: "1.5em",
+                      }}
+                    ></div>
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     textAlign="center"
                     sorted={column === "created_at" ? direction : null}
-                    onClick={this.handleSort("created_at")}
                   >
-                    Date Added
+                    <IconForResourceList
+                      selected={column == "created_at"}
+                      direction={direction}
+                    />
+                    <p
+                      className="headerLabel"
+                      onClick={this.handleSort("created_at")}
+                      style={{ padding: 0, margin: 0 }}
+                    >
+                      Date Added
+                    </p>
+                    <div
+                      style={{
+                        width: "100%",
+                        minHeight: "1.5em",
+                      }}
+                    ></div>
                   </Table.HeaderCell>
                   <Table.HeaderCell> </Table.HeaderCell>
                 </Table.Row>

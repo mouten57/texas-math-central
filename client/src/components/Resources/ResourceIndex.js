@@ -10,6 +10,7 @@ import unitFields from "./data/unitFields.js";
 import axios from "axios";
 import NotLoggedIn from "../NotLoggedIn";
 import { connect } from "react-redux";
+import getVoteTotal from "./getVoteTotal";
 
 class ResourceIndex extends Component {
   constructor(props) {
@@ -21,28 +22,18 @@ class ResourceIndex extends Component {
   }
   componentDidMount() {
     //set Resources
-    axios.get(`/api/units/${this.props.match.params.unit}`).then((res) => {
-      const resources = res.data;
-      const myFunc = (acc, curr) => {
-        return Number(acc.value) + Number(curr.value);
-      };
+    if (this.props.match.params.unit) {
+      axios.get(`/api/units/${this.props.match.params.unit}`).then((res) => {
+        let resources = res.data;
 
-      //get vote total for each resource
-      for (let i in resources) {
-        if (resources[i].votes.length == 1 && resources[i].votes.length) {
-          var voteTotal = resources[i].votes[0].value;
-        } else if (resources[i].votes.length > 1) {
-          var voteTotal = resources[i].votes.reduce(myFunc);
-        } else {
-          var voteTotal = 0;
-        }
-        resources[i].voteTotal = voteTotal;
-      }
-      this.setState({
-        resources,
-        loading: false,
+        resources = getVoteTotal(resources);
+
+        this.setState({
+          resources,
+          loading: false,
+        });
       });
-    });
+    }
   }
 
   getUnitName() {
@@ -103,6 +94,7 @@ class ResourceIndex extends Component {
           {this.props.auth && !this.state.loading ? (
             <ResourceList
               param={this.props.match.params.unit}
+              unit={this.props.match?.params?.unit}
               resources={this.state.resources}
               onDeleteResource={this.onDeleteResource}
               fetchCart={this.props.fetchCart}

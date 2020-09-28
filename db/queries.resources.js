@@ -28,8 +28,17 @@ module.exports = {
       callback(err);
     }
   },
-  async getUnitResources(unit, callback) {
-    let resources = await Resource.find({ unit: unit }, "-files.file_data")
+  async getUnitResources(unit, queries, callback) {
+    let search = { unit };
+    if (queries.name) {
+      search.name = new RegExp(queries.name, "i");
+    }
+    if (queries.type) {
+      search.type = new RegExp(queries.type, "i");
+    }
+    console.log(search);
+
+    let resources = await Resource.find(search)
       .sort({ created_at: "desc" })
       .populate("_user")
       .populate("favorites")
