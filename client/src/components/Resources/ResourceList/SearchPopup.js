@@ -25,7 +25,7 @@ const SearchPopup = (props) => {
       <Popup
         wide="very"
         open={popupOpen}
-        position="bottom right"
+        position="bottom left"
         onOpen={() => handlePopup(popup_open_as_text, "open")}
         trigger={
           <span style={{ minHeight: "1.5em", width: "100%" }}>{val}</span>
