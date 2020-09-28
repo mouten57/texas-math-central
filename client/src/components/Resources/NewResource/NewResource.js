@@ -16,13 +16,13 @@ import {
 import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import NotLoggedIn from "../NotLoggedIn";
-import unitFields from "../Resources/data/unitFields.js";
-import resourceTypes from "../Resources/data/resourceTypes";
-import gradeLevels from "../Resources/data/gradeLevels";
-import subjects from "../Resources/data/subjects";
+import NotLoggedIn from "../../NotLoggedIn";
+import unitFields from "../data/unitFields.js";
+import resourceTypes from "../data/resourceTypes";
+import gradeLevels from "../data/gradeLevels";
+import subjects from "../data/subjects";
 import Loader from "./Loader";
-import GoogleWrapper from "../../google/GoogleWrapper";
+import GoogleWrapper from "./google/GoogleWrapper";
 import SelectOption from "./SelectOption";
 import onSubmitHelper from "./submitNew";
 

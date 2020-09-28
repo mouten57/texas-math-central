@@ -9,7 +9,7 @@ import {
   Loader,
   TextArea,
 } from "semantic-ui-react";
-import SelectOption from "../../Uploads/SelectOption";
+import SelectOption from "../NewResource/SelectOption";
 import gradeLevels from "../data/gradeLevels";
 import subjects from "../data/subjects";
 import unitFields from "../data/unitFields";

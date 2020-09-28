@@ -17,7 +17,7 @@ import Units from "./Resources/Units.js";
 import ResourceIndex from "./Resources/ResourceIndex";
 import IndividualResource from "./Resources/IndividualResource/IndividualResource";
 import UserProfile from "./UserProfile";
-import NewResource from "./Uploads/NewResource";
+import NewResource from "./Resources/NewResource/NewResource";
 import WelcomeMessage from "./WelcomeMessage";
 import Cart from "./Cart/Cart";
 import CartTable from "./Cart/CartTable";
