@@ -73,7 +73,7 @@ class ResourceList extends Component {
     this.setState({ data: updated_resources, open: false });
     this.props.onDeleteResource(this.state.resourceToDelete, (err, result) => {
       if (err) throw err;
-
+      //are we doing this (using un-used callback) to make sure fetchCart gets called after resource is removed? I think so
       this.props.fetchCart();
     });
   };
@@ -132,13 +132,12 @@ class ResourceList extends Component {
     this.setState({
       namePopupOpen: false,
       [searchValToClear]: "",
+      //resources on resourceIndex will keep main running list of unfiltered resources
       data: this.props.resources,
     });
   };
 
   render() {
-    const resources = [...this.props.resources];
-    console.log(this.state);
     const {
       data,
       open,
@@ -160,7 +159,6 @@ class ResourceList extends Component {
             handleSort={this.handleSort}
             match={this.match}
             data={data}
-            resources={resources}
             show={this.show}
             direction={direction}
             column={column}
@@ -176,7 +174,6 @@ class ResourceList extends Component {
             handleSort={this.handleSort}
             match={this.match}
             data={data}
-            resources={resources}
             show={this.show}
             direction={direction}
             column={column}

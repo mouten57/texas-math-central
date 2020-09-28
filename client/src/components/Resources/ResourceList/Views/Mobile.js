@@ -8,7 +8,6 @@ const MobileView = (props) => {
     handleSort,
     match,
     data,
-    resources,
     show,
     direction,
     column,
@@ -76,7 +75,7 @@ const MobileView = (props) => {
                     to={{
                       pathname: `/units/${match(resource)}/${resource._id}`,
                       state: {
-                        unitResources: resources,
+                        unitResources: data,
                       },
                     }}
                   >

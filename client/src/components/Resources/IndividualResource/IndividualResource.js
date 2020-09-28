@@ -89,6 +89,7 @@ class IndividualResource extends Component {
       history.replace();
       //coming from unit resources
     } else if (link_props?.unitResources) {
+      //doing this to load much quicker than call for individ resource data
       const this_resource = link_props.unitResources.find(
         (el) => el._id == this.props.match.params.id
       );

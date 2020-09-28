@@ -25,9 +25,7 @@ class ResourceIndex extends Component {
     if (this.props.match.params.unit) {
       axios.get(`/api/units/${this.props.match.params.unit}`).then((res) => {
         let resources = res.data;
-
         resources = getVoteTotal(resources);
-
         this.setState({
           resources,
           loading: false,
@@ -54,6 +52,8 @@ class ResourceIndex extends Component {
     axios
       .post(`/api/units/${this.props.match.params.unit}/${resourceId}/delete`)
       .then((res) => {
+        //leave this update here in case of this scenario: 1) filter 2) delete 3)click 'x' to remove filter.
+        //resource list will depend on index to keep running list of correct unfiltered (by popup) resources.
         let updated_resources = this.state.resources.filter(function (el) {
           return el._id !== resourceId;
         });

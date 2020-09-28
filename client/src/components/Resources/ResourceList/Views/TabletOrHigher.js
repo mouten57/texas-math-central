@@ -18,7 +18,6 @@ const TabletOrHigherView = (props) => {
     handleSort,
     match,
     data,
-    resources,
     show,
     direction,
     column,
@@ -289,7 +288,7 @@ const TabletOrHigherView = (props) => {
                     to={{
                       pathname: `/units/${match(resource)}/${resource._id}`,
                       state: {
-                        unitResources: resources,
+                        unitResources: data,
                       },
                     }}
                   >
