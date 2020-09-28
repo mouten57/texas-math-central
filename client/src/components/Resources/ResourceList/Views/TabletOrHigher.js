@@ -12,6 +12,8 @@ import {
 } from "semantic-ui-react";
 import IconForResourceList from "../IconForResourceList";
 import SearchPopup from "../SearchPopup";
+import gradeLevels from "../../data/gradeLevels";
+import resourceTypes from "../../data/resourceTypes";
 
 const TabletOrHigherView = (props) => {
   const {
@@ -33,6 +35,8 @@ const TabletOrHigherView = (props) => {
     typeSearchVal,
     onChange,
     clearSearch,
+    gradeSearchVal,
+    gradePopupOpen,
   } = props;
   return (
     <Grid.Column as={Media} greaterThanOrEqual="tablet">
@@ -40,6 +44,7 @@ const TabletOrHigherView = (props) => {
         style={{ marginBottom: "10px" }}
         unstackable
         // sortable
+        fixed
         striped
         compact
       >
@@ -69,6 +74,32 @@ const TabletOrHigherView = (props) => {
             </Table.HeaderCell>
             <Table.HeaderCell
               // textAlign="center"
+              sorted={column === "grade" ? direction : null}
+            >
+              <IconForResourceList
+                selected={column == "grade"}
+                direction={direction}
+              />
+              <p
+                className="headerLabel"
+                onClick={handleSort("grade")}
+                style={{ padding: 0, margin: 0 }}
+              >
+                Grade Level
+              </p>
+              <SearchPopup
+                handlePopup={handlePopup}
+                clearSearch={clearSearch}
+                onChange={onChange}
+                val={gradeSearchVal}
+                val_as_text="gradeSearchVal"
+                options={gradeLevels}
+                popupOpen={gradePopupOpen}
+                popup_open_as_text="gradePopupOpen"
+              />
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              // textAlign="center"
               sorted={column === "type" ? direction : null}
             >
               <IconForResourceList
@@ -87,6 +118,7 @@ const TabletOrHigherView = (props) => {
                 clearSearch={clearSearch}
                 onChange={onChange}
                 val={typeSearchVal}
+                options={resourceTypes}
                 val_as_text="typeSearchVal"
                 popupOpen={typePopupOpen}
                 popup_open_as_text="typePopupOpen"
@@ -149,7 +181,7 @@ const TabletOrHigherView = (props) => {
               >
                 <Table.Cell
                   width={
-                    resource._user == auth?._id || auth?.role == "admin" ? 5 : 6
+                    resource._user == auth?._id || auth?.role == "admin" ? 4 : 5
                   }
                 >
                   <Link
@@ -162,6 +194,9 @@ const TabletOrHigherView = (props) => {
                   >
                     {resource.name}
                   </Link>
+                </Table.Cell>
+                <Table.Cell width={1} textAlign="center">
+                  {resource.grade}
                 </Table.Cell>
                 <Table.Cell width={1} textAlign="center">
                   {resource.type}

@@ -36,7 +36,9 @@ module.exports = {
     if (queries.type) {
       search.type = new RegExp(queries.type, "i");
     }
-    console.log(search);
+    if (queries.grade) {
+      search.grade = new RegExp(queries.grade, "i");
+    }
 
     let resources = await Resource.find(search)
       .sort({ created_at: "desc" })

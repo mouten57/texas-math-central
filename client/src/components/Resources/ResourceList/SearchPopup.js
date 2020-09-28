@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Popup, Icon, Button, Input } from "semantic-ui-react";
+import { Form, Popup, Icon, Button, Input, Dropdown } from "semantic-ui-react";
+import gradeLevels from "../data/gradeLevels";
 
 const SearchPopup = (props) => {
   const {
@@ -10,7 +11,9 @@ const SearchPopup = (props) => {
     val_as_text,
     popupOpen,
     popup_open_as_text,
+    options,
   } = props;
+
   return (
     <div
       style={{
@@ -27,8 +30,18 @@ const SearchPopup = (props) => {
         open={popupOpen}
         position="bottom left"
         onOpen={() => handlePopup(popup_open_as_text, "open")}
+        onClose={() => handlePopup(popup_open_as_text, "close")}
         trigger={
-          <span style={{ minHeight: "1.5em", width: "100%" }}>{val}</span>
+          <span
+            style={{
+              minHeight: "1.5em",
+              maxHeight: "1.5em",
+              overflow: "hidden",
+              width: "100%",
+            }}
+          >
+            {typeof val == "object" ? val.join(", ") : val}
+          </span>
         }
         content={
           <Form
@@ -40,17 +53,31 @@ const SearchPopup = (props) => {
             }}
             onSubmit={() => handlePopup(popup_open_as_text, "close")}
           >
-            <Input
-              compact="true"
-              autoFocus
-              style={{
-                appearance: "none",
-                width: "73%",
-              }}
-              name={val_as_text}
-              value={val}
-              onChange={onChange}
-            />
+            {val_as_text == "gradeSearchVal" ||
+            val_as_text == "typeSearchVal" ? (
+              <Dropdown
+                name={val_as_text}
+                value={val}
+                fluid
+                multiple
+                selection
+                options={options}
+                placeholder="Choose one/multiple"
+                onChange={onChange}
+              />
+            ) : (
+              <Input
+                compact="true"
+                autoFocus
+                style={{
+                  appearance: "none",
+                  width: "73%",
+                }}
+                name={val_as_text}
+                value={val}
+                onChange={onChange}
+              />
+            )}
 
             <Button
               compact="true"
@@ -62,7 +89,6 @@ const SearchPopup = (props) => {
                 alignSelf: "center",
                 height: "100%",
                 marginLeft: "10px",
-                width: "20%",
               }}
             >
               Ok

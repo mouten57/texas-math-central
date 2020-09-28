@@ -47,9 +47,11 @@ class ResourceList extends Component {
       direction: "descending",
       resourceToDelete: null,
       nameSearchVal: "",
-      typeSearchVal: "",
+      typeSearchVal: [],
+      gradeSearchVal: [],
       namePopupOpen: false,
       typePopupOpen: false,
+      gradePopupOpen: false,
     };
   }
 
@@ -109,32 +111,54 @@ class ResourceList extends Component {
   handlePopup = (popuptype, val) => {
     this.setState({ [popuptype]: val == "open" });
     if (val == "close") {
-      axios
-        .get(`/api/units/${this.state.unit}`, {
-          params: {
-            name: this.state.nameSearchVal.toLowerCase(),
-            type: this.state.typeSearchVal.toLowerCase(),
-          },
-        })
-        .then((res) => {
-          let data = res.data;
-          data = getVoteTotal(res.data);
-          this.setState({ data });
-        });
+      this.getFilteredResults();
     }
   };
 
-  onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+  getFilteredResults = () => {
+    axios
+      .get(`/api/units/${this.state.unit}`, {
+        params: {
+          name: this.state.nameSearchVal.toLowerCase(),
+          type: this.state.typeSearchVal.map((v) => v.toLowerCase()).join("|"),
+          grade: this.state.gradeSearchVal
+            .map((v) => v.toLowerCase())
+            .join("|"),
+        },
+      })
+      .then((res) => {
+        let data = res.data;
+        data = getVoteTotal(res.data);
+        this.setState({
+          data: _.sortBy(data, ["voteTotal"]).reverse(),
+          column: "voteTotal",
+          direction: "descending",
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  onChange = (e, data) => {
+    console.log(data.name);
+    //if val is coming from semantic dropdown, do this
+    if (data.name == "gradeSearchVal" || data.name == "typeSearchVal") {
+      this.setState({ [data.name]: data.value });
+      //otherwise, do this
+    } else {
+      this.setState({ [e.target.name]: e.target.value });
+    }
   };
 
   clearSearch = (searchValToClear) => {
     this.setState({
       namePopupOpen: false,
-      [searchValToClear]: "",
+      [searchValToClear]:
+        searchValToClear.includes("grade") || searchValToClear.includes("type")
+          ? []
+          : "",
       //resources on resourceIndex will keep main running list of unfiltered resources
-      data: this.props.resources,
     });
+    this.getFilteredResults();
   };
 
   render() {
@@ -147,8 +171,10 @@ class ResourceList extends Component {
       direction,
       namePopupOpen,
       typePopupOpen,
+      gradeSearchVal,
+      gradePopupOpen,
     } = this.state;
-
+    console.log(this.state);
     return (
       <>
         <style>{mediaStyles}</style>
@@ -188,6 +214,8 @@ class ResourceList extends Component {
             typePopupOpen={typePopupOpen}
             typeSearchVal={typeSearchVal}
             clearSearch={this.clearSearch}
+            gradeSearchVal={gradeSearchVal}
+            gradePopupOpen={gradePopupOpen}
           />
         </MediaContextProvider>
       </>
