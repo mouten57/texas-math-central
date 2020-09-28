@@ -21,7 +21,7 @@ const MainGrid = (props) => {
 
   const mimetype = selectedFile?.mimetype;
   return (
-    <Grid compact>
+    <Grid compact="true">
       <Grid.Column width={leftColWidth}>
         <h2>{resource.name}</h2>
 

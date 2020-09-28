@@ -23,7 +23,7 @@ const MobileView = (props) => {
         unstackable
         sortable
         striped
-        compact
+        compact="true"
         fixed
       >
         <Table.Header>

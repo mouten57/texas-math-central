@@ -15,7 +15,6 @@ const RightButtons = (props) => {
           style={{ marginBottom: "10px" }}
           icon
           compact
-          basic
           onClick={() =>
             props.currentUsersFavoriteId
               ? props.onAddRemoveFavorite("remove")

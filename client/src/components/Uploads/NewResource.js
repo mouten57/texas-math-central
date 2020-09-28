@@ -119,6 +119,7 @@ class UploadForm extends Component {
                   <Label>Resource Name</Label>
                   <div>
                     <Input
+                      autoFocus
                       name="name"
                       component="input"
                       fluid

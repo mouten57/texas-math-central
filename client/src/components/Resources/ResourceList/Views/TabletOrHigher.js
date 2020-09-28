@@ -11,6 +11,7 @@ import {
   Input,
 } from "semantic-ui-react";
 import IconForResourceList from "../IconForResourceList";
+import SearchPopup from "../SearchPopup";
 
 const TabletOrHigherView = (props) => {
   const {
@@ -56,82 +57,15 @@ const TabletOrHigherView = (props) => {
               >
                 Name
               </p>
-              <div
-                style={{
-                  width: "100%",
-                  minHeight: "1.5em",
-                  borderBottom: "1px solid black",
-                  display: "flex",
-                  alignContent: "flex-end",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Popup
-                  wide="very"
-                  open={namePopupOpen}
-                  position="bottom right"
-                  onOpen={() => handlePopup("namePopupOpen", "open")}
-                  trigger={
-                    <span style={{ minHeight: "1.5em", width: "100%" }}>
-                      {nameSearchVal}
-                    </span>
-                  }
-                  content={
-                    <Form
-                      style={{
-                        width: "100%",
-                        minHeight: "1.5em",
-                        display: "flex",
-                        verticalAlign: "middle",
-                      }}
-                      onSubmit={() => handlePopup("namePopupOpen", "close")}
-                    >
-                      <Input
-                        compact
-                        autoFocus
-                        style={{
-                          appearance: "none",
-                          width: "73%",
-                        }}
-                        name="nameSearchVal"
-                        value={nameSearchVal}
-                        onChange={onChange}
-                      />
-
-                      <Button
-                        compact
-                        color="green"
-                        size="tiny"
-                        basic
-                        type="submit"
-                        style={{
-                          alignSelf: "center",
-                          height: "100%",
-                          marginLeft: "10px",
-                          width: "20%",
-                        }}
-                      >
-                        Ok
-                      </Button>
-                    </Form>
-                  }
-                  on={["click"]}
-                />
-
-                {nameSearchVal.length > 0 ? (
-                  <Icon
-                    className="custom_icon"
-                    name="delete"
-                    size="small"
-                    style={{ float: "right" }}
-                    onClick={() =>
-                      setTimeout(() => {
-                        clearSearch("nameSearchVal");
-                      }, 0)
-                    }
-                  />
-                ) : null}
-              </div>
+              <SearchPopup
+                handlePopup={handlePopup}
+                clearSearch={clearSearch}
+                onChange={onChange}
+                val={nameSearchVal}
+                val_as_text="nameSearchVal"
+                popupOpen={namePopupOpen}
+                popup_open_as_text="namePopupOpen"
+              />
             </Table.HeaderCell>
             <Table.HeaderCell
               // textAlign="center"
@@ -148,81 +82,15 @@ const TabletOrHigherView = (props) => {
               >
                 Type
               </p>
-              <div
-                style={{
-                  width: "100%",
-                  minHeight: "1.5em",
-                  borderBottom: "1px solid black",
-                  display: "flex",
-                  alignContent: "flex-end",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Popup
-                  wide="very"
-                  open={typePopupOpen}
-                  onOpen={() => handlePopup("typePopupOpen", "open")}
-                  position="bottom right"
-                  trigger={
-                    <span style={{ minHeight: "1.5em", width: "100%" }}>
-                      {typeSearchVal}
-                    </span>
-                  }
-                  content={
-                    <Form
-                      style={{
-                        width: "100%",
-                        minHeight: "1.5em",
-                        display: "flex",
-                        verticalAlign: "middle",
-                      }}
-                      onSubmit={() => handlePopup("typePopupOpen", "close")}
-                    >
-                      <Input
-                        compact
-                        autoFocus
-                        style={{
-                          appearance: "none",
-                          width: "73%",
-                        }}
-                        name="typeSearchVal"
-                        value={typeSearchVal}
-                        onChange={onChange}
-                      />
-                      <Button
-                        compact
-                        color="green"
-                        size="tiny"
-                        basic
-                        type="submit"
-                        style={{
-                          alignSelf: "center",
-                          height: "100%",
-                          marginLeft: "10px",
-                          width: "20%",
-                        }}
-                      >
-                        Ok
-                      </Button>
-                    </Form>
-                  }
-                  on={["click"]}
-                />
-
-                {typeSearchVal.length > 0 ? (
-                  <Icon
-                    className="custom_icon"
-                    name="delete"
-                    size="small"
-                    style={{ float: "right" }}
-                    onClick={() =>
-                      setTimeout(() => {
-                        clearSearch("typeSearchVal");
-                      }, 0)
-                    }
-                  />
-                ) : null}
-              </div>
+              <SearchPopup
+                handlePopup={handlePopup}
+                clearSearch={clearSearch}
+                onChange={onChange}
+                val={typeSearchVal}
+                val_as_text="typeSearchVal"
+                popupOpen={typePopupOpen}
+                popup_open_as_text="typePopupOpen"
+              />
             </Table.HeaderCell>
             <Table.HeaderCell
               textAlign="center"
