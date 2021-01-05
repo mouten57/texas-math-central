@@ -30,7 +30,7 @@
     "api2pdf": "^1.1.0",
     "awesome-unoconv": "^1.0.1",
     "aws-sdk": "^2.742.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.23.0",
