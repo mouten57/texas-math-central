@@ -13,7 +13,7 @@
     "@uppy/tus": "^1.7.5",
     "@uppy/webcam": "^1.6.11",
     "@uppy/xhr-upload": "^1.6.3",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "cloudinary-react": "^1.6.6",
     "faker": "^5.1.0",
     "filestack-react": "^3.2.1",
