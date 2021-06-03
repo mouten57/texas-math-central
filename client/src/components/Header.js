@@ -24,11 +24,15 @@ class Nav extends Component {
     }
   }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name })
+    console.log(name)
+
+  };
 
   render() {
-    const { activeItem } = this.state;
 
+    const { activeItem } = this.state;
     return (
       <Menu>
         <Menu.Item as={Link} to="/">
@@ -36,7 +40,7 @@ class Nav extends Component {
         </Menu.Item>
         <Popup
           basic
-          position="bottom right"
+          position="bottom left"
           content="Learn more about TMC"
           trigger={
             <Menu.Item
@@ -49,7 +53,12 @@ class Nav extends Component {
           }
         />
 
-        <Dropdown item icon="folder open" simple>
+        <div onMouseEnter={()=> {
+          this.setState({showMenu: true})}}
+          onMouseLeave={()=> {
+            this.setState({showMenu: false})
+            }}>
+        <Dropdown item icon="folder open" onClick={()=>this.setState({showMenu: false})} open={this.state.showMenu}>
           <Dropdown.Menu>
             <Dropdown.Item as={Link} to="/units?subject=math">
               Math
@@ -62,11 +71,12 @@ class Nav extends Component {
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+        </div>
 
         {/* <Menu.Item
           as={Link}
           to="/units"
-          
+
           active={activeItem === "resources"}
           onClick={this.handleItemClick}
         /> */}
