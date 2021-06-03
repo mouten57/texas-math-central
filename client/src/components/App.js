@@ -56,7 +56,7 @@ class App extends Component {
   render() {
     // console.log(this.props);
     return (
-      <Container>
+      <Container style={{padding: "5px 0 40px 0"}}>
         <BrowserRouter>
           <div>
             <Header />
