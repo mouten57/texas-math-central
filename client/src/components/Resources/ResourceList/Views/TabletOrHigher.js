@@ -41,7 +41,12 @@ const TabletOrHigherView = (props) => {
   return (
     <Grid.Column as={Media} greaterThanOrEqual="tablet">
       <Table
-        style={{ display: "block", marginBottom: "10px", maxHeight: "70vh", overflow: "auto" }}
+        style={{
+          display: "block",
+          marginBottom: "10px",
+          maxHeight: "70vh",
+          overflow: "auto",
+        }}
         unstackable
         // sortable
         fixed

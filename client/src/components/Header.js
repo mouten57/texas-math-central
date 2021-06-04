@@ -25,13 +25,11 @@ class Nav extends Component {
   }
 
   handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name })
-    console.log(name)
-
+    this.setState({ activeItem: name });
+    console.log(name);
   };
 
   render() {
-
     const { activeItem } = this.state;
     return (
       <Menu>
@@ -53,24 +51,32 @@ class Nav extends Component {
           }
         />
 
-        <div onMouseEnter={()=> {
-          this.setState({showMenu: true})}}
-          onMouseLeave={()=> {
-            this.setState({showMenu: false})
-            }}>
-        <Dropdown item icon="folder open" onClick={()=>this.setState({showMenu: false})} open={this.state.showMenu}>
-          <Dropdown.Menu>
-            <Dropdown.Item as={Link} to="/units?subject=math">
-              Math
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/units?subject=science">
-              Science
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/units?subject=other">
-              Other
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <div
+          onMouseEnter={() => {
+            this.setState({ showMenu: true });
+          }}
+          onMouseLeave={() => {
+            this.setState({ showMenu: false });
+          }}
+        >
+          <Dropdown
+            item
+            icon="folder open"
+            onClick={() => this.setState({ showMenu: false })}
+            open={this.state.showMenu}
+          >
+            <Dropdown.Menu>
+              <Dropdown.Item as={Link} to="/units?subject=math">
+                Math
+              </Dropdown.Item>
+              <Dropdown.Item as={Link} to="/units?subject=science">
+                Science
+              </Dropdown.Item>
+              <Dropdown.Item as={Link} to="/units?subject=other">
+                Other
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
 
         {/* <Menu.Item
