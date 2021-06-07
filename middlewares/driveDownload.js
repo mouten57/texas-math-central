@@ -104,6 +104,7 @@ const convertFile = async (file) => {
   var convert_to;
   console.log(file.mimeType);
   switch (file.mimeType) {
+    //having ERRORS WHEN CONVERTING PPT AND NOT ABLE TO HANDLE THEM CORRECTLY. DEFAULTING TO PDF FOR NOW
     // case "application/vnd.google-apps.presentation":
     //   convert_to =
     //     "application/vnd.openxmlformats-officedocument.presentationml.presentation";
