@@ -7,4 +7,8 @@ module.exports = function (app) {
     "/auth/google",
     createProxyMiddleware({ target: "http://localhost:5000" })
   );
+  app.use(
+    "/auth/drive",
+    createProxyMiddleware({ target: "http://localhost:5000" })
+  );
 };

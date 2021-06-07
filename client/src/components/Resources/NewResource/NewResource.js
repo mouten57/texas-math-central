@@ -43,6 +43,9 @@ class UploadForm extends Component {
       grade: "",
       hideLink: true,
       free: false,
+      amountOfGoogleFiles: 0,
+      googleFileIDs: [],
+      googleRawData: {},
     };
   }
 
@@ -85,10 +88,23 @@ class UploadForm extends Component {
       : files.splice(files.indexOf(file), 1);
     this.setState({ files });
   };
-  googleCallback = (googleId) => {
-    console.log(`the user selected ${googleId}`);
+  googleCallback = (data) => {
+    var googleId = data.docs[0].id;
+    var size = data.docs.length;
+    var googleFileIDs = [];
+    for (let i in data.docs) {
+      googleFileIDs.push(data.docs[i].id);
+    }
+    this.setState({
+      amountOfGoogleFiles: size,
+      googleFileIDs: googleFileIDs,
+      googleRawData: data,
+    });
     window.temp_props = undefined;
   };
+  onDownloadFromGoogle(formData) {
+    axios.post("/api/drive/download", formData);
+  }
   transform = (unit) => {
     const subj = this.state.subject.toLowerCase();
     if (unit) {
@@ -255,9 +271,16 @@ class UploadForm extends Component {
                   </ul>
                 </div>
               ) : null}
-              {/* <GoogleWrapper
-                googleCallback={(data) => this.googleCallback(data)}
-              /> */}
+              <GoogleWrapper
+                googleCallback={(data) => {
+                  this.googleCallback(data);
+                }}
+                amountOfFiles={this.state.amountOfGoogleFiles}
+                data={this.state.googleRawData}
+                onDownload={() =>
+                  this.onDownloadFromGoogle(this.state.googleRawData)
+                }
+              />
             </Segment>
 
             <Button

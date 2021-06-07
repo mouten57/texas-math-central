@@ -33,6 +33,11 @@ module.exports = (app) => {
     // processImage,
     resourceController.create
   );
+  app.post(
+    "/api/drive/download",
+    requireLogin,
+    resourceController.getDriveFiles
+  );
   app.post("/api/units/:unit/:resourceId/delete", resourceController.destroy);
   app.get("/api/resources/:resourceId/edit", resourceController.edit);
   app.post("/api/resources/:resourceId/update", resourceController.update);

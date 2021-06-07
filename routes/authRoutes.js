@@ -24,6 +24,15 @@ module.exports = (app) => {
     }
   );
 
+  app.get("/auth/drive", (req, res) => {
+    res.send(req.session.drive_auth);
+  });
+
+  app.post("/auth/drive", (req, res) => {
+    req.session.drive_auth = req.body;
+    res.send("SUCCESS");
+  });
+
   app.get("/api/logout", (req, res) => {
     console.log(`hey, here is the user that just signed out: ${req.user}`);
     req.logout();

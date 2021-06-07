@@ -13,6 +13,7 @@ const watermark = require("jimp-watermark");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
 const create_image_watermark = require("../middlewares/create_image_watermark");
+const driveDownload = require("../middlewares/driveDownload");
 
 module.exports = {
   index(req, res, next) {
@@ -49,7 +50,10 @@ module.exports = {
       }
     });
   },
-
+  getDriveFiles(req, res, next) {
+    //sending entire file (just the first one)
+    driveDownload(req.body.docs, req.session.drive_auth);
+  },
   create(req, res, next) {
     var files = req.files || [],
       newResource;

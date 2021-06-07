@@ -52,6 +52,7 @@
     "jimp": "^0.16.1",
     "jimp-watermark": "^1.1.0",
     "lodash": "^4.17.21",
+    "mime-types": "^2.1.31",
     "minipass": "3.1.3",
     "mongoose": "^5.12.12",
     "morgan": "^1.10.0",
