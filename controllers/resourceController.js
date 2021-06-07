@@ -14,6 +14,7 @@ const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
 const create_image_watermark = require("../middlewares/create_image_watermark");
 const driveDownload = require("../middlewares/driveDownload");
+const { type } = require("os");
 
 module.exports = {
   index(req, res, next) {
@@ -52,7 +53,27 @@ module.exports = {
   },
   getDriveFiles(req, res, next) {
     //sending entire file (just the first one)
-    driveDownload(req.body.docs, req.session.drive_auth);
+    driveDownload(
+      req.body.docs,
+      req.session.drive_auth,
+      (err, filePathList) => {
+        if (err) {
+          console.log("FAIL");
+          return res.send(err);
+        } else {
+          //check for multiple files
+          if (filePathList.constructor == Array) {
+            console.log("array", filePathList);
+
+            //otherwise its just one file
+          } else {
+            console.log("one file", filePathList);
+          }
+          console.log(filePathList);
+          res.send(filePathList);
+        }
+      }
+    );
   },
   create(req, res, next) {
     var files = req.files || [],

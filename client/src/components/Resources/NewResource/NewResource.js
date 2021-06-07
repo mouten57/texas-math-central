@@ -102,9 +102,13 @@ class UploadForm extends Component {
     });
     window.temp_props = undefined;
   };
-  onDownloadFromGoogle(formData) {
-    axios.post("/api/drive/download", formData);
-  }
+  onDownloadFromGoogle = async (formData) => {
+    const res = await axios.post("/api/drive/download", formData);
+    console.log(res.data);
+    if (res.data.code == "400") {
+      alert("There was an error with one of your files. Please try again.");
+    }
+  };
   transform = (unit) => {
     const subj = this.state.subject.toLowerCase();
     if (unit) {

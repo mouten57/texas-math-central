@@ -5,7 +5,7 @@ const path = require("path");
 const keys = require("../config/keys/keys");
 const { google } = require("googleapis");
 var mime = require("mime-types");
-const { doesNotMatch } = require("assert");
+
 const oauth2Client = new google.auth.OAuth2(
   keys.googleClientID,
   keys.googleClientSecret,
@@ -17,7 +17,7 @@ const drive = google.drive({
   auth: oauth2Client,
 });
 
-async function runSample(files, auth) {
+async function runSample(files, auth, cb) {
   console.log(files, auth);
 
   oauth2Client.setCredentials({ access_token: auth.access_token });
@@ -27,97 +27,122 @@ async function runSample(files, auth) {
   // documents, see the method drive.files.export():
   // https://developers.google.com/drive/api/v3/manage-downloads
 
-  const downloadFile = (file) => {
-    const fileId = file.id;
-    const { name, mimeType } = file;
-    return drive.files
-      .get({ fileId, alt: "media" }, { responseType: "stream" })
-      .then((res) => {
-        return new Promise((resolve, reject) => {
-          var ext = mime.extension(mimeType);
-          const filePath = path.join(
-            os.tmpdir(),
-            `${uuid.v4()}.${ext ? ext : path.extname(name)}`
-          );
-          console.log(`writing to ${filePath}`);
-          const dest = fs.createWriteStream(filePath);
-          let progress = 0;
-
-          res.data
-            .on("end", () => {
-              console.log("Done downloading file.");
-              resolve(filePath);
-            })
-            .on("error", (err) => {
-              console.error("Error downloading file.");
-              reject(err);
-            })
-            .on("data", (d) => {
-              progress += d.length;
-              if (process.stdout.isTTY) {
-                process.stdout.clearLine();
-                process.stdout.cursorTo(0);
-                process.stdout.write(`Downloaded ${progress} bytes`);
-              }
-            })
-            .pipe(dest);
-        });
-      });
-  };
-
-  const convertFile = async (file, done) => {
-    var convert_to;
-    switch (file.mimeType) {
-      case "application/vnd.google-apps.presentation":
-        convert_to =
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-        break;
-      case "application/vnd.google-apps.document":
-        convert_to =
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-        break;
-      default:
-        convert_to = "application/pdf";
-    }
-    var ext = mime.extension(convert_to);
-    const filePath = path.join(os.tmpdir(), `${uuid.v4()}.${ext}`);
-    const dest = fs.createWriteStream(filePath);
-    const { data } = await drive.files.export(
-      {
-        fileId: file.id,
-        mimeType: convert_to,
-      },
-      {
-        responseType: "stream",
-      }
-    );
-
-    data
-      .on("end", function () {
-        console.log("Done");
-      })
-      .on("error", function (err) {
-        console.log("Error during download", err);
-      })
-      .pipe(dest);
-  };
-
-  handleFile = (file) => {
-    if (file.mimeType.includes("google-apps")) {
-      return convertFile(file);
-    } else {
-      downloadFile(file);
-    }
-  };
-
+  //START HERE
   if (files.length == 1) {
-    return handleFile(files[0]);
-  } else if (files.length > 1) {
-    for (let i = 0; i < files.length; i++) {
-      handleFile(files[i]);
+    var filePath = await handleFile(files[0]);
+    try {
+      cb(null, filePath);
+    } catch (err) {
+      return cb(err);
     }
+  } else if (files.length > 1) {
+    const filePathList = [];
+    for (let i = 0; i < files.length; i++) {
+      try {
+        let filePath = await handleFile(files[i]);
+        filePathList.push(filePath);
+      } catch (err) {
+        return cb(err);
+      }
+    }
+
+    cb(null, filePathList);
   }
 }
+
+const handleFile = (file) => {
+  if (file.mimeType.includes("google-apps")) {
+    return convertFile(file).then((f) => {
+      return f;
+    });
+  } else {
+    return downloadFile(file);
+  }
+};
+
+const downloadFile = (file) => {
+  const fileId = file.id;
+  const { name, mimeType } = file;
+  var ext = mime.extension(mimeType);
+  const filePath = path.join(
+    os.tmpdir(),
+    `${uuid.v4()}.${ext ? ext : path.extname(name)}`
+  );
+  const dest = fs.createWriteStream(filePath);
+  drive.files
+    .get({ fileId, alt: "media" }, { responseType: "stream" })
+    .then((res) => {
+      return new Promise((resolve, reject) => {
+        console.log(`writing to ${filePath}`);
+
+        let progress = 0;
+
+        res.data
+          .on("end", () => {
+            console.log("Done downloading file.");
+            resolve(filePath);
+          })
+          .on("error", (err) => {
+            console.error("Error downloading file.");
+            reject(err);
+          })
+          .on("data", (d) => {
+            progress += d.length;
+            if (process.stdout.isTTY) {
+              process.stdout.clearLine();
+              process.stdout.cursorTo(0);
+              process.stdout.write(`Downloaded ${progress} bytes`);
+            }
+          })
+          .pipe(dest);
+      });
+    });
+  return filePath.replace(/\\/g, "/");
+};
+
+const convertFile = async (file) => {
+  var convert_to;
+  console.log(file.mimeType);
+  switch (file.mimeType) {
+    // case "application/vnd.google-apps.presentation":
+    //   convert_to =
+    //     "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    //   break;
+    case "application/vnd.google-apps.document":
+      convert_to =
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      break;
+    default:
+      convert_to = "application/pdf";
+  }
+  var ext = mime.extension(convert_to);
+  const filePath = path.join(os.tmpdir(), `${uuid.v4()}.${ext}`);
+  console.log(filePath);
+  const dest = fs.createWriteStream(filePath);
+  const { data } = await drive.files.export(
+    {
+      fileId: file.id,
+      mimeType: convert_to,
+    },
+    {
+      responseType: "stream",
+    }
+  );
+  data
+    .on("end", function () {
+      console.log("Done converting file.");
+    })
+    .on("error", function (err) {
+      return err;
+    })
+    .pipe(dest);
+  try {
+    await data;
+    return filePath.replace(/\\/g, "/");
+  } catch (err) {
+    return err;
+  }
+};
 
 if (module === require.main) {
   if (process.argv.length !== 3) {
