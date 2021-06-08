@@ -19,7 +19,10 @@ const resourceSchema = new Schema({
     type: Date,
     default: new Date(),
   },
-  updated_at: Date,
+  updated_at: {
+    type: Date,
+    default: new Date(),
+  },
   files: Array,
   s3Object: Object,
   s3Link: String,
