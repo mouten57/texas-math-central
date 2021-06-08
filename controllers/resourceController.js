@@ -70,11 +70,11 @@ module.exports = {
   create(req, res, next) {
     var files = req.files || [],
       newResource;
-      var googleFiles = JSON.parse(req.body.googleFiles)
+    var googleFiles = JSON.parse(req.body.googleFiles);
     // var files_plus_data = [...files];
     //put google files first so i can grab the right file location with 0 index on line 126
-    files = googleFiles.concat(files)
-    console.log(files)
+    files = googleFiles.concat(files);
+    console.log(files);
     const {
       name,
       grade,
@@ -85,7 +85,7 @@ module.exports = {
       description,
       fullUnit,
       free,
-      googleFileDownloads
+      googleFileDownloads,
     } = req.body;
     var newResource = {
       name,
@@ -103,10 +103,7 @@ module.exports = {
       created_at: Date.now(),
       files: ["TBD"],
     };
-    parsed_googleFileDownloads = JSON.parse(googleFileDownloads)
-
-   
-
+    parsed_googleFileDownloads = JSON.parse(googleFileDownloads);
 
     resourceQueries.addResource(newResource, async (err, resource) => {
       if (err) {
@@ -116,8 +113,13 @@ module.exports = {
         //after sending initial, send files
         //start upload with aws
         for (let i = 0; i < files.length; i++) {
-          const Key = files[i].driveSuccess ? files[i].name : files[i].filename;
-          const Body = files[i].driveSuccess ? fs.readFileSync(parsed_googleFileDownloads[i]) : fs.readFileSync(`./uploads/${files[i].filename}`)
+          console.log(files[i].url.includes("drive.google"));
+          const Key = files[i].url.includes("drive.google")
+            ? files[i].name
+            : files[i].filename;
+          const Body = files[i].url.includes("drive.google")
+            ? fs.readFileSync(parsed_googleFileDownloads[i])
+            : fs.readFileSync(`./uploads/${files[i].filename}`);
           const params = {
             Bucket: "texas-math-central",
             Key: Key,
@@ -126,16 +128,19 @@ module.exports = {
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
-          let file_ext = files[i].driveSuccess ? path.extname(files[i].name).toLowerCase(): path.extname(files[i].filename).toLowerCase();
-          let file_path = files[i].driveSuccess ? parsed_googleFileDownloads[i] : `./uploads/${files[i].filename}`;
-          
-          var watermark_pdf_filepath = files[i].driveSuccess ? parsed_googleFileDownloads[i].replace(
-            file_ext,
-            `_watermark${file_ext}.pdf`
-          ) : files[i].path.replace(
-            file_ext,
-            `_watermark${file_ext}.pdf`
-          );
+          let file_ext = files[i].url.includes("drive.google")
+            ? path.extname(files[i].name).toLowerCase()
+            : path.extname(files[i].filename).toLowerCase();
+          let file_path = files[i].url.includes("drive.google")
+            ? parsed_googleFileDownloads[i]
+            : `./uploads/${files[i].filename}`;
+
+          var watermark_pdf_filepath = files[i].url.includes("drive.google")
+            ? parsed_googleFileDownloads[i].replace(
+                file_ext,
+                `_watermark${file_ext}.pdf`
+              )
+            : files[i].path.replace(file_ext, `_watermark${file_ext}.pdf`);
 
           let image_types = ".jpg,.jpeg,.png,.bmp,.gif";
 
@@ -152,7 +157,9 @@ module.exports = {
                     file_ext.substring(1)
                   );
                   //over-write original file declaration
-                  var pdf_path = files[i].driveSuccess ? `./uploads/${files[i].name}.pdf` : `./uploads/${files[i].filename}.pdf`
+                  var pdf_path = files[i].url.includes("drive.google")
+                    ? `./uploads/${files[i].name}.pdf`
+                    : `./uploads/${files[i].filename}.pdf`;
                   var file_to_pdf = await result.file.save(pdf_path);
                 }
                 file_to_pdf = fs.readFileSync(file_to_pdf);
