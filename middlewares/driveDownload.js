@@ -10,7 +10,7 @@ const { file } = require("googleapis/build/src/apis/file");
 const oauth2Client = new google.auth.OAuth2(
   keys.googleClientID,
   keys.googleClientSecret,
-  keys.googleRedirectURIs[0]
+  keys.googleRedirectURI
 );
 
 const drive = google.drive({
