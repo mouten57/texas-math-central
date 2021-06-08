@@ -79,7 +79,7 @@ module.exports = {
     }
   },
   async updateResource(_id, updatedResource, callback) {
-    //console.log(updatedResource);
+    updatedResource.updated_at = new Date();
     const resource = await Resource.findOneAndUpdate({ _id }, updatedResource, {
       new: true,
     })

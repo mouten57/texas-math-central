@@ -13,6 +13,7 @@ module.exports = {
     if (vote) {
       //means this is an update
       vote.value = val;
+      vote.updated_at = new Date();
       //I dont think we need to add values to resource and user if votes already exist
       // let resource = await Resource.findOne({ _id: vote.resource_id });
       // let user = await User.findOne({ _id: vote._user });

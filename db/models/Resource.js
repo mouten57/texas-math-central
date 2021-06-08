@@ -15,7 +15,11 @@ const resourceSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   favorites: [{ type: Schema.Types.ObjectId, ref: "Favorite" }],
   votes: [{ type: Schema.Types.ObjectId, ref: "Vote" }],
-  created_at: Date,
+  created_at: {
+    type: Date,
+    default: new Date(),
+  },
+  updated_at: Date,
   files: Array,
   s3Object: Object,
   s3Link: String,

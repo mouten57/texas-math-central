@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  created_at: {
+    type: Date,
+    default: new Date(),
+  },
   googleId: String,
   role: { type: String, default: "standard" },
   firstname: String,

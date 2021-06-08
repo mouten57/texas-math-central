@@ -3,7 +3,10 @@ const { Schema } = mongoose;
 const userSchema = require("./User");
 
 const favoriteSchema = new Schema({
-  created_at: Date,
+  created_at: {
+    type: Date,
+    default: new Date(),
+  },
   resource_id: {
     type: Schema.Types.ObjectId,
     ref: "Resource",

@@ -2,6 +2,14 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const voteSchema = new Schema({
+  created_at: {
+    type: Date,
+    default: new Date(),
+  },
+  updated_at: {
+    type: Date,
+    default: new Date(),
+  },
   value: {
     type: Number,
     validate: {
