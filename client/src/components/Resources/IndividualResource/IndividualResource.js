@@ -286,7 +286,7 @@ class IndividualResource extends Component {
   handleCancelDelete = () => this.setState({ confirmOpen: false });
 
   render() {
-    //console.log("state is", this.state, "props are", this.props);
+    //  console.log("state is", this.state, "props are", this.props);
     const { resource, confirmOpen } = this.state;
     if (this.props.auth) {
       if (

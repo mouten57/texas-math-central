@@ -9,12 +9,9 @@ var { s3 } = awsConfig;
 var convertapi = require("convertapi")(keys.convertapi_KEY);
 // var im = require("imagemagick");
 const path = require("path");
-const watermark = require("jimp-watermark");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
-const create_image_watermark = require("../middlewares/create_image_watermark");
 const driveDownload = require("../middlewares/driveDownload");
-const { type } = require("os");
 
 module.exports = {
   index(req, res, next) {
@@ -27,8 +24,6 @@ module.exports = {
     });
   },
   getUnitResources(req, res, next) {
-    console.log(req.query);
-
     resourceQueries.getUnitResources(
       req.params.unit,
       req.query,
@@ -74,7 +69,7 @@ module.exports = {
     // var files_plus_data = [...files];
     //put google files first so i can grab the right file location with 0 index on line 126
     files = googleFiles.concat(files);
-    console.log(files);
+
     const {
       name,
       grade,
@@ -103,7 +98,12 @@ module.exports = {
       created_at: Date.now(),
       files: ["TBD"],
     };
-    parsed_googleFileDownloads = JSON.parse(googleFileDownloads);
+    //parse the file location array so it doesnt return as a string but returns as an array
+    const parsed_googleFileDownloads =
+      googleFileDownloads != "undefined"
+        ? JSON.parse(googleFileDownloads)
+        : null;
+    console.log(parsed_googleFileDownloads);
 
     resourceQueries.addResource(newResource, async (err, resource) => {
       if (err) {
@@ -113,13 +113,50 @@ module.exports = {
         //after sending initial, send files
         //start upload with aws
         for (let i = 0; i < files.length; i++) {
-          console.log(files[i].url.includes("drive.google"));
-          const Key = files[i].url.includes("drive.google")
-            ? files[i].name
-            : files[i].filename;
-          const Body = files[i].url.includes("drive.google")
-            ? fs.readFileSync(parsed_googleFileDownloads[i])
+          // set all vars together
+          var file_ext,
+            Key,
+            file_path,
+            watermark_pdf_filepath,
+            watermark_pdf_key;
+          if (files[i].url?.includes("google")) {
+            //if extname exists
+            if (path.extname(files[i].name)) {
+              file_ext = path.extname(files[i].name).toLowerCase;
+              Key = files[i].name;
+            } else {
+              file_ext = path
+                .extname(parsed_googleFileDownloads[i])
+                .toLowerCase();
+              Key = `${files[i].name}${file_ext}`;
+            }
+            file_path = parsed_googleFileDownloads[i];
+            watermark_pdf_filepath = parsed_googleFileDownloads[i].replace(
+              file_ext,
+              `_watermark${file_ext}.pdf`
+            );
+            watermark_pdf_key = files[i].name.replace(
+              file_ext,
+              `_watermark${file_ext}.pdf`
+            );
+          } else {
+            file_ext = path.extname(files[i].filename).toLowerCase();
+            Key = files[i].filename;
+            file_path = `./uploads/${files[i].filename}`;
+            watermark_pdf_filepath = files[i].path.replace(
+              file_ext,
+              `_watermark${file_ext}.pdf`
+            );
+            watermark_pdf_key = files[i].filename.replace(
+              file_ext,
+              `_watermark${file_ext}.pdf`
+            );
+          }
+
+          const Body = files[i].url?.includes("google")
+            ? fs.readFileSync(`${parsed_googleFileDownloads[i]}`)
             : fs.readFileSync(`./uploads/${files[i].filename}`);
+
           const params = {
             Bucket: "texas-math-central",
             Key: Key,
@@ -128,19 +165,6 @@ module.exports = {
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
-          let file_ext = files[i].url.includes("drive.google")
-            ? path.extname(files[i].name).toLowerCase()
-            : path.extname(files[i].filename).toLowerCase();
-          let file_path = files[i].url.includes("drive.google")
-            ? parsed_googleFileDownloads[i]
-            : `./uploads/${files[i].filename}`;
-
-          var watermark_pdf_filepath = files[i].url.includes("drive.google")
-            ? parsed_googleFileDownloads[i].replace(
-                file_ext,
-                `_watermark${file_ext}.pdf`
-              )
-            : files[i].path.replace(file_ext, `_watermark${file_ext}.pdf`);
 
           let image_types = ".jpg,.jpeg,.png,.bmp,.gif";
 
@@ -157,7 +181,7 @@ module.exports = {
                     file_ext.substring(1)
                   );
                   //over-write original file declaration
-                  var pdf_path = files[i].url.includes("drive.google")
+                  var pdf_path = files[i].url?.includes("google")
                     ? `./uploads/${files[i].name}.pdf`
                     : `./uploads/${files[i].filename}.pdf`;
                   var file_to_pdf = await result.file.save(pdf_path);
@@ -182,10 +206,11 @@ module.exports = {
             var s3PDFData = await s3
               .upload({
                 Bucket: "texas-math-central",
-                Key: watermark_pdf_filepath,
+                Key: watermark_pdf_key,
                 Body: fs.readFileSync(watermark_pdf_filepath),
               })
               .promise();
+
             files[i].previewLink = s3PDFData.Location;
           }
 

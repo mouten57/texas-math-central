@@ -3,10 +3,15 @@ const app = express();
 const server = require("http").createServer(app);
 const mainConfig = require("./config/main-config");
 const routeConfig = require("./config/route-config.js");
-const axios = require("axios");
+const socketIo = require("socket.io");
 const PORT = process.env.PORT || 5000;
 
-const io = require("socket.io")(server);
+const io = socketIo(server, {
+  cors: {
+    origin: true,
+    methods: ["GET", "POST"],
+  },
+});
 app.io = io;
 const ioConfig = require("./config/io-config");
 // const keys = require("./config/keys/keys");

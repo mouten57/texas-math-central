@@ -13,9 +13,8 @@ const onSubmit = (e, state, callback) => {
     type,
     link,
     free,
-    googleFileDownloads
+    googleFileDownloads,
   } = state;
-  
 
   let formData = new FormData();
 
@@ -25,7 +24,7 @@ const onSubmit = (e, state, callback) => {
   }
   formData.append("files", files);
   formData.append("googleFiles", JSON.stringify(googleFiles));
-   formData.append("googleFileDownloads", JSON.stringify(googleFileDownloads));
+  formData.append("googleFileDownloads", JSON.stringify(googleFileDownloads));
   formData.append("free", free.toString());
   formData.append("name", name);
   formData.append("grade", grade);
@@ -38,12 +37,10 @@ const onSubmit = (e, state, callback) => {
   for (var value of formData.values()) {
     values.push(value);
   }
-  console.log(values);
   values.splice(1, 1);
-  console.log(values);
 
   if (values.includes("") === true) {
-    return alert(`                Please complete all fields. 
+    return alert(`                Please complete all fields.
 
                   (File upload is optional)`);
   } else {

@@ -92,14 +92,16 @@ const MainGrid = (props) => {
               <b>
                 Preview
                 <a href={authorized_to_view ? state.selectedFile.s3Link : null}>
-                  {` (${state.selectedFile.originalname || state.selectedFile.name })`}
+                  {` (${
+                    state.selectedFile.originalname || state.selectedFile.name
+                  })`}
                 </a>
               </b>
               {mimetype?.includes("image") ? (
                 <Image src={selectedFile.s3Link} size="large" />
               ) : (
                 <iframe
-                  src={`https://docs.google.com/gview?url=${state.selectedFile.previewLink}&embedded=true`}
+                  src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
                   style={{
                     marginTop: "10px",
                     height: iframeheight,

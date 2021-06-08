@@ -26,7 +26,6 @@ class Nav extends Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
-    console.log(name);
   };
 
   render() {

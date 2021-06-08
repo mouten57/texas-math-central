@@ -19,8 +19,6 @@ const drive = google.drive({
 });
 
 async function runSample(files, auth, cb) {
-  console.log(files, auth);
-
   oauth2Client.setCredentials({ access_token: auth.access_token });
   // Obtain user credentials to use for the request
 
@@ -33,7 +31,6 @@ async function runSample(files, auth, cb) {
     var filePath = await handleFile(files[0]);
     var filePathArray = [];
     filePathArray[0] = filePath;
-    console.log(filePathArray)
     try {
       cb(null, filePathArray);
     } catch (err) {
@@ -101,28 +98,26 @@ const downloadFile = (file) => {
           .pipe(dest);
       });
     });
-  return filePath.replace(/\\/g, "/");
+  return filePath;
 };
 
 const convertFile = async (file) => {
   var convert_to;
-  console.log(file.mimeType);
   switch (file.mimeType) {
     //having ERRORS WHEN CONVERTING PPT AND NOT ABLE TO HANDLE THEM CORRECTLY. DEFAULTING TO PDF FOR NOW
     // case "application/vnd.google-apps.presentation":
     //   convert_to =
     //     "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     //   break;
-    case "application/vnd.google-apps.document":
-      convert_to =
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-      break;
+    // case "application/vnd.google-apps.document":
+    //   convert_to =
+    //     "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    //   break;
     default:
       convert_to = "application/pdf";
   }
   var ext = mime.extension(convert_to);
   const filePath = path.join(os.tmpdir(), `${uuid.v4()}.${ext}`);
-  console.log(filePath);
   const dest = fs.createWriteStream(filePath);
   const { data } = await drive.files.export(
     {
@@ -143,7 +138,7 @@ const convertFile = async (file) => {
     .pipe(dest);
   try {
     await data;
-    return filePath.replace(/\\/g, "/");
+    return filePath;
   } catch (err) {
     return err;
   }

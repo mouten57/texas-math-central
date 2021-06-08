@@ -124,18 +124,15 @@ class GoogleWrapper extends Component {
           }}
         >
           <Button onClick={this.loadPicker}>Add from Drive</Button>
-         {this.props.amountOfFiles > 0 ? (
-           null
-          // <Button onClick={this.props.onDownload} >
-          //   Download Selected Files
-          // </Button>
-        ) : null}
+          {this.props.amountOfFiles > 0
+            ? null
+            : // <Button onClick={this.props.onDownload} >
+              //   Download Selected Files
+              // </Button>
+              null}
         </div>
 
         {/* Group two */}
-
-       
-        
       </div>
     );
   }

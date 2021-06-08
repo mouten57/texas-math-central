@@ -87,7 +87,7 @@ class UserProfile extends Component {
   }
 
   render() {
-    console.log(this.state, this.props);
+    //console.log(this.state, this.props);
     return (
       <Container style={{ marginBottom: "40px" }}>
         {this.renderHeading()}
