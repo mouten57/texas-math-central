@@ -1,6 +1,6 @@
 //ResourceForm shows a form for a user to add input
 import _ from "lodash";
-import FilePicker from "./FilePicker/FilePicker";
+
 import {
   Form,
   Button,
@@ -88,13 +88,6 @@ class UploadForm extends Component {
     }
   };
 
-  setFilesFromUppy = (action, file) => {
-    let files = [...this.state.files];
-    action == "add"
-      ? files.push(file.name)
-      : files.splice(files.indexOf(file), 1);
-    this.setState({ files });
-  };
   googleCallback = (data) => {
     var size = data.docs.length;
     var googleFileIDs = [];
@@ -277,10 +270,6 @@ class UploadForm extends Component {
                 </div>
               </div>
 
-              {/* <FilePicker
-                test="TEST"
-                setFilesFromUppy={this.setFilesFromUppy}
-              /> */}
               {this.state.allFiles.length > 0 ? (
                 <div style={{ marginTop: "15px" }}>
                   <h5>Selected Files</h5>

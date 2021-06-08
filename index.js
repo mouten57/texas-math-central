@@ -15,7 +15,6 @@ const io = socketIo(server, {
 app.io = io;
 const ioConfig = require("./config/io-config");
 // const keys = require("./config/keys/keys");
-// var companion = require("@uppy/companion");
 // const path = require("path");
 // const destFilePath = path.resolve("uploads");
 

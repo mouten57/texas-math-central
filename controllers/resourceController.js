@@ -7,7 +7,6 @@ const keys = require("../config/keys/keys");
 const deleteUploads = require("../middlewares/deleteUploads");
 var { s3 } = awsConfig;
 var convertapi = require("convertapi")(keys.convertapi_KEY);
-// var im = require("imagemagick");
 const path = require("path");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");

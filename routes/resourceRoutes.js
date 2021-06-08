@@ -11,16 +11,6 @@ module.exports = (app) => {
     requireLogin,
     resourceController.getUnitResources
   );
-  //handles uploads from uppy file uploader, one at a time
-  //removing for now, bc I don't want global.files
-  // app.post("/api/upload", upload.single("my_file"), (req, res) => {
-  //   if (global.files == undefined || global.createController == "started") {
-  //     global.files = [];
-  //   }
-  //   global.files = [...global.files, req.file];
-
-  //   res.status(200).send("success");
-  // });
 
   app.get("/api/units/:unit/:id", requireLogin, resourceController.show);
 
