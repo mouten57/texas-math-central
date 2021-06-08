@@ -5,6 +5,7 @@ const path = require("path");
 const keys = require("../config/keys/keys");
 const { google } = require("googleapis");
 var mime = require("mime-types");
+const { file } = require("googleapis/build/src/apis/file");
 
 const oauth2Client = new google.auth.OAuth2(
   keys.googleClientID,
@@ -30,8 +31,11 @@ async function runSample(files, auth, cb) {
   //START HERE
   if (files.length == 1) {
     var filePath = await handleFile(files[0]);
+    var filePathArray = [];
+    filePathArray[0] = filePath;
+    console.log(filePathArray)
     try {
-      cb(null, filePath);
+      cb(null, filePathArray);
     } catch (err) {
       return cb(err);
     }

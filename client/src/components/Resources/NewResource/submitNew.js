@@ -7,12 +7,15 @@ const onSubmit = (e, state, callback) => {
     grade,
     subject,
     files,
+    googleFiles,
     unit,
     fullUnit,
     type,
     link,
     free,
+    googleFileDownloads
   } = state;
+  
 
   let formData = new FormData();
 
@@ -21,6 +24,8 @@ const onSubmit = (e, state, callback) => {
     formData.append("files", state.files[key]);
   }
   formData.append("files", files);
+  formData.append("googleFiles", JSON.stringify(googleFiles));
+   formData.append("googleFileDownloads", JSON.stringify(googleFileDownloads));
   formData.append("free", free.toString());
   formData.append("name", name);
   formData.append("grade", grade);

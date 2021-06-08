@@ -107,11 +107,12 @@ class UploadForm extends Component {
       googleFiles: data.docs,
       allFiles: files.concat(data.docs)
     });
+    this.onDownloadFromGoogle(this.state.googleRawData)
     window.temp_props = undefined;
   };
   onDownloadFromGoogle = async (formData) => {
     const res = await axios.post("/api/drive/download", formData);
-    console.log(res.data);
+    this.setState({googleFileDownloads: res.data})
     if (res.data.code == "400") {
       alert("There was an error with one of your files. Please try again.");
     }
@@ -272,7 +273,7 @@ class UploadForm extends Component {
                 test="TEST"
                 setFilesFromUppy={this.setFilesFromUppy}
               /> */}
-              {this.state.files.length > 0 ? (
+              {this.state.allFiles.length > 0 ? (
                 <div style={{ marginTop: "15px" }}>
                   <h5>Selected Files</h5>
                   <ul style={{listStyleType: 'circle'}}>

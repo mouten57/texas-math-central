@@ -37,7 +37,7 @@ const downloadLink = (props) => {
                   paddingTop: "10px",
                 }}
               >
-                {file.originalname}
+                {file.originalname || file.name}
               </li>
             );
           })}
