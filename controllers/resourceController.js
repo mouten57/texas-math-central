@@ -122,7 +122,7 @@ module.exports = {
           if (files[i].url?.includes("google")) {
             //if extname exists
             if (path.extname(files[i].name)) {
-              file_ext = path.extname(files[i].name).toLowerCase;
+              file_ext = path.extname(files[i].name).toLowerCase();
               Key = files[i].name;
             } else {
               file_ext = path
