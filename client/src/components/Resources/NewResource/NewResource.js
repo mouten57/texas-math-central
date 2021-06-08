@@ -269,7 +269,6 @@ class UploadForm extends Component {
                   />
                 </div>
               </div>
-
               {this.state.allFiles.length > 0 ? (
                 <div style={{ marginTop: "15px" }}>
                   <h5>Selected Files</h5>
@@ -280,6 +279,9 @@ class UploadForm extends Component {
                   </ul>
                 </div>
               ) : null}
+              Google
+              {/*
+              GOOGLE NOT WORKING IN PROD. POPUP NOT LOADING
               <GoogleWrapper
                 googleCallback={(data) => {
                   this.googleCallback(data);
@@ -289,7 +291,7 @@ class UploadForm extends Component {
                 onDownload={() =>
                   this.onDownloadFromGoogle(this.state.googleRawData)
                 }
-              />
+              /> */}
             </Segment>
 
             <Button
