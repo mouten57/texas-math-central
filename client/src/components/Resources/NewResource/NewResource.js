@@ -279,7 +279,7 @@ class UploadForm extends Component {
                   </ul>
                 </div>
               ) : null}
-              Google
+
               {/*
               GOOGLE NOT WORKING IN PROD. POPUP NOT LOADING
               <GoogleWrapper
