@@ -1,4 +1,5 @@
 const resourceQueries = require("../db/queries.resources");
+const resourceViewsQueries = require("../db/queries.resources_views");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
 var AWS = require("aws-sdk");
@@ -46,13 +47,16 @@ module.exports = {
     });
   },
   increaseViewCount(req, res, next) {
-    resourceQueries.increaseViewCount(req.params.resourceId, (err, count) => {
-      if (err) {
-        res.status(422).send(err);
-      } else {
-        res.send(count);
+    resourceViewsQueries.increaseViewCount(
+      req.params.resourceId,
+      (err, count) => {
+        if (err) {
+          res.status(422).send(err);
+        } else {
+          res.send(count);
+        }
       }
-    });
+    );
   },
   getDriveFiles(req, res, next) {
     //sending entire file (just the first one)
