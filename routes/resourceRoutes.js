@@ -30,6 +30,10 @@ module.exports = (app) => {
   );
   app.post("/api/units/:unit/:resourceId/delete", resourceController.destroy);
   app.get("/api/resources/:resourceId/edit", resourceController.edit);
+  app.get(
+    "/api/resources/:resourceId/views",
+    resourceController.increaseViewCount
+  );
   app.post("/api/resources/:resourceId/update", resourceController.update);
   app.get(
     "/api/units/:unit/:resourceId/download/:filename",

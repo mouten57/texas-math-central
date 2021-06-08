@@ -45,6 +45,15 @@ module.exports = {
       }
     });
   },
+  increaseViewCount(req, res, next) {
+    resourceQueries.increaseViewCount(req.params.resourceId, (err, count) => {
+      if (err) {
+        res.status(422).send(err);
+      } else {
+        res.send(count);
+      }
+    });
+  },
   getDriveFiles(req, res, next) {
     //sending entire file (just the first one)
     driveDownload(

@@ -26,6 +26,7 @@ const resourceSchema = new Schema({
   files: Array,
   s3Object: Object,
   s3Link: String,
+  views: Number,
 });
 //worry about this later
 // resourceSchema.pre("create", { query: true }, function (next) {

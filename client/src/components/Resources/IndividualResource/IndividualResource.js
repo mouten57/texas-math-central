@@ -78,6 +78,13 @@ class IndividualResource extends Component {
       "updated-resource-post-upload",
       this.updateResourcePostUpload
     );
+    //UPDATE VIEW COUNT
+    axios
+      .get(`/api/resources/${this.props.match.params.id}/views`)
+      .then((res) => {
+        console.log(res.data);
+      });
+
     //coming after a create?
     if (link_props?.new_create_data && !this.state.post_create_complete) {
       //then launch 'success'
@@ -96,6 +103,8 @@ class IndividualResource extends Component {
       this.finishUpSetup(this_resource);
       //clear out history
       history.replace();
+
+      //COMING FROM USER PROFILE?
     } else if (link_props?.profileResource) {
       this.finishUpSetup(link_props.profileResource);
     } else {

@@ -131,4 +131,57 @@ module.exports = {
       callback(err);
     }
   },
+  async increaseViewCount(_id, callback) {
+    let resource = await Resource.findOne({ _id });
+    if (resource) {
+      console.log(resource);
+      let currentCount = resource.views;
+      resource.views = resource.views ? currentCount + 1 : 1;
+      try {
+        resource.save();
+        callback(null, resource);
+      } catch (err) {
+        callback(err);
+      }
+    } else {
+      callback("NO FILE");
+    }
+  },
+  async getMostPopularResources(req, callback) {
+    //big aggregation to sort by most favorited in last 5 days
+    Resource.aggregate([
+      {
+        $match: {
+          updated_at: {
+            $gte: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          },
+        },
+      },
+      {
+        $project: {
+          _id: true,
+          name: true,
+          created_at: true,
+          favorites: true,
+          files: true,
+          votes: true,
+          updated_at: true,
+          numberOfFavorites: {
+            $size: "$favorites",
+          },
+        },
+      },
+      {
+        $match: {
+          numberOfFavorites: { $gt: 0 },
+        },
+      },
+      {
+        $sort: {
+          numberOfFavorites: -1,
+          updated_at: -1,
+        },
+      },
+    ]);
+  },
 };
