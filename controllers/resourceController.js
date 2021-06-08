@@ -118,7 +118,7 @@ module.exports = {
             file_path,
             watermark_pdf_filepath,
             watermark_pdf_key;
-          if (files[i].url?.includes("google")) {
+          if (files[i].url) {
             //if extname exists
             if (path.extname(files[i].name)) {
               file_ext = path.extname(files[i].name).toLowerCase();
