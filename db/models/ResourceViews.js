@@ -6,7 +6,7 @@ const resourceViewsSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Resource",
   },
-  viewed_on: String,
+  viewed_on: Date,
   views: Number,
 });
 

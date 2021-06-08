@@ -10,10 +10,11 @@ const isToday = (someDate) => {
   );
 };
 
-function addDays(date, days) {
-  var result = new Date(date);
+function addDays(myDate, days) {
+  var result = new Date(myDate);
+
   result.setDate(result.getDate() + days);
-  return result.toLocaleDateString();
+  return result.toDateString();
 }
 //TODAY
 const current_viewed_on = addDays(new Date(), 0);
