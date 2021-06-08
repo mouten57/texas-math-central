@@ -152,7 +152,7 @@ module.exports = {
             );
           }
 
-          const Body = files[i].url?.includes("google")
+          const Body = files[i].url
             ? fs.readFileSync(`${parsed_googleFileDownloads[i]}`)
             : fs.readFileSync(`./uploads/${files[i].filename}`);
 
@@ -180,7 +180,7 @@ module.exports = {
                     file_ext.substring(1)
                   );
                   //over-write original file declaration
-                  var pdf_path = files[i].url?.includes("google")
+                  var pdf_path = files[i].url
                     ? `./uploads/${files[i].name}.pdf`
                     : `./uploads/${files[i].filename}.pdf`;
                   var file_to_pdf = await result.file.save(pdf_path);
