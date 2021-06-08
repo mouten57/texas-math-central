@@ -33,7 +33,9 @@ class UploadForm extends Component {
       loaderActive: false,
       submitDisabled: false,
       description: "",
+      allFiles:[],
       files: [],
+      googleFiles:[],
       link: "N/A",
       type: "",
       unit: "",
@@ -52,7 +54,9 @@ class UploadForm extends Component {
   onChange = (e) => {
     switch (e.target.name) {
       case "files":
-        this.setState({ files: e.target.files });
+        var temp_files = [...this.state.googleFiles]
+        var selected_files = Array.from(e.target.files)
+        this.setState({ files: selected_files, allFiles: selected_files.concat(temp_files) });
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -89,16 +93,19 @@ class UploadForm extends Component {
     this.setState({ files });
   };
   googleCallback = (data) => {
-    var googleId = data.docs[0].id;
+
     var size = data.docs.length;
     var googleFileIDs = [];
     for (let i in data.docs) {
       googleFileIDs.push(data.docs[i].id);
     }
+   let files = [...this.state.files]
     this.setState({
       amountOfGoogleFiles: size,
       googleFileIDs: googleFileIDs,
       googleRawData: data,
+      googleFiles: data.docs,
+      allFiles: files.concat(data.docs)
     });
     window.temp_props = undefined;
   };
@@ -268,8 +275,8 @@ class UploadForm extends Component {
               {this.state.files.length > 0 ? (
                 <div style={{ marginTop: "15px" }}>
                   <h5>Selected Files</h5>
-                  <ul>
-                    {Array.from(this.state.files).map((file) => {
+                  <ul style={{listStyleType: 'circle'}}>
+                    {this.state.allFiles.map((file) => {
                       return <li key={file.name}>{file.name}</li>;
                     })}
                   </ul>
@@ -326,6 +333,7 @@ class UploadForm extends Component {
   };
 
   render() {
+    console.log(this.state)
     return <div>{this.renderForm()}</div>;
   }
 }

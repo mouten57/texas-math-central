@@ -124,37 +124,17 @@ class GoogleWrapper extends Component {
           }}
         >
           <Button onClick={this.loadPicker}>Add from Drive</Button>
-          <span style={{ marginTop: "3px", textDecoration: "underline" }}>
-            {this.props.amountOfFiles > 0
-              ? `You have selected ${this.props.amountOfFiles} file${
-                  this.props.amountOfFiles == 1 ? "" : "s"
-                }:`
-              : null}
-          </span>
+         {this.props.amountOfFiles > 0 ? (
+          <Button onClick={this.props.onDownload} >
+            Download Selected Files
+          </Button>
+        ) : null}
         </div>
 
         {/* Group two */}
 
-        {this.props.data.docs?.map((item, key) => (
-          <div
-            key={key}
-            className="two"
-            style={{
-              marginTop: "-5px",
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "flex-end",
-            }}
-          >
-            <div>{item.name}</div>
-            <div style={{ flexBasis: "100%" }}></div>
-          </div>
-        ))}
-        {this.props.amountOfFiles > 0 ? (
-          <Button onClick={this.props.onDownload}>
-            Download Selected Files
-          </Button>
-        ) : null}
+       
+        
       </div>
     );
   }
