@@ -279,8 +279,6 @@ class UploadForm extends Component {
                   </ul>
                 </div>
               ) : null}
-
-              {/*
               GOOGLE NOT WORKING IN PROD. POPUP NOT LOADING
               <GoogleWrapper
                 googleCallback={(data) => {
@@ -291,7 +289,7 @@ class UploadForm extends Component {
                 onDownload={() =>
                   this.onDownloadFromGoogle(this.state.googleRawData)
                 }
-              /> */}
+              />
             </Segment>
 
             <Button
