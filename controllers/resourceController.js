@@ -131,7 +131,8 @@ module.exports = {
             Key,
             file_path,
             watermark_pdf_filepath,
-            watermark_pdf_key;
+            watermark_pdf_key,
+            pdf_path;
           //if from google
           if (files[i].url) {
             //if converted by google
@@ -158,6 +159,7 @@ module.exports = {
               file_ext,
               `_watermark${file_ext}.pdf`
             );
+            pdf_path = `./uploads/${files[i].name}.pdf`;
           } else {
             file_ext = path.extname(files[i].filename).toLowerCase();
             Key = files[i].filename;
@@ -170,8 +172,8 @@ module.exports = {
               file_ext,
               `_watermark${file_ext}.pdf`
             );
+            pdf_path = `./uploads/${files[i].filename}.pdf`;
           }
-          console.log(file_path);
 
           const Body = files[i].url
             ? fs.readFileSync(`${parsed_googleFileDownloads[i]}`)
@@ -206,17 +208,19 @@ module.exports = {
                     : `./uploads/${files[i].filename}.pdf`;
                   var file_to_pdf = await result.file.save(pdf_path);
                 }
-                file_to_pdf = fs.readFileSync(file_to_pdf);
+                var saved_file = fs.readFileSync(file_to_pdf);
                 try {
                   var watermarked_pdf = await create_watermark(
-                    file_to_pdf,
+                    saved_file,
                     files[i]
                   );
                   fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
                 } catch (err) {
                   console.log("TEST IN CONTROLLER");
+                  console.log(err);
                   watermark_pdf_filepath = null;
                   watermark_pdf_key = null;
+                  pdf_key = `${Key}.pdf`;
                   //made it here
                   //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
                 }
@@ -228,12 +232,17 @@ module.exports = {
             // await result of async operation
             await convert_to_pdf_and_watermark();
 
+            console.log(` Key: ${watermark_pdf_key || pdf_key}
+            Body: ${watermark_pdf_filepath || pdf_path}`);
+
             //save watermarked PDF/IMG to s3
             var s3PDFData = await s3
               .upload({
                 Bucket: "texas-math-central",
-                Key: `${watermark_pdf_key || Key}`,
-                Body: fs.readFileSync(`${watermark_pdf_filepath || file_path}`),
+                Key: `${watermark_pdf_key || pdf_key}`,
+                Body: fs.createReadStream(
+                  `${watermark_pdf_filepath || pdf_path}`
+                ),
               })
               .promise();
 
