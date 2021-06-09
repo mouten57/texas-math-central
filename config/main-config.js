@@ -9,6 +9,8 @@ const cors = require("cors");
 //important to call model first, before I try to run passport
 require("../db/models/Resource");
 require("../db/models/ResourceViews");
+require("../db/models/ResourceDownloads");
+require("../db/models/ResourceFavorites");
 require("../db/models/Comment");
 require("../db/models/User");
 require("../db/models/Vote");

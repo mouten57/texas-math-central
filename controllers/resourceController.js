@@ -1,5 +1,5 @@
 const resourceQueries = require("../db/queries.resources");
-const resourceViewsQueries = require("../db/queries.resources_views");
+const resourceViewsQueries = require("../db/queries.resource_views");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
 var AWS = require("aws-sdk");
@@ -175,7 +175,7 @@ module.exports = {
                   filetype_settings.convertApiParams(file_path, file_ext),
                   file_ext.substring(1)
                 );
-                console.log(`RESULT FROM PDF CONVERT: ${result.file}`);
+                console.log(`RESULT FROM PDF CONVERT:`, result.file);
                 await result.file.save(pdf_path);
                 file_to_pdf = pdf_path;
                 console.log("IN THEN STATEMENT");
