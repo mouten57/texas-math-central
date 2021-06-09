@@ -65,10 +65,8 @@ module.exports = {
       req.session.drive_auth,
       (err, filePathList) => {
         if (err) {
-          console.log("FAIL");
           return res.send(err);
         } else {
-          console.log(filePathList);
           res.send(filePathList);
         }
       }
@@ -115,7 +113,6 @@ module.exports = {
       googleFileDownloads != "undefined"
         ? JSON.parse(googleFileDownloads)
         : null;
-    console.log(parsed_googleFileDownloads);
 
     resourceQueries.addResource(newResource, async (err, resource) => {
       if (err) {
@@ -127,113 +124,83 @@ module.exports = {
         for (let i = 0; i < files.length; i++) {
           // set all vars together
           console.log(files[i]);
-          var file_ext,
-            Key,
-            file_path,
-            watermark_pdf_filepath,
-            watermark_pdf_key,
-            pdf_path;
-          //if from google
-          if (files[i].url) {
-            //if converted by google
-            if (parsed_googleFileDownloads[i]) {
-              file_ext = path
-                .extname(parsed_googleFileDownloads[i])
-                .toLowerCase();
-              Key = `${files[i].name}${file_ext}`;
-            }
-            //if extname exists && converted google file does not exist
-            else if (
-              path.extname(files[i].name) &&
-              !parsed_googleFileDownloads[i]
-            ) {
-              file_ext = path.extname(files[i].name).toLowerCase();
-              Key = files[i].name;
-            }
-            file_path = parsed_googleFileDownloads[i];
-            watermark_pdf_filepath = parsed_googleFileDownloads[i].replace(
+          var root_folder = "./uploads",
+            file_name = files[i].name || files[i].filename,
+            file_path = files[i].path || parsed_googleFileDownloads[i],
+            file_ext = path.extname(file_path).toLowerCase(),
+            stripped_file_name = path.basename(file_name, file_ext),
+            pdf_or_no = file_ext == ".pdf" ? "" : ".pdf",
+            name_plus_ext = `${stripped_file_name}${file_ext}`,
+            Key = name_plus_ext,
+            Body = fs.readFileSync(file_path),
+            watermark_pdf_filepath = file_path.replace(
               file_ext,
-              `_watermark${file_ext}.pdf`
-            );
-            watermark_pdf_key = files[i].name.replace(
+              `_watermark${file_ext}${pdf_or_no}`
+            ),
+            watermark_pdf_key = name_plus_ext.replace(
               file_ext,
-              `_watermark${file_ext}.pdf`
-            );
-            pdf_path = `./uploads/${files[i].name}.pdf`;
-          } else {
-            file_ext = path.extname(files[i].filename).toLowerCase();
-            Key = files[i].filename;
-            file_path = `./uploads/${files[i].filename}`;
-            watermark_pdf_filepath = files[i].path.replace(
-              file_ext,
-              `_watermark${file_ext}.pdf`
-            );
-            watermark_pdf_key = files[i].filename.replace(
-              file_ext,
-              `_watermark${file_ext}.pdf`
-            );
-            pdf_path = `./uploads/${files[i].filename}.pdf`;
-          }
+              `_watermark${file_ext}${pdf_or_no}`
+            ),
+            pdf_path = `${root_folder}/${file_name}${pdf_or_no}`,
+            pdf_key = `${name_plus_ext}${pdf_or_no}`,
+            file_to_pdf = file_path,
+            params = {
+              Bucket: "texas-math-central",
+              Key: Key,
+              Body: Body,
+            },
+            image_types = ".jpg,.jpeg,.png,.bmp,.gif";
 
-          const Body = files[i].url
-            ? fs.readFileSync(`${parsed_googleFileDownloads[i]}`)
-            : fs.readFileSync(`./uploads/${files[i].filename}`);
-
-          const params = {
-            Bucket: "texas-math-central",
-            Key: Key,
-            Body: Body,
-          };
+          console.log(
+            path.extname(file_name),
+            `file_name: ${file_name}
+            file_path: ${file_path}
+            file_to_pdf: ${file_to_pdf}
+            file_ext:${file_ext},
+            name_plus_ext: ${name_plus_ext}
+            Key: ${Key}
+            watermark_pdf_filepath: ${watermark_pdf_filepath}
+            watermark_pdf_key: ${watermark_pdf_key}
+            pdf_path: ${pdf_path}`
+          );
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
-
-          let image_types = ".jpg,.jpeg,.png,.bmp,.gif";
-
           if (!image_types.includes(file_ext)) {
             async function convert_to_pdf_and_watermark() {
+              //if file is NOT PDF, convert it to PDF
+              if (file_ext != ".pdf") {
+                let result = await convertapi.convert(
+                  "pdf",
+                  filetype_settings.convertApiParams(file_path, file_ext),
+                  file_ext.substring(1)
+                );
+                console.log(`RESULT FROM PDF CONVERT: ${result.file}`);
+                await result.file.save(pdf_path);
+                file_to_pdf = pdf_path;
+                console.log("IN THEN STATEMENT");
+              }
+
               try {
-                var file_to_pdf = file_path;
-                console.log(file_ext);
-                //if file is NOT PDF, convert it to PDF
-                if (file_ext != ".pdf") {
-                  let result = await convertapi.convert(
-                    "pdf",
-                    filetype_settings(file_path, file_ext),
-                    file_ext.substring(1)
-                  );
-                  //over-write original file declaration
-                  var pdf_path = files[i].url
-                    ? `./uploads/${files[i].name}.pdf`
-                    : `./uploads/${files[i].filename}.pdf`;
-                  var file_to_pdf = await result.file.save(pdf_path);
-                }
-                var saved_file = fs.readFileSync(file_to_pdf);
-                try {
-                  var watermarked_pdf = await create_watermark(
-                    saved_file,
-                    files[i]
-                  );
-                  fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
-                } catch (err) {
-                  console.log("TEST IN CONTROLLER");
-                  console.log(err);
-                  watermark_pdf_filepath = null;
-                  watermark_pdf_key = null;
-                  pdf_key = `${Key}.pdf`;
-                  //made it here
-                  //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
-                }
+                //load file from convertAPI
+                var saved_file_from_convert_api = fs.readFileSync(file_to_pdf);
+                var watermarked_pdf = await create_watermark(
+                  saved_file_from_convert_api,
+                  files[i]
+                );
+                fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
               } catch (err) {
-                throw err;
+                console.log(err);
+                watermark_pdf_filepath = null;
+                watermark_pdf_key = null;
+
+                //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
+                //we'll use the first file we got page...1 pager from convertapi
               }
             }
 
             // await result of async operation
             await convert_to_pdf_and_watermark();
-
-            console.log(` Key: ${watermark_pdf_key || pdf_key}
-            Body: ${watermark_pdf_filepath || pdf_path}`);
 
             //save watermarked PDF/IMG to s3
             var s3PDFData = await s3
@@ -247,6 +214,7 @@ module.exports = {
               .promise();
 
             files[i].previewLink = s3PDFData.Location;
+            console.log(s3PDFData);
           }
 
           //save original file to s3
