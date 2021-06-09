@@ -12,6 +12,7 @@ const path = require("path");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
 const driveDownload = require("../middlewares/driveDownload");
+const quickSave = require("../helpers/quickSave");
 
 module.exports = {
   index(req, res, next) {
@@ -42,9 +43,18 @@ module.exports = {
       if (err) {
         res.status(422).send(err);
       } else {
+        // quickSave(resource.)
+
         res.send(resource);
       }
     });
+  },
+  loadPreview(req, res, next) {
+    if (req.query.file_url) {
+      res.send(quickSave(req.query.file_url));
+    } else {
+      res.send("IMAGE");
+    }
   },
   increaseViewCount(req, res, next) {
     resourceViewsQueries.increaseViewCount(

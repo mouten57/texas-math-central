@@ -2,8 +2,11 @@ import React from "react";
 import { Grid, Image } from "semantic-ui-react";
 import RenderCartOptions from "./RenderCartOptions";
 import DownloadLink from "./downloadLink";
-
-import img from "../../../images/sample_doc.png";
+import { Document, Page, View } from "react-pdf";
+import { pdfjs } from "react-pdf";
+import file from "../../../temp/temp.pdf";
+import "./MainGrid.css";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const MainGrid = (props) => {
   const {
@@ -20,6 +23,7 @@ const MainGrid = (props) => {
   } = props;
 
   const mimetype = selectedFile?.mimetype || selectedFile?.mimeType;
+
   return (
     <Grid compact="true">
       <Grid.Column width={leftColWidth}>
@@ -98,17 +102,24 @@ const MainGrid = (props) => {
                 </a>
               </b>
               {mimetype?.includes("image") ? (
-                <Image src={selectedFile.s3Link} size="large" />
+                <Image src={selectedFile.s3Link} size="large" centered />
               ) : (
-                <iframe
-                  src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
-                  style={{
-                    marginTop: "10px",
-                    height: iframeheight,
-                    width: iframewidth,
-                  }}
-                  frameborder="0"
-                />
+                <Document
+                  file={file}
+                  onLoadError={(err) => console.log(err.message)}
+                >
+                  <Page pageNumber={1}></Page>
+                </Document>
+
+                // <iframe
+                //   src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
+                //   style={{
+                //     marginTop: "10px",
+                //     height: iframeheight,
+                //     width: iframewidth,
+                //   }}
+                //   frameborder="0"
+                // />
               )}
             </p>
           )

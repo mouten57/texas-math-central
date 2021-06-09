@@ -142,9 +142,17 @@ class IndividualResource extends Component {
       )
       .then((res) => {
         const resource = res.data;
+        console.log(resource);
+
         this.finishUpSetup(resource);
       });
   };
+
+  getFilePreview(file_url) {
+    axios.get("/api/download_for_preview", {
+      params: { file_url },
+    });
+  }
 
   finishUpSetup = (resource) => {
     if (resource == "") {
@@ -170,6 +178,7 @@ class IndividualResource extends Component {
       free: resource.free,
       resource_id: resource._id,
     });
+    this.getFilePreview(this.state.selectedFile?.previewLink);
     if (resource.votes.length > 0) {
       this.getVoteTotal(resource.votes);
     }
@@ -295,6 +304,7 @@ class IndividualResource extends Component {
   handleCancelDelete = () => this.setState({ confirmOpen: false });
 
   render() {
+    console.log(this.state.selectedFile);
     //  console.log("state is", this.state, "props are", this.props);
     const { resource, confirmOpen } = this.state;
     if (this.props.auth) {
@@ -326,12 +336,11 @@ class IndividualResource extends Component {
                 selectedFile={this.state.selectedFile}
                 leftColWidth={16}
                 rightColWidth={16}
-                iframeheight="400px"
-                iframewidth="85vw"
                 resource={resource}
-                setSelectedFile={(selectedFile) =>
-                  this.setState({ selectedFile })
-                }
+                setSelectedFile={(selectedFile) => {
+                  this.setState({ selectedFile });
+                  this.getFilePreview(selectedFile.previewLink);
+                }}
                 authorized_to_view={authorized_to_view}
                 onAddRemoveCart={this.onAddRemoveCart}
                 auth={this.props.auth}
@@ -345,12 +354,11 @@ class IndividualResource extends Component {
                 selectedFile={this.state.selectedFile}
                 leftColWidth={5}
                 rightColWidth={11}
-                iframeheight="400px"
-                iframewidth="100%"
                 resource={resource}
-                setSelectedFile={(selectedFile) =>
-                  this.setState({ selectedFile })
-                }
+                setSelectedFile={(selectedFile) => {
+                  this.setState({ selectedFile });
+                  this.getFilePreview(selectedFile.previewLink);
+                }}
                 authorized_to_view={authorized_to_view}
                 onAddRemoveCart={this.onAddRemoveCart}
                 auth={this.props.auth}
