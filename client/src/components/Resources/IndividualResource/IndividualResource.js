@@ -336,6 +336,8 @@ class IndividualResource extends Component {
                 selectedFile={this.state.selectedFile}
                 leftColWidth={16}
                 rightColWidth={16}
+                iframeheight="400px"
+                iframewidth="85vw"
                 resource={resource}
                 setSelectedFile={(selectedFile) => {
                   this.setState({ selectedFile });
@@ -354,6 +356,8 @@ class IndividualResource extends Component {
                 selectedFile={this.state.selectedFile}
                 leftColWidth={5}
                 rightColWidth={11}
+                iframeheight="400px"
+                iframewidth="100%"
                 resource={resource}
                 setSelectedFile={(selectedFile) => {
                   this.setState({ selectedFile });

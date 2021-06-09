@@ -104,22 +104,22 @@ const MainGrid = (props) => {
               {mimetype?.includes("image") ? (
                 <Image src={selectedFile.s3Link} size="large" centered />
               ) : (
-                <Document
-                  file={file}
-                  onLoadError={(err) => console.log(err.message)}
-                >
-                  <Page pageNumber={1}></Page>
-                </Document>
+                // <Document
+                //   file={file}
+                //   onLoadError={(err) => console.log(err.message)}
+                // >
+                //   <Page pageNumber={1}></Page>
+                // </Document>
 
-                // <iframe
-                //   src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
-                //   style={{
-                //     marginTop: "10px",
-                //     height: iframeheight,
-                //     width: iframewidth,
-                //   }}
-                //   frameborder="0"
-                // />
+                <iframe
+                  src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
+                  style={{
+                    marginTop: "10px",
+                    height: iframeheight,
+                    width: iframewidth,
+                  }}
+                  frameborder="0"
+                />
               )}
             </p>
           )
