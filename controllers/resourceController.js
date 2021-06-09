@@ -126,21 +126,28 @@ module.exports = {
         //start upload with aws
         for (let i = 0; i < files.length; i++) {
           // set all vars together
+          console.log(files[i]);
           var file_ext,
             Key,
             file_path,
             watermark_pdf_filepath,
             watermark_pdf_key;
+          //if from google
           if (files[i].url) {
-            //if extname exists
-            if (path.extname(files[i].name)) {
-              file_ext = path.extname(files[i].name).toLowerCase();
-              Key = files[i].name;
-            } else {
+            //if converted by google
+            if (parsed_googleFileDownloads[i]) {
               file_ext = path
                 .extname(parsed_googleFileDownloads[i])
                 .toLowerCase();
               Key = `${files[i].name}${file_ext}`;
+            }
+            //if extname exists && converted google file does not exist
+            else if (
+              path.extname(files[i].name) &&
+              !parsed_googleFileDownloads[i]
+            ) {
+              file_ext = path.extname(files[i].name).toLowerCase();
+              Key = files[i].name;
             }
             file_path = parsed_googleFileDownloads[i];
             watermark_pdf_filepath = parsed_googleFileDownloads[i].replace(
@@ -164,6 +171,7 @@ module.exports = {
               `_watermark${file_ext}.pdf`
             );
           }
+          console.log(file_path);
 
           const Body = files[i].url
             ? fs.readFileSync(`${parsed_googleFileDownloads[i]}`)
@@ -184,7 +192,7 @@ module.exports = {
             async function convert_to_pdf_and_watermark() {
               try {
                 var file_to_pdf = file_path;
-
+                console.log(file_ext);
                 //if file is NOT PDF, convert it to PDF
                 if (file_ext != ".pdf") {
                   let result = await convertapi.convert(
@@ -199,13 +207,19 @@ module.exports = {
                   var file_to_pdf = await result.file.save(pdf_path);
                 }
                 file_to_pdf = fs.readFileSync(file_to_pdf);
-
-                var watermarked_pdf = await create_watermark(
-                  file_to_pdf,
-                  files[i]
-                );
-
-                fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
+                try {
+                  var watermarked_pdf = await create_watermark(
+                    file_to_pdf,
+                    files[i]
+                  );
+                  fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
+                } catch (err) {
+                  console.log("TEST IN CONTROLLER");
+                  watermark_pdf_filepath = null;
+                  watermark_pdf_key = null;
+                  //made it here
+                  //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
+                }
               } catch (err) {
                 throw err;
               }
@@ -214,12 +228,12 @@ module.exports = {
             // await result of async operation
             await convert_to_pdf_and_watermark();
 
-            //save watermarked PDF/IMG to s3, other pdf is discarded
+            //save watermarked PDF/IMG to s3
             var s3PDFData = await s3
               .upload({
                 Bucket: "texas-math-central",
-                Key: watermark_pdf_key,
-                Body: fs.readFileSync(watermark_pdf_filepath),
+                Key: `${watermark_pdf_key || Key}`,
+                Body: fs.readFileSync(`${watermark_pdf_filepath || file_path}`),
               })
               .promise();
 
