@@ -1,10 +1,9 @@
 import React from "react";
-import { Grid, Image } from "semantic-ui-react";
+import { Grid, Image, Button } from "semantic-ui-react";
 import RenderCartOptions from "./RenderCartOptions";
 import DownloadLink from "./downloadLink";
 import { Document, Page, View } from "react-pdf";
 import { pdfjs } from "react-pdf";
-import file from "../../../temp/temp.pdf";
 import "./MainGrid.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -20,10 +19,11 @@ const MainGrid = (props) => {
     rightColWidth,
     iframeheight,
     iframewidth,
+    pageNumber,
+    numPages,
   } = props;
 
   const mimetype = selectedFile?.mimetype || selectedFile?.mimeType;
-
   return (
     <Grid compact="true">
       <Grid.Column width={leftColWidth}>
@@ -104,22 +104,48 @@ const MainGrid = (props) => {
               {mimetype?.includes("image") ? (
                 <Image src={selectedFile.s3Link} size="large" centered />
               ) : (
-                // <Document
-                //   file={file}
-                //   onLoadError={(err) => console.log(err.message)}
-                // >
-                //   <Page pageNumber={1}></Page>
-                // </Document>
+                <div>
+                  <Document
+                    file={state.selectedFile?.previewLink}
+                    onLoadSuccess={props.setTotalNumberOfPages}
+                    onLoadError={(err) => console.log(err.message)}
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      renderAnnotationLayer={false}
+                      renderTextLayer={false}
+                      loading="Loading Page.."
+                    ></Page>
+                    <Button.Group
+                      compact
+                      widths={2}
+                      fluid
+                      style={{ paddingTop: "5px" }}
+                    >
+                      <Button
+                        onClick={() => props.setPageNumber(pageNumber - 1)}
+                        disabled={pageNumber <= 1}
+                        content="Previous page"
+                      />
 
-                <iframe
-                  src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
-                  style={{
-                    marginTop: "10px",
-                    height: iframeheight,
-                    width: iframewidth,
-                  }}
-                  frameborder="0"
-                />
+                      <Button
+                        onClick={() => props.setPageNumber(pageNumber + 1)}
+                        disabled={pageNumber == numPages}
+                        content="Next page"
+                      />
+                    </Button.Group>
+                  </Document>
+
+                  {/* <iframe
+                    src={`https://docs.google.com/viewer?url=${state.selectedFile.previewLink}&embedded=true`}
+                    style={{
+                      marginTop: "10px",
+                      height: iframeheight,
+                      width: iframewidth,
+                    }}
+                    frameborder="0"
+                  /> */}
+                </div>
               )}
             </p>
           )

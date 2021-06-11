@@ -13,11 +13,6 @@ module.exports = (app) => {
   );
 
   app.get("/api/units/:unit/:id", requireLogin, resourceController.show);
-  app.get(
-    "/api/download_for_preview",
-    requireLogin,
-    resourceController.loadPreview
-  );
 
   app.post(
     "/api/resources/create",

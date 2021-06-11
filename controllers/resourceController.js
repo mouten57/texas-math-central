@@ -49,13 +49,6 @@ module.exports = {
       }
     });
   },
-  loadPreview(req, res, next) {
-    if (req.query.file_url) {
-      res.send(quickSave(req.query.file_url));
-    } else {
-      res.send("IMAGE");
-    }
-  },
   increaseViewCount(req, res, next) {
     resourceViewsQueries.increaseViewCount(
       req.params.resourceId,

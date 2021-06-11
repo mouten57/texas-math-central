@@ -8,7 +8,7 @@ import {
   Icon,
   Grid,
   Image,
-  Confirm,
+  Confirm as ConfirmDelete,
 } from "semantic-ui-react";
 
 import MainGrid from "./MainGrid";
@@ -41,7 +41,7 @@ class IndividualResource extends Component {
     super(props);
     this.state = {
       resource: {},
-      confirmOpen: false,
+      confirmDeleteOpen: false,
       edit: false,
       s3Link: null,
       resource_name: null,
@@ -55,6 +55,8 @@ class IndividualResource extends Component {
       upvoted: false,
       downvoted: false,
       item_in_cart: null,
+      pageNumber: 1,
+      numPages: null,
     };
 
     this.updateResourcePostUpload = (resource) => {
@@ -148,12 +150,6 @@ class IndividualResource extends Component {
       });
   };
 
-  getFilePreview(file_url) {
-    axios.get("/api/download_for_preview", {
-      params: { file_url },
-    });
-  }
-
   finishUpSetup = (resource) => {
     if (resource == "") {
       return this.props.history.push(`/units`);
@@ -178,7 +174,6 @@ class IndividualResource extends Component {
       free: resource.free,
       resource_id: resource._id,
     });
-    this.getFilePreview(this.state.selectedFile?.previewLink);
     if (resource.votes.length > 0) {
       this.getVoteTotal(resource.votes);
     }
@@ -284,14 +279,14 @@ class IndividualResource extends Component {
       });
   };
 
-  show = (resource) => this.setState({ confirmOpen: true });
+  show = () => this.setState({ confirmDeleteOpen: true });
 
   handleConfirmDelete = () => {
     const { unit, _id } = this.state.resource;
     axios
       .post(`/api/units/${unit}/${_id}/delete`)
       .then((res) => {
-        this.setState({ confirmOpen: false });
+        this.setState({ confirmDeleteOpen: false });
         this.props.fetchCart();
         this.props.history.push({
           pathname: `/units/${unit}`,
@@ -301,12 +296,14 @@ class IndividualResource extends Component {
         console.log(err);
       });
   };
-  handleCancelDelete = () => this.setState({ confirmOpen: false });
+  handleCancelDelete = () => this.setState({ confirmDeleteOpen: false });
 
+  setPageNumber = (pageNumber) => {
+    this.setState({ pageNumber });
+  };
   render() {
-    console.log(this.state.selectedFile);
     //  console.log("state is", this.state, "props are", this.props);
-    const { resource, confirmOpen } = this.state;
+    const { resource, confirmDeleteOpen } = this.state;
     if (this.props.auth) {
       if (
         this.props.auth?.role == "all_access" ||
@@ -340,13 +337,18 @@ class IndividualResource extends Component {
                 iframewidth="85vw"
                 resource={resource}
                 setSelectedFile={(selectedFile) => {
-                  this.setState({ selectedFile });
-                  this.getFilePreview(selectedFile.previewLink);
+                  this.setState({ selectedFile, pageNumber: 1 });
                 }}
                 authorized_to_view={authorized_to_view}
                 onAddRemoveCart={this.onAddRemoveCart}
                 auth={this.props.auth}
                 state={this.state}
+                pageNumber={this.state.pageNumber}
+                numPages={this.state.numPages}
+                setPageNumber={this.setPageNumber}
+                setTotalNumberOfPages={({ numPages }) =>
+                  this.setState({ numPages })
+                }
               />
             </Grid.Column>
 
@@ -360,13 +362,18 @@ class IndividualResource extends Component {
                 iframewidth="100%"
                 resource={resource}
                 setSelectedFile={(selectedFile) => {
-                  this.setState({ selectedFile });
-                  this.getFilePreview(selectedFile.previewLink);
+                  this.setState({ selectedFile, pageNumber: 1 });
                 }}
                 authorized_to_view={authorized_to_view}
                 onAddRemoveCart={this.onAddRemoveCart}
                 auth={this.props.auth}
                 state={this.state}
+                pageNumber={this.state.pageNumber}
+                numPages={this.state.numPages}
+                setPageNumber={this.setPageNumber}
+                setTotalNumberOfPages={({ numPages }) =>
+                  this.setState({ numPages })
+                }
               />
             </Grid.Column>
 
@@ -492,8 +499,8 @@ class IndividualResource extends Component {
                 />
               </Modal>
             ) : null}
-            <Confirm
-              open={confirmOpen}
+            <ConfirmDelete
+              open={confirmDeleteOpen}
               size="tiny"
               cancelButton="Cancel"
               confirmButton="Delete Resource"
