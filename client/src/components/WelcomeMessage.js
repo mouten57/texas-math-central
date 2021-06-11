@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Message } from "semantic-ui-react";
+import { Message, Icon } from "semantic-ui-react";
 
 class WelcomeMessage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: true,
-      user: null,
     };
   }
   handleDismiss = () => {
@@ -16,34 +15,36 @@ class WelcomeMessage extends Component {
       `${this.props?.user?.email}-${Date.now()}`
     );
   };
-  componentWillReceiveProps(nextProps) {
-    this.setState({ user: nextProps.user });
-  }
 
   renderMessage() {
+    let { nickname, firstname } = this.props.user;
     let already_seen = sessionStorage.getItem("userLogin");
     //console.log(already_seen);
 
     if (!this.props.user || already_seen?.includes(this.props.user?.email)) {
       return null;
     } else {
-      let content = `Welcome back, ${
-        this.state.user.nickname || this.state.user.firstname
-      }.`;
-
+      let content = `Welcome back, ${nickname || firstname}.`;
+      setTimeout(() => this.setState({ visible: false }), 3000);
       return (
-        <Message
-          onDismiss={this.handleDismiss}
-          header="Hello again!"
-          content={content}
-        />
+        <Message onDismiss={this.handleDismiss} icon>
+          {/* <Icon name="circle notched" loading /> */}
+          <Message.Content>
+            <Message.Header>"Hello again!"</Message.Header>
+            {content}
+          </Message.Content>
+        </Message>
       );
     }
   }
 
   render() {
-    //console.log(this.state);
-    return <div>{this.state.visible ? this.renderMessage() : <p />}</div>;
+    console.log("STATE IS:", this.state, "PROPS ARE:", this.props);
+    return (
+      <div>
+        {this.state.visible && this.props.user ? this.renderMessage() : null}
+      </div>
+    );
   }
 }
 

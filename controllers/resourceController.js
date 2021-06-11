@@ -12,7 +12,7 @@ const path = require("path");
 const filetype_settings = require("../helpers/filetype_settings");
 const { create_watermark } = require("../middlewares/create_watermark");
 const driveDownload = require("../middlewares/driveDownload");
-const quickSave = require("../helpers/quickSave");
+const { createThumbnail } = require("../helpers/GetThumbnail/getThumbnail.js");
 
 module.exports = {
   index(req, res, next) {
@@ -136,40 +136,32 @@ module.exports = {
             name_plus_ext = `${stripped_file_name}${file_ext}`,
             Key = name_plus_ext,
             Body = fs.readFileSync(file_path),
-            watermark_pdf_filepath = file_path.replace(
-              file_ext,
-              `_watermark${file_ext}${pdf_or_no}`
-            ),
-            watermark_pdf_key = name_plus_ext.replace(
-              file_ext,
-              `_watermark${file_ext}${pdf_or_no}`
-            ),
-            pdf_path = `${root_folder}/${file_name}${pdf_or_no}`,
-            pdf_key = `${name_plus_ext}${pdf_or_no}`,
+            thumbnail_key = `${stripped_file_name}_thumbnail.png`,
+            thumbnail_path = `${root_folder}/${stripped_file_name}_thumbnail.png`,
             file_to_pdf = file_path,
-            params = {
-              Bucket: "texas-math-central",
-              Key: Key,
-              Body: Body,
-            },
-            image_types = ".jpg,.jpeg,.png,.bmp,.gif";
+            Bucket = "texas-math-central",
+            image_types = ".jpg,.jpeg,.png,.bmp,.gif",
+            watermark_pdf_key,
+            watermark_pdf_filepath,
+            pdf_key,
+            pdf_path;
 
           console.log(
             path.extname(file_name),
             `file_name: ${file_name}
+            stripped_file_name: ${stripped_file_name}
             file_path: ${file_path}
             file_to_pdf: ${file_to_pdf}
             file_ext:${file_ext},
             name_plus_ext: ${name_plus_ext}
-            Key: ${Key}
-            watermark_pdf_filepath: ${watermark_pdf_filepath}
-            watermark_pdf_key: ${watermark_pdf_key}
-            pdf_path: ${pdf_path}`
+            Key: ${Key}`
           );
 
           //only kick off conversion process if NOT an image
           // if (!files[i].mimetype.includes("image")) {
           if (!image_types.includes(file_ext)) {
+            pdf_path = `${root_folder}/${file_name}${pdf_or_no}`;
+            pdf_key = `${name_plus_ext}${pdf_or_no}`;
             async function convert_to_pdf_and_watermark() {
               //if file is NOT PDF, convert it to PDF
               if (file_ext != ".pdf") {
@@ -185,30 +177,60 @@ module.exports = {
               }
 
               try {
+                watermark_pdf_filepath = file_path.replace(
+                  file_ext,
+                  `_watermark${file_ext}${pdf_or_no}`
+                );
+                watermark_pdf_key = name_plus_ext.replace(
+                  file_ext,
+                  `_watermark${file_ext}${pdf_or_no}`
+                );
+
                 //load file from convertAPI
                 var saved_file_from_convert_api = fs.readFileSync(file_to_pdf);
                 var watermarked_pdf = await create_watermark(
-                  saved_file_from_convert_api,
-                  files[i]
+                  saved_file_from_convert_api
                 );
+
                 fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
               } catch (err) {
                 console.log(err);
-                watermark_pdf_filepath = null;
-                watermark_pdf_key = null;
 
                 //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
                 //we'll use the first file we got page...1 pager from convertapi
+              }
+              try {
+                //create thumbnail
+                await createThumbnail(
+                  file_to_pdf,
+                  thumbnail_path,
+                  (err, res) => {
+                    if (err) throw err;
+                    console.log(res);
+                  }
+                );
+              } catch (err) {
+                res.send(err);
               }
             }
 
             // await result of async operation
             await convert_to_pdf_and_watermark();
 
+            //save thumbnail to s3
+            var s3ThumbnailData = await s3
+              .upload({
+                Bucket,
+                Key: thumbnail_key,
+                Body: fs.createReadStream(thumbnail_path),
+              })
+              .promise();
+            files[i].s3ThumbnailLink = s3ThumbnailData.Location;
+
             //save watermarked PDF/IMG to s3
             var s3PDFData = await s3
               .upload({
-                Bucket: "texas-math-central",
+                Bucket,
                 Key: `${watermark_pdf_key || pdf_key}`,
                 Body: fs.createReadStream(
                   `${watermark_pdf_filepath || pdf_path}`
@@ -221,7 +243,15 @@ module.exports = {
           }
 
           //save original file to s3
-          let s3Data = await s3.upload(params).promise();
+          let s3Data = await s3
+            .upload({
+              Bucket,
+              Key: watermark_pdf_key || pdf_key || file_name,
+              Body: fs.createReadStream(
+                watermark_pdf_filepath || pdf_path || file_path
+              ),
+            })
+            .promise();
           files[i].s3Object = s3Data;
           files[i].s3Link = s3Data.Location;
         }
