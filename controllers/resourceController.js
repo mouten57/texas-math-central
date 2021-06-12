@@ -193,9 +193,6 @@ module.exports = {
                 );
 
                 fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
-
-                files[i].previewLink = s3PDFData.Location;
-                console.log(s3PDFData);
               } catch (err) {
                 watermark_pdf_filepath = null;
                 watermark_pdf_key = null;
@@ -248,7 +245,8 @@ module.exports = {
               ),
             })
             .promise();
-
+          files[i].previewLink = s3PDFData.Location;
+          console.log(s3PDFData);
           //save original file to s3
           let s3Data = await s3
             .upload({
