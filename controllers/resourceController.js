@@ -194,19 +194,11 @@ module.exports = {
 
                 fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
 
-                var s3PDFData = await s3
-                  .upload({
-                    Bucket,
-                    Key: `${watermark_pdf_key || pdf_key}`,
-                    Body: fs.createReadStream(
-                      `${watermark_pdf_filepath || pdf_path}`
-                    ),
-                  })
-                  .promise();
-
                 files[i].previewLink = s3PDFData.Location;
                 console.log(s3PDFData);
               } catch (err) {
+                watermark_pdf_filepath = null;
+                watermark_pdf_key = null;
                 console.log(err);
 
                 //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
@@ -245,9 +237,17 @@ module.exports = {
             //   })
             //   .promise();
             // files[i].s3ThumbnailLink = s3ThumbnailData.Location;
-
-            //save watermarked PDF/IMG to s3
           }
+          //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
+          var s3PDFData = await s3
+            .upload({
+              Bucket,
+              Key: `${watermark_pdf_key || pdf_key}`,
+              Body: fs.createReadStream(
+                `${watermark_pdf_filepath || pdf_path}`
+              ),
+            })
+            .promise();
 
           //save original file to s3
           let s3Data = await s3
