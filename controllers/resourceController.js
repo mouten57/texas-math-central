@@ -1,4 +1,5 @@
 const resourceQueries = require("../db/queries.resources");
+var Promise = require("bluebird");
 const resourceViewsQueries = require("../db/queries.resource_views");
 const unitFields = require("../helpers/unitFields");
 const fs = require("fs");
@@ -209,31 +210,27 @@ module.exports = {
                 await createThumbnail(
                   file_to_pdf,
                   thumbnail_path,
-                  (err, res) => {
+                  async (err, res) => {
                     if (err) throw err;
-                    console.log(res);
+                    console.log(`in controller: res: ${res}`);
+                    // save thumbnail to s3
+                    var s3ThumbnailData = await s3
+                      .upload({
+                        Bucket,
+                        Key: thumbnail_key,
+                        Body: fs.createReadStream(thumbnail_path),
+                      })
+                      .promise();
+                    files[i].s3ThumbnailLink = s3ThumbnailData.Location;
                   }
                 );
               } catch (err) {
-                console.log(err);
+                console.log(`in controller: err: ${err}`);
               }
             }
 
             // await result of async operation
             await convert_to_pdf_and_watermark();
-
-            //THUMBNAIL NOT WORKING
-            //NEED TO FIND THE RIGHT BUILDPACK FOR HEROKU
-
-            // save thumbnail to s3
-            var s3ThumbnailData = await s3
-              .upload({
-                Bucket,
-                Key: thumbnail_key,
-                Body: fs.createReadStream(thumbnail_path),
-              })
-              .promise();
-            files[i].s3ThumbnailLink = s3ThumbnailData.Location;
           }
           //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
           var s3PDFData = await s3
