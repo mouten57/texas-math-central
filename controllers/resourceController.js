@@ -204,19 +204,19 @@ module.exports = {
 
               //THUMBNAIL NOT WORKING
               //NEED TO FIND THE RIGHT BUILDPACK FOR HEROKU
-              // try {
-              //   //create thumbnail
-              //   await createThumbnail(
-              //     file_to_pdf,
-              //     thumbnail_path,
-              //     (err, res) => {
-              //       if (err) throw err;
-              //       console.log(res);
-              //     }
-              //   );
-              // } catch (err) {
-              //   console.log(err);
-              // }
+              try {
+                //create thumbnail
+                await createThumbnail(
+                  file_to_pdf,
+                  thumbnail_path,
+                  (err, res) => {
+                    if (err) throw err;
+                    console.log(res);
+                  }
+                );
+              } catch (err) {
+                console.log(err);
+              }
             }
 
             // await result of async operation
@@ -225,15 +225,15 @@ module.exports = {
             //THUMBNAIL NOT WORKING
             //NEED TO FIND THE RIGHT BUILDPACK FOR HEROKU
 
-            //save thumbnail to s3
-            // var s3ThumbnailData = await s3
-            //   .upload({
-            //     Bucket,
-            //     Key: thumbnail_key,
-            //     Body: fs.createReadStream(thumbnail_path),
-            //   })
-            //   .promise();
-            // files[i].s3ThumbnailLink = s3ThumbnailData.Location;
+            // save thumbnail to s3
+            var s3ThumbnailData = await s3
+              .upload({
+                Bucket,
+                Key: thumbnail_key,
+                Body: fs.createReadStream(thumbnail_path),
+              })
+              .promise();
+            files[i].s3ThumbnailLink = s3ThumbnailData.Location;
           }
           //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
           var s3PDFData = await s3
