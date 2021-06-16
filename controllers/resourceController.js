@@ -178,6 +178,9 @@ module.exports = {
               }
 
               try {
+                //////////////////////////////////////////////////
+                ////////////////WATERMARK WORK////////////////////
+                //////////////////////////////////////////////////
                 watermark_pdf_filepath = file_path.replace(
                   file_ext,
                   `_watermark${file_ext}${pdf_or_no}`
@@ -194,19 +197,39 @@ module.exports = {
                 );
 
                 fs.writeFileSync(watermark_pdf_filepath, watermarked_pdf);
+                //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
+                var s3PDFData = await s3
+                  .upload({
+                    Bucket,
+                    Key: `${watermark_pdf_key}`,
+                    Body: fs.createReadStream(`${watermark_pdf_filepath}`),
+                  })
+                  .promise();
+                files[i].previewLink = s3PDFData.Location;
+                console.log(s3PDFData);
               } catch (err) {
                 watermark_pdf_filepath = null;
                 watermark_pdf_key = null;
                 console.log(err);
+                //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
+                var s3PDFData = await s3
+                  .upload({
+                    Bucket,
+                    Key: `${pdf_key}`,
+                    Body: fs.createReadStream(`${pdf_path}`),
+                  })
+                  .promise();
+                files[i].previewLink = s3PDFData.Location;
+                console.log(s3PDFData);
 
                 //if we error out with bad pdf for watermark, can we just use the non-watermarked file instead?
                 //we'll use the first file we got page...1 pager from convertapi
               }
 
-              //THUMBNAIL NOT WORKING
-              //NEED TO FIND THE RIGHT BUILDPACK FOR HEROKU
               try {
-                //create thumbnail
+                //////////////////////////////////////////////////
+                ////////////////THUMBNAIL WORK////////////////////
+                //////////////////////////////////////////////////
                 await createThumbnail(
                   file_to_pdf,
                   thumbnail_path,
@@ -232,30 +255,21 @@ module.exports = {
             // await result of async operation
             await convert_to_pdf_and_watermark();
           }
-          //save watermarked PDF/IMG to s3. default to normal pdf if watermark fails
-          var s3PDFData = await s3
-            .upload({
-              Bucket,
-              Key: `${watermark_pdf_key || pdf_key}`,
-              Body: fs.createReadStream(
-                `${watermark_pdf_filepath || pdf_path}`
-              ),
-            })
-            .promise();
-          files[i].previewLink = s3PDFData.Location;
-          console.log(s3PDFData);
+
           //save original file to s3
           let s3Data = await s3
             .upload({
               Bucket,
-              Key: watermark_pdf_key || pdf_key || file_name,
-              Body: fs.createReadStream(
-                watermark_pdf_filepath || pdf_path || file_path
-              ),
+              Key: file_name,
+              Body: fs.createReadStream(file_path),
             })
             .promise();
           files[i].s3Object = s3Data;
           files[i].s3Link = s3Data.Location;
+          //if we have a thumbnail link, keep it. otherwise, use original file as thumbnail (image)
+          files[i].s3ThumbnailLink
+            ? files[i].s3ThumbnailLink
+            : s3ThumbnailData.Location;
         }
 
         resourceQueries.updateResourceWithFiles(
