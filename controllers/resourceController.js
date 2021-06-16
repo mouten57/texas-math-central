@@ -267,9 +267,11 @@ module.exports = {
           files[i].s3Object = s3Data;
           files[i].s3Link = s3Data.Location;
           //if we have a thumbnail link, keep it. otherwise, use original file as thumbnail (image)
-          files[i].s3ThumbnailLink
-            ? files[i].s3ThumbnailLink
-            : s3ThumbnailData.Location;
+          if (files[i].s3ThumbnailLink) {
+            console.log(files[i].s3ThumbnailLink);
+          } else {
+            files[i].s3ThumbnailLink = s3Data.Location;
+          }
         }
 
         resourceQueries.updateResourceWithFiles(
