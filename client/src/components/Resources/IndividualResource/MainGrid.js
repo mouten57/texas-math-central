@@ -24,6 +24,7 @@ const MainGrid = (props) => {
   } = props;
 
   const mimetype = selectedFile?.mimetype || selectedFile?.mimeType;
+  console.log(selectedFile)
   return (
     <Grid compact="true">
       <Grid.Column width={leftColWidth}>
@@ -96,14 +97,13 @@ const MainGrid = (props) => {
               <b>
                 Preview
                 <a href={authorized_to_view ? state.selectedFile.s3Link : null}>
-                  {` (${
-                    state.selectedFile.originalname || state.selectedFile.name
-                  })`}
+                  {` (${state.selectedFile.originalname || state.selectedFile.name
+                    })`}
                 </a>
               </b>
               {mimetype?.includes("image") ? (
                 <Image src={selectedFile.s3Link} size="large" centered />
-              ) : (
+              ) : state.selectedFile?.previewLink ? (
                 <div>
                   <Document
                     file={state.selectedFile?.previewLink}
@@ -146,12 +146,12 @@ const MainGrid = (props) => {
                     frameborder="0"
                   /> */}
                 </div>
-              )}
+              ) : <div>No Preview Availabile</div>}
             </p>
           )
         ) : null}
       </Grid.Column>
-    </Grid>
+    </Grid >
   );
 };
 
